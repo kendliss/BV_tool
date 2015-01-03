@@ -1,0 +1,6 @@
+﻿
+create proc bvt_processed.Response_Daily_Start_End_PR
+AS
+truncate table bvt_processed.Response_Daily_Start_End
+insert into bvt_processed.Response_Daily_Start_End
+select * from bvt_prod.Response_Daily_Start_End_VW

@@ -1,0 +1,28 @@
+﻿CREATE TABLE [sandbox].[Summary_v2$] (
+    [Target Group]                 NVARCHAR (255) NULL,
+    [Target Summary]               NVARCHAR (255) NULL,
+    [Target Summary Name]          NVARCHAR (255) NULL,
+    [Group Name]                   NVARCHAR (255) NULL,
+    [Drop Date]                    DATETIME       NULL,
+    [Aprimo Number]                FLOAT (53)     NULL,
+    [English TFN]                  NVARCHAR (255) NULL,
+    [Spanish TFN]                  NVARCHAR (255) NULL,
+    [Cell ID]                      FLOAT (53)     NULL,
+    [Drop Month]                   NVARCHAR (255) NULL,
+    [In Home Date]                 DATETIME       NULL,
+    [In home Month]                NVARCHAR (255) NULL,
+    [KS Quantity English]          FLOAT (53)     NULL,
+    [KS Quantity Hispanic]         FLOAT (53)     NULL,
+    [MIA Quantity English]         FLOAT (53)     NULL,
+    [MIA Quantity Spanish]         FLOAT (53)     NULL,
+    [Total Quantity]               FLOAT (53)     NULL,
+    [Touch #]                      NVARCHAR (255) NULL,
+    [Vehicle]                      NVARCHAR (255) NULL,
+    [Creative Execution/Targeting] NVARCHAR (255) NULL,
+    [Estimated or Actual]          NVARCHAR (255) NULL,
+    [Call Center]                  NVARCHAR (255) NULL,
+    [F23]                          NVARCHAR (255) NULL,
+    [F24]                          NVARCHAR (255) NULL,
+    [F25]                          NVARCHAR (255) NULL
+);
+

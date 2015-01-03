@@ -1,0 +1,2 @@
+﻿CREATE USER [JAVELIN\khutyra] FOR LOGIN [JAVELIN\khutyra];
+

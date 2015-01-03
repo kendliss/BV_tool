@@ -1,0 +1,2 @@
+﻿CREATE USER [JAVELIN\nbrindza] FOR LOGIN [JAVELIN\nbrindza];
+

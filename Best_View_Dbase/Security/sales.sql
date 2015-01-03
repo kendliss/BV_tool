@@ -1,0 +1,3 @@
+﻿CREATE SCHEMA [sales]
+    AUTHORIZATION [JAVELIN\nbrindza];
+

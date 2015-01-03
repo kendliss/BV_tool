@@ -1,0 +1,12 @@
+﻿create procedure bvt_prod.Best_View_Forecast_PR
+as
+EXEC bvt_processed.CPP_Start_End_PR
+EXEC bvt_processed.Dropdate_Start_End_PR
+EXEC bvt_processed.KPI_Rate_Start_End_PR
+EXEC bvt_processed.Response_Curve_Start_End_PR
+EXEC bvt_processed.Response_Daily_Start_End_PR
+EXEC bvt_processed.Sales_Curve_Start_End_PR
+EXEC bvt_processed.Sales_Rates_Start_End_PR
+EXEC bvt_processed.Target_Adjustment_Start_End_PR
+
+select * from bvt_prod.Best_View_Forecast_VW

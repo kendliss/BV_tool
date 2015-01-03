@@ -1,0 +1,2 @@
+﻿CREATE USER [JAVELIN\bndebele] FOR LOGIN [JAVELIN\bndebele];
+

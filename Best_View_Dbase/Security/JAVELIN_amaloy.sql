@@ -1,0 +1,2 @@
+﻿CREATE USER [JAVELIN\amaloy] FOR LOGIN [JAVELIN\amaloy];
+

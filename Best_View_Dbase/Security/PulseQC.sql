@@ -1,0 +1,3 @@
+﻿CREATE SCHEMA [PulseQC]
+    AUTHORIZATION [JAVELIN\bdiaz];
+

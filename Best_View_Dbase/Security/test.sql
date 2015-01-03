@@ -1,0 +1,3 @@
+﻿CREATE SCHEMA [test]
+    AUTHORIZATION [JAVELIN\bndebele];
+

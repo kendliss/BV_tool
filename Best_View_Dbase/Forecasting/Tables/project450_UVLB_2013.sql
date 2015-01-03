@@ -1,0 +1,27 @@
+﻿CREATE TABLE [Forecasting].[project450_UVLB_2013] (
+    [Product]       NVARCHAR (255) NULL,
+    [Project Year]  FLOAT (53)     NULL,
+    [Project Month] NVARCHAR (255) NULL,
+    [Project Name]  NVARCHAR (255) NULL,
+    [Job Code]      NVARCHAR (255) NOT NULL,
+    [Status]        NVARCHAR (255) NULL,
+    [Tactic]        NVARCHAR (255) NULL,
+    [Format]        NVARCHAR (255) NULL,
+    [Agency]        NVARCHAR (255) NULL,
+    [Project Cost]  MONEY          NULL,
+    [Volume]        FLOAT (53)     NULL,
+    [CPP]           MONEY          NULL,
+    [jan]           MONEY          NULL,
+    [feb]           MONEY          NULL,
+    [mar]           MONEY          NULL,
+    [apr]           MONEY          NULL,
+    [may]           MONEY          NULL,
+    [jun]           MONEY          NULL,
+    [jul]           MONEY          NULL,
+    [aug]           MONEY          NULL,
+    [sep]           MONEY          NULL,
+    [oct]           MONEY          NULL,
+    [nov]           MONEY          NULL,
+    [dec]           MONEY          NULL
+);
+

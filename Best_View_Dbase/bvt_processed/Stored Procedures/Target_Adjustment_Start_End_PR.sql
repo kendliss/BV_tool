@@ -1,0 +1,6 @@
+﻿
+create proc bvt_processed.Target_Adjustment_Start_End_PR
+AS
+truncate table bvt_processed.Target_Adjustment_Start_End
+insert into bvt_processed.Target_Adjustment_Start_End
+select * from bvt_prod.Target_adjustment_start_end

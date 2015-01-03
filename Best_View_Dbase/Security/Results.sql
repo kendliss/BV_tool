@@ -1,0 +1,3 @@
+﻿CREATE SCHEMA [Results]
+    AUTHORIZATION [JAVELIN\nbrindza];
+

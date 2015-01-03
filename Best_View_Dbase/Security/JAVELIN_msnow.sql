@@ -1,0 +1,2 @@
+﻿CREATE USER [JAVELIN\msnow] FOR LOGIN [JAVELIN\msnow];
+
