@@ -1,4 +1,5 @@
-﻿
+﻿drop view [bvt_prod].[UCLM_Best_View_Forecast_VW]
+go
 
 
 CREATE view [bvt_prod].[UCLM_Best_View_Forecast_VW]
@@ -29,7 +30,7 @@ select FPR.idFlight_Plan_Records
 	, Forecast_DayDate
 	, Forecast
 
-from bvt_processed.Movers_Flight_Plan as FPR
+from bvt_processed.UCLM_Flight_Plan as FPR
 
 left join
 -------------Bring in the Metrics----------------------------------------------------------------------
