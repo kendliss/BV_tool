@@ -2545,7 +2545,7 @@
       <AnsiNulls>On</AnsiNulls>
       <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
-    <Build Include="bvt_processed\Stored Procedures\UVLB_Best_View_Forecast_PR.sql">
+    <Build Include="bvt_processed\Stored Procedures\UCLM_Best_View_Forecast_PR.sql">
       <AnsiNulls>On</AnsiNulls>
       <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
@@ -2634,5 +2634,6 @@
     <Build Include="bvt_prod\Views\Movers_FlightplanSalesForecast.sql" />
     <Build Include="bvt_prod\Views\Movers_Financial_Budget_Forecast.sql" />
     <Build Include="bvt_prod\Views\UCLM_Financial_Budget_Forecast.sql" />
+    <Build Include="bvt_processed\Stored Procedures\UVLB_Best_View_Forecast_PR.sql" />
   </ItemGroup>
 </Project>
