@@ -16,5 +16,5 @@ EXEC bvt_processed.UCLM_Flight_Plan_PR
 declare @ts datetime
 set @ts = GETDATE()
 insert into bvt_processed.UCLM_Best_View_Forecast
-select *, @ts from bvt_prod.Movers_Best_View_Forecast_VW
+select *, @ts from bvt_prod.UCLM_Best_View_Forecast_VW
 set nocount off
