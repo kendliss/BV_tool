@@ -1,6 +1,9 @@
-﻿CREATE VIEW [bvt_prod].[Movers_Unlinked_Campaigns]
-	AS SELECT [Start_Date], [End_Date_Traditional], [Campaign_Name], [media_code]
-		, [Toll_Free_Numbers] , [URL_List] , [CTD_Quantity], [CTD_Budget] 
+﻿DROP VIEW [bvt_prod].[Movers_Unlinked_Campaigns]
+GO
+
+CREATE VIEW [bvt_prod].[Movers_Unlinked_Campaigns]
+	AS SELECT [eCRW_Project_Name], [Project_Id], [ParentID], [Campaign_Name], [Campaign_Parent_Name], [Campaign_Description], [media_code]
+		,[Start_Date], [End_Date_Traditional],  [Toll_Free_Numbers] , [URL_List] , [CTD_Quantity], [CTD_Budget], [CTD_Dir_Calls], [CTD_Dir_Clicks]
 	FROM javdb.ireport.[dbo].[IR_Campaign_Data_Latest_MAIN_2012]
 	where  
 	program='Movers' 
