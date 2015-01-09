@@ -523,5 +523,10 @@
     <Build Include="bvt_processed\Stored Procedures\UVLB_Best_View_Forecast_PR.sql" />
     <Build Include="bvt_prod\Views\Movers_Actuals_VW.sql" />
     <Build Include="bvt_prod\Views\Movers_Unlinked_Campaigns.sql" />
+    <Build Include="bvt_prod\Tables\Source_System_LU.sql" />
+    <Build Include="bvt_prod\Tables\Source_Field_Name_LU.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <RefactorLog Include="Best_View_Dbase.refactorlog" />
   </ItemGroup>
 </Project>
