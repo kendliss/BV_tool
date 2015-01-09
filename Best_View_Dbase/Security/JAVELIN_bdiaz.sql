@@ -1,2 +1,0 @@
-﻿CREATE USER [JAVELIN\bdiaz] FOR LOGIN [JAVELIN\bdiaz];
-

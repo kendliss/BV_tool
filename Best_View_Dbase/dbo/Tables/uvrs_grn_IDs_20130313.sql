@@ -1,6 +1,0 @@
-﻿CREATE TABLE [dbo].[uvrs_grn_IDs_20130313] (
-    [ACCOUNT IDENTIFIER]           NVARCHAR (50) NULL,
-    [ACCOUNT NUMBER]               BIGINT        NULL,
-    [CUSTOMER LOCATION IDENTIFIER] BIGINT        NULL
-);
-

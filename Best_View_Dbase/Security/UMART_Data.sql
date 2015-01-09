@@ -1,3 +1,0 @@
-﻿CREATE SCHEMA [UMART_Data]
-    AUTHORIZATION [JAVELIN\nbrindza];
-

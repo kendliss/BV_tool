@@ -1,2 +1,0 @@
-﻿CREATE USER [JAVELIN\blangley] FOR LOGIN [JAVELIN\blangley];
-

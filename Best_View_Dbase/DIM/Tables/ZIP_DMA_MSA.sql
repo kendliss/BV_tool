@@ -1,7 +1,0 @@
-﻿CREATE TABLE [DIM].[ZIP_DMA_MSA] (
-    [ZIP]     VARCHAR (5)  NULL,
-    [DMA]     VARCHAR (4)  NULL,
-    [MSA]     VARCHAR (4)  NULL,
-    [DMANAME] VARCHAR (50) NULL
-);
-

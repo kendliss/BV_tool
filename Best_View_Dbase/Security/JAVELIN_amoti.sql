@@ -1,2 +1,0 @@
-﻿CREATE USER [JAVELIN\amoti] FOR LOGIN [JAVELIN\amoti];
-

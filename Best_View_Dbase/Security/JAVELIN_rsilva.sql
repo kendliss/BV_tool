@@ -1,2 +1,0 @@
-﻿CREATE USER [JAVELIN\rsilva] FOR LOGIN [JAVELIN\rsilva];
-

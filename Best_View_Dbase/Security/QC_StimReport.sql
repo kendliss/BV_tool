@@ -1,3 +1,0 @@
-﻿CREATE SCHEMA [QC_StimReport]
-    AUTHORIZATION [JAVELIN\bcausey];
-

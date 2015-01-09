@@ -1,3 +1,0 @@
-﻿CREATE SCHEMA [DIM]
-    AUTHORIZATION [JAVELIN\nbrindza];
-
