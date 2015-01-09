@@ -63,6 +63,7 @@
     <Recovery>SIMPLE</Recovery>
     <EnableFullTextSearch>False</EnableFullTextSearch>
     <DefaultFilegroup>PRIMARY</DefaultFilegroup>
+    <DefaultSchema>bvt_prod</DefaultSchema>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>bin\Release\</OutputPath>
@@ -2635,5 +2636,7 @@
     <Build Include="bvt_prod\Views\Movers_Financial_Budget_Forecast.sql" />
     <Build Include="bvt_prod\Views\UCLM_Financial_Budget_Forecast.sql" />
     <Build Include="bvt_processed\Stored Procedures\UVLB_Best_View_Forecast_PR.sql" />
+    <Build Include="bvt_prod\Views\Movers_Actuals_VW.sql" />
+    <Build Include="bvt_prod\Views\Movers_Unlinked_Campaigns.sql" />
   </ItemGroup>
 </Project>
