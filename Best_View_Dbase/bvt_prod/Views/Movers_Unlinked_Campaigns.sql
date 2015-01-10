@@ -14,6 +14,6 @@ CREATE VIEW [bvt_prod].[Movers_Unlinked_Campaigns]
 			inner join [bvt_prod].[External_ID_linkage_TBL] as extrnl
 			on junction.idExternal_ID_linkage_TBL_FK=extrnl.idExternal_ID_linkage_TBL
 			
-		where Source_System='Scorecard'
-			and Field_Name='parentid'
+		where idSource_System_LU_FK=1
+			and idSource_Field_Name_LU_FK=1
 		group by Source_System_ID)
