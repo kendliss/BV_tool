@@ -1,4 +1,7 @@
-﻿CREATE VIEW [bvt_prod].[Movers_Actuals_VW]
+﻿drop view [bvt_prod].[Movers_Actuals_VW]
+go
+
+CREATE VIEW [bvt_prod].[Movers_Actuals_VW]
 
 	AS	select [Report_Year], [Report_Week], [Start_Date], [End_Date_Traditional], [Campaign_Name], [media_code]
 		, [Toll_Free_Numbers] , [URL_List] , [CTD_Quantity], [CTD_Budget]
@@ -19,5 +22,6 @@
 			inner join [bvt_prod].[External_ID_linkage_TBL] as extrnl
 			on junction.idExternal_ID_linkage_TBL_FK=extrnl.idExternal_ID_linkage_TBL
 			
-		where Source_System='Scorecard'
-			and Field_Name='parentid' group by Source_System_ID)
+		where idSource_System_LU_FK=1
+			and idSource_Field_Name_LU_FK=1
+		group by Source_System_ID)
