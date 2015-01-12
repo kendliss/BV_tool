@@ -1,4 +1,5 @@
-﻿
+﻿drop proc [bvt_processed].[Movers_Forecast_Campaign_Summary_PR]
+GO
 
 CREATE proc [bvt_processed].[Movers_Forecast_Campaign_Summary_PR]
 as
@@ -22,7 +23,6 @@ from
 		, Creative_Name
 		, Goal
 		, Offer
-		, KPI_Type
 		, Product_Code
 		, sum(Forecast) as Forecast
 	from bvt_processed.Movers_Best_View_Forecast
@@ -39,7 +39,6 @@ from
 		, Creative_Name
 		, Goal
 		, Offer
-		, KPI_Type
 		, Product_Code) as Metrics
 	PIVOT
 	(Sum(Forecast) For Product_Code in 
@@ -68,7 +67,7 @@ from
 	(select 
 		idFlight_Plan_Records
 		, sum(budget) as Budget
-	from bvt_prod.Financial_Budget_Forecast
+	from bvt_prod.Movers_Financial_Budget_Forecast
 	GROUP by idFlight_Plan_Records) as costs
 
 	on KPIs.idFlight_Plan_Records=costs.idFlight_Plan_Records
