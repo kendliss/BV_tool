@@ -70,7 +70,10 @@ CREATE VIEW [bvt_prod].[Mover_Best_View_VW]
 ----Join Actuals
 		--Volume and Budget
 		left join 
-			(select idFlight_Plan_Records_FK, MIN(Report_Year) as Media_Year, MIN(Report_Week) as Media_Week
+			(select idFlight_Plan_Records_FK, iso_week_year as Media_Year, iso_week as Media_Week, KPI_TYPE, Product_Code, Actual
+
+			from 
+			(select idFlight_Plan_Records_FK, Start_Date
 
 			, case when kpiproduct='CTD_Quantity' then 'Volume'
 				when kpiproduct='CTD_Budget' then 'Budget'
@@ -88,15 +91,18 @@ CREATE VIEW [bvt_prod].[Mover_Best_View_VW]
 
 				UNPIVOT (Actual for kpiproduct in 
 					([CTD_Quantity], [CTD_Budget])) as Actuals
-			GROUP BY idFlight_Plan_Records_FK
+			GROUP BY idFlight_Plan_Records_FK, Start_Date
 				, case when kpiproduct='CTD_Quantity' then 'Volume'
 					when kpiproduct='CTD_Budget' then 'Budget'
 					end 
 				, case when kpiproduct='CTD_Quantity' then 'Volume'
 					when kpiproduct='CTD_Budget' then 'Budget'
-					end) as actual_volume
+					end) as pivotmetrics
+			inner join dim.media_calendar_daily on start_date=[date]) as actual_volume --END OF VOLUME BUDGET QUERY
+
 		on forecast_cv.[idFlight_Plan_Records_FK]=actual_volume.idFlight_plan_records_FK and forecast_cv.media_year=actual_volume.media_year
 		 and forecast_cv.media_week=actual_volume.media_week and forecast_cv.kpi_type=actual_volume.KPI_Type
+		 and forecast_cv.Product_Code=actual_volume.Product_Code
 
 
 -----Join Response and Sales
