@@ -527,6 +527,7 @@
     <Build Include="bvt_prod\Tables\Source_Field_Name_LU.sql" />
     <Build Include="bvt_prod\Views\Mover_Best_View_VW.sql" />
     <Build Include="bvt_prod\Views\Touch_Definition_VW.sql" />
+    <Build Include="bvt_prod\Views\Movers_Best_View_Pivot_VW.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="Best_View_Dbase.refactorlog" />
