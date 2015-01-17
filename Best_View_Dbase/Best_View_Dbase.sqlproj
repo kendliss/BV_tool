@@ -108,6 +108,7 @@
     <Folder Include="bvt_prod\Functions\" />
     <Folder Include="bvt_processed\Stored Procedures\" />
     <Folder Include="bvt_prod\Stored Procedures\" />
+    <Folder Include="bvt_processed\Views" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="staging\Tables\UVCLM_FlightPlan_Load.sql">
@@ -528,6 +529,7 @@
     <Build Include="bvt_prod\Views\Mover_Best_View_VW.sql" />
     <Build Include="bvt_prod\Views\Touch_Definition_VW.sql" />
     <Build Include="bvt_prod\Views\Movers_Best_View_Pivot_VW.sql" />
+    <Build Include="bvt_processed\Views\Movers_Flight_Plan_Processed_VW.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="Best_View_Dbase.refactorlog" />

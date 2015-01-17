@@ -20,9 +20,6 @@ CREATE VIEW [bvt_prod].[Mover_Best_View_VW]
 	   Coalesce(forecast.[idFlight_Plan_Records], cv.[id_Flight_Plan_Records_FK]) as idFlight_Plan_Records_FK
       ,Coalesce(forecast.[Campaign_Name], cv.[Campaign_Name]) as Campaign_Name
       ,coalesce(forecast.[InHome_Date], cv.[InHome_Date]) as InHome_Date
-      ,coalesce(forecast.[Media_Year], cv.[Media_Year]) as [Media_Year]
-      ,coalesce(forecast.[Media_Week], cv.[Media_Week]) as [Media_Week]
-      ,coalesce(forecast.[Media_Month], cv.[Media_Month]) as [Media_Month]
       ,coalesce(forecast.[Touch_Name], cv.[Touch_Name]) as [Touch_Name]
       ,coalesce(forecast.[Program_Name], cv.[Program_Name]) as [Program_Name]
       ,coalesce(forecast.[Tactic], cv.[Tactic]) as [Tactic]
@@ -34,30 +31,74 @@ CREATE VIEW [bvt_prod].[Mover_Best_View_VW]
       ,coalesce(forecast.[Offer], cv.[Offer]) as [Offer]
       ,coalesce(forecast.[KPI_Type], cv.[KPI_Type]) as [KPI_Type]
       ,coalesce(forecast.[Product_Code], cv.[Product_Code]) as [Product_Code]
+	  ,coalesce(forecast.media_year, cv.media_year) as media_year
+	  ,coalesce(forecast.media_month, cv.media_month) as media_month
+	  ,coalesce(forecast.media_week, cv.media_year) as media_week
       ,sum(forecast.[Forecast]) as Forecast
 	  ,sum(CV.forecast) as Commitment 
-	  FROM [bvt_processed].[Movers_Best_View_Forecast] as forecast
+	  FROM 
+	  
+	  (select 
+	  [idFlight_Plan_Records]
+      ,Campaign_Name
+      , InHome_Date
+      , [Touch_Name]
+      , Media_Year
+      , Media_Month
+      , Media_Week
+      ,[Program_Name]
+      ,[Tactic]
+      ,[Media]
+      ,[Campaign_Type]
+      ,[Audience]
+      ,[Creative_Name]
+      ,[Goal]
+      ,[Offer]
+      ,[KPI_Type]
+      ,[Product_Code]
+	  ,SUM(Forecast) as forecast
+	  from
+	  [bvt_processed].[Movers_Best_View_Forecast]
+	   where [load_dt]=(select max([load_dt]) from [bvt_processed].[Movers_Best_View_Forecast])
+	  group by [idFlight_Plan_Records]
+      ,Campaign_Name
+      , InHome_Date
+      , [Touch_Name]
+      ,[Program_Name]
+      ,[Tactic]
+      ,[Media]
+      ,[Campaign_Type]
+      ,[Audience]
+      ,[Creative_Name]
+      ,[Goal]
+      ,[Offer]
+      ,[KPI_Type]
+      ,[Product_Code]
+      , Media_Year
+      , Media_Month
+      , Media_Week) as forecast
 		
 		---Join CV to Current Forecast Table
 		full join 
 			(select [id_Flight_Plan_Records_FK], [idProgram_Touch_Definitions_TBL_FK], [Campaign_Name], [InHome_Date], 
-			[Media_Year], [Media_Month], [Media_Week], [KPI_TYPE], [Product_Code], [Forecast_DayDate], [Forecast], [CV_Submission], [Extract_Date]
-			,[Touch_Name], [Program_Name], [Tactic], [Media], [Audience], [Creative_Name], [Goal], [Offer], [Campaign_Type]
+			[Media_Year], [Media_Month], [Media_Week], [KPI_TYPE], [Product_Code], sum([Forecast]) as forecast, 
+			[Touch_Name], [Program_Name], [Tactic], [Media], [Audience], [Creative_Name], [Goal], [Offer], [Campaign_Type]
 			from [bvt_processed].[Commitment_Views] 
 				-----Bring in touch definition labels 
 				left join [bvt_prod].[Touch_Definition_VW] on [Commitment_Views].[idProgram_Touch_Definitions_TBL_FK]=[Touch_Definition_VW].[idProgram_Touch_Definitions_TBL]
-			) as CV
+			where extract_date='2014-12-18'
+			GROUP BY [id_Flight_Plan_Records_FK], [idProgram_Touch_Definitions_TBL_FK], [Campaign_Name], [InHome_Date], 
+			[Media_Year], [Media_Month], [Media_Week], [KPI_TYPE], [Product_Code],
+			[Touch_Name], [Program_Name], [Tactic], [Media], [Audience], [Creative_Name], [Goal], [Offer], [Campaign_Type] ) as CV
 		 on forecast.[idFlight_Plan_Records]=cv.[id_Flight_Plan_Records_FK] 
-			and forecast.[Forecast_DayDate]=CV.[Forecast_DayDate]
+			and forecast.media_year=cv.Media_Year
+			and forecast.media_week=cv.Media_Week
 			and forecast.kpi_type=cv.kpi_type
 			and forecast.product_code=cv.product_code
-		 where forecast.[load_dt]=(select max([load_dt]) from [bvt_processed].[Movers_Best_View_Forecast]) and cv.extract_date='2014-12-18'
+	
 	  group by Coalesce(forecast.[idFlight_Plan_Records], cv.[id_Flight_Plan_Records_FK]) 
       ,Coalesce(forecast.[Campaign_Name], cv.[Campaign_Name]) 
       ,coalesce(forecast.[InHome_Date], cv.[InHome_Date]) 
-      ,coalesce(forecast.[Media_Year], cv.[Media_Year])
-      ,coalesce(forecast.[Media_Week], cv.[Media_Week]) 
-      ,coalesce(forecast.[Media_Month], cv.[Media_Month])
       ,coalesce(forecast.[Touch_Name], cv.[Touch_Name]) 
       ,coalesce(forecast.[Program_Name], cv.[Program_Name])
       ,coalesce(forecast.[Tactic], cv.[Tactic]) 
@@ -68,7 +109,10 @@ CREATE VIEW [bvt_prod].[Mover_Best_View_VW]
       ,coalesce(forecast.[Goal], cv.[Goal]) 
       ,coalesce(forecast.[Offer], cv.[Offer])
       ,coalesce(forecast.[KPI_Type], cv.[KPI_Type])
-      ,coalesce(forecast.[Product_Code], cv.[Product_Code]) ) as forecast_cv
+      ,coalesce(forecast.[Product_Code], cv.[Product_Code])
+	  ,coalesce(forecast.media_year, cv.media_year)
+	  ,coalesce(forecast.media_month, cv.media_month)
+	  ,coalesce(forecast.media_week, cv.media_year)) as forecast_cv
 
 ----Join Actuals
 		--Volume and Budget
