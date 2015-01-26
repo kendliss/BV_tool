@@ -11,6 +11,9 @@ CREATE VIEW [bvt_prod].[Mover_Best_View_VW]
 		,Commitment
 		,coalesce(actual_volume.Actual,actual_results.Actual) as Actual
 		,case when forecast_cv.Media_Week>(case when DATEPART(weekday,getdate()) <= 5 then DATEPART(wk,getdate())-2 else DATEPART(wk,getdate())-1	end) then Forecast
+			--Short term work around for missing volume in scorecard
+			when forecast_cv.[KPI_Type]='Volume' then Forecast
+				---Remove when volume problem fixed
 			else coalesce(actual_volume.Actual,actual_results.Actual)
 			end as Best_View
 		
