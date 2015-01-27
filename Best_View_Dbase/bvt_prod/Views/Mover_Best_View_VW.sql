@@ -8,7 +8,7 @@ CREATE VIEW [bvt_prod].[Mover_Best_View_VW]
 		forecast_cv.[Media_Week], [Media_Month], [Touch_Name], [Program_Name], [Tactic], [Media], 
 		[Campaign_Type], [Audience], [Creative_Name], [Goal], [Offer], forecast_cv.[KPI_Type], forecast_cv.[Product_Code], 
 		Forecast
-		,Commitment
+		,Commitment ---a Comment for Git
 		,coalesce(actual_volume.Actual,actual_results.Actual) as Actual
 		,case when forecast_cv.Media_Week>(case when DATEPART(weekday,getdate()) <= 5 then DATEPART(wk,getdate())-2 else DATEPART(wk,getdate())-1	end) then Forecast
 			--Short term work around for missing volume in scorecard
