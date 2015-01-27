@@ -114,7 +114,7 @@ sum(isnull([Volume_BV], 0)) as [Volume_BV]
 	,Case when kpi_type in ('Response','Volume','Budget') then Product_Code+'_CV'
 		Else [KPI_Type]+'_'+[Product_Code]+'_CV' end as CV_metric 
 	,Case when kpi_type in ('Response','Volume','Budget') then Product_Code+'_FV'
-		Else [KPI_Type]+'_'+[Product_Code]+'_CV' end as FV_metric
+		Else [KPI_Type]+'_'+[Product_Code]+'_FV' end as FV_metric
 	,Case when kpi_type in ('Response','Volume','Budget') then Product_Code+'_AV'
 		Else [KPI_Type]+'_'+[Product_Code]+'_AV' end as AV_metric 
 		,Case when kpi_type in ('Response','Volume','Budget') then Product_Code+'_BV'
