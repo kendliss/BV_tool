@@ -447,7 +447,7 @@
       <AnsiNulls>On</AnsiNulls>
       <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
-    <Build Include="bvt_prod\Stored Procedures\Best_View_Forecast_PR.sql">
+    <Build Include="bvt_prod\Stored Procedures\Movers_View_Forecast_PR.sql">
       <AnsiNulls>On</AnsiNulls>
       <QuotedIdentifier>On</QuotedIdentifier>
     </Build>

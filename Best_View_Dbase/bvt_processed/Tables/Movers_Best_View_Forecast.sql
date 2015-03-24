@@ -18,6 +18,7 @@
     [Product_Code]          VARCHAR (255) NULL,
     [Forecast_DayDate]      DATE          NULL,
     [Forecast]              FLOAT (53)    NULL,
-    [load_dt]               DATETIME      NULL
+    [load_dt]               DATETIME      NULL, 
+    [owner_type_tactic_matrix_id] INT NULL
 );
 

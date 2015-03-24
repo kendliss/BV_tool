@@ -22,6 +22,7 @@ select FPR.idFlight_Plan_Records
 	, Creative_Name
 	, Goal
 	, Offer
+	, [owner_type_matrix_id_FK]
 
 ----Metrics
 	, KPI_Type
@@ -75,7 +76,7 @@ left join Dim.Media_Calendar_Daily
 
 left join
 -----Bring in touch definition labels 
-(select idProgram_Touch_Definitions_TBL, Touch_Name, Program_Name, Tactic, Media, Audience, Creative_Name, Goal, Offer, Campaign_Type
+(select idProgram_Touch_Definitions_TBL, Touch_Name, Program_Name, Tactic, Media, Audience, Creative_Name, Goal, Offer, Campaign_Type, [owner_type_matrix_id_FK]
 		 from bvt_prod.Program_Touch_Definitions_TBL
 			left join bvt_prod.Audience_LU_TBL on idAudience_LU_TBL_FK=idAudience_LU_TBL
 			left join bvt_prod.Campaign_Type_LU_TBL on idCampaign_Type_LU_TBL_FK=idCampaign_Type_LU_TBL
