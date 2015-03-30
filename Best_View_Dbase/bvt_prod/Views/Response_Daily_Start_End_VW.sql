@@ -1,4 +1,6 @@
-﻿
+﻿drop view bvt_prod.Response_Daily_Start_End_VW
+GO
+
 create view bvt_prod.Response_Daily_Start_End_VW
 as 	
 WITH T1 AS
@@ -43,8 +45,8 @@ Daily_Start_Date,
 cast(case when (CASE when N%2=1 then MAX(CASE WHEN N%2=0 THEN unqid END) OVER (Partition BY (N+1)/2) 
 	ELSE MAX(CASE WHEN N%2=1 THEN unqid END) OVER (Partition BY N/2) END) = unqid then
 	
-(CASE WHEN N%2=1 THEN MAX(CASE WHEN N%2=0 THEN Daily_Start_Date END) OVER (Partition BY (N+1)/2) 
-	ELSE MAX(CASE WHEN N%2=1 THEN Daily_Start_Date END) OVER (Partition BY N/2) END)
+(CASE WHEN N%2=1 THEN MAX(CASE WHEN N%2=0 THEN dateadd(day,-1,Daily_Start_Date) END) OVER (Partition BY (N+1)/2) 
+	ELSE MAX(CASE WHEN N%2=1 THEN dateadd(day,-1,Daily_Start_Date) END) OVER (Partition BY N/2) END)
 	
 	ELSE '2200-01-01' end as datetime) as END_DATE
 
