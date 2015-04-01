@@ -36,7 +36,7 @@ CREATE VIEW [bvt_prod].[Mover_Best_View_VW]
       ,coalesce(forecast.[Product_Code], cv.[Product_Code]) as [Product_Code]
 	  ,coalesce(forecast.media_year, cv.media_year) as media_year
 	  ,coalesce(forecast.media_month, cv.media_month) as media_month
-	  ,coalesce(forecast.media_week, cv.media_year) as media_week
+	  ,coalesce(forecast.media_week, cv.media_week) as media_week
       ,sum(forecast.[Forecast]) as Forecast
 	  ,sum(CV.forecast) as Commitment 
 	  FROM 
@@ -115,7 +115,7 @@ CREATE VIEW [bvt_prod].[Mover_Best_View_VW]
       ,coalesce(forecast.[Product_Code], cv.[Product_Code])
 	  ,coalesce(forecast.media_year, cv.media_year)
 	  ,coalesce(forecast.media_month, cv.media_month)
-	  ,coalesce(forecast.media_week, cv.media_year)) as forecast_cv
+	  ,coalesce(forecast.media_week, cv.media_week)) as forecast_cv
 
 ----Join Actuals
 		--Volume and Budget
