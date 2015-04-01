@@ -98,8 +98,6 @@
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
   <ItemGroup>
     <Folder Include="Properties" />
-    <Folder Include="staging\" />
-    <Folder Include="staging\Tables\" />
     <Folder Include="bvt_prod\" />
     <Folder Include="bvt_prod\Tables\" />
     <Folder Include="bvt_processed\" />
@@ -111,22 +109,6 @@
     <Folder Include="bvt_processed\Views" />
   </ItemGroup>
   <ItemGroup>
-    <Build Include="staging\Tables\UVCLM_FlightPlan_Load.sql">
-      <AnsiNulls>On</AnsiNulls>
-      <QuotedIdentifier>On</QuotedIdentifier>
-    </Build>
-    <Build Include="staging\Tables\Movers2015FlightPlan.sql">
-      <AnsiNulls>On</AnsiNulls>
-      <QuotedIdentifier>On</QuotedIdentifier>
-    </Build>
-    <Build Include="staging\Tables\Movers2015_Seasonal.sql">
-      <AnsiNulls>On</AnsiNulls>
-      <QuotedIdentifier>On</QuotedIdentifier>
-    </Build>
-    <Build Include="staging\Tables\curves.sql">
-      <AnsiNulls>On</AnsiNulls>
-      <QuotedIdentifier>On</QuotedIdentifier>
-    </Build>
     <Build Include="bvt_prod\Tables\Flight_Plan_Records_Volume.sql">
       <AnsiNulls>On</AnsiNulls>
       <QuotedIdentifier>On</QuotedIdentifier>
