@@ -1,4 +1,7 @@
-﻿CREATE VIEW [bvt_prod].[Movers_Scorecard__Best_View_Forecast_VW]
+﻿DROP VIEW [bvt_prod].Movers_Scorecard_Best_View_Forecast_VW
+GO
+
+CREATE VIEW [bvt_prod].[Movers_Scorecard_Best_View_Forecast_VW]
 	AS 
 	
 	SELECT [owner_type_matrix_id_FK] as tactic_id,
