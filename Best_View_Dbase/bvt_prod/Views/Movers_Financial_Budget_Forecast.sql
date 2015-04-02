@@ -1,4 +1,6 @@
-﻿
+﻿drop view  [bvt_prod].[Movers_Financial_Budget_Forecast]
+go
+
 create view [bvt_prod].[Movers_Financial_Budget_Forecast]
 as select 
 	flight_plan_records.idFlight_Plan_Records
@@ -15,6 +17,7 @@ as select
 	, Creative_Name
 	, Goal
 	, Offer
+	, [owner_type_matrix_id_FK]
 	
 	, case when Budget_Type_LU_TBL_idBudget_Type_LU_TBL=2 then Bill_Month
 		when MONTH(Flight_Plan_Records.InHome_Date)=12 then 12
@@ -47,7 +50,7 @@ as select
 		end)=A.MediaMonth_Year
 		left join
 		-----Bring in touch definition labels 
-(select idProgram_Touch_Definitions_TBL, Touch_Name, Program_Name, Tactic, Media, Audience, Creative_Name, Goal, Offer, Campaign_Type
+(select idProgram_Touch_Definitions_TBL, Touch_Name, Program_Name, Tactic, Media, Audience, Creative_Name, Goal, Offer, Campaign_Type, [owner_type_matrix_id_FK]
 		 from bvt_prod.Program_Touch_Definitions_TBL
 			left join bvt_prod.Audience_LU_TBL on idAudience_LU_TBL_FK=idAudience_LU_TBL
 			left join bvt_prod.Campaign_Type_LU_TBL on idCampaign_Type_LU_TBL_FK=idCampaign_Type_LU_TBL
