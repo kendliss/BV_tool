@@ -514,6 +514,9 @@
     <Build Include="bvt_processed\Views\Movers_Flight_Plan_Processed_VW.sql" />
     <Build Include="bvt_processed\Stored Procedures\UCLM_Best_View_Forecast_WKLY_PR.sql" />
     <Build Include="bvt_prod\Views\Movers_Scorecard_Best_View_Forecast_VW.sql" />
+    <Build Include="bvt_prod\Views\UVLB_Best_View_VW.sql" />
+    <Build Include="bvt_prod\Views\UVLB_Actuals_VW.sql" />
+    <Build Include="bvt_prod\Views\UVLB_Best_View_Pivot_VW.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="Best_View_Dbase.refactorlog" />
