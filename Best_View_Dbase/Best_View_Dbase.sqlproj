@@ -517,6 +517,9 @@
     <Build Include="bvt_prod\Views\UVLB_Best_View_VW.sql" />
     <Build Include="bvt_prod\Views\UVLB_Actuals_VW.sql" />
     <Build Include="bvt_prod\Views\UVLB_Best_View_Pivot_VW.sql" />
+    <Build Include="bvt_prod\Views\Movers_Drag_Forecast_VW.sql" />
+    <Build Include="bvt_prod\Tables\Drag_Conversion_Rates.sql" />
+    <Build Include="bvt_prod\Views\Drag_Conversion_Start_End_VW.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="Best_View_Dbase.refactorlog" />

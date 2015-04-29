@@ -35,4 +35,11 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="idSource_Field_Name_LU_FK" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="1120b92e-723f-45c9-a163-80393cc82f1a" ChangeDateTime="04/15/2015 20:57:33">
+    <Property Name="ElementName" Value="[bvt_prod].[Drag_Conversion_Rates].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[bvt_prod].[Drag_Conversion_Rates]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="idDrag_Conversions" />
+  </Operation>
 </Operations>

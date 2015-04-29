@@ -36,7 +36,7 @@ left join
 -------------Bring in the Metrics----------------------------------------------------------------------
 (select * from 
 
-
+-------Sales
 ((select idFlight_Plan_Records
 	, case when idkpi_types_FK=1 then 'Telesales'
 		when idkpi_types_FK=2 then 'Online_sales'
@@ -49,7 +49,7 @@ from bvt_prod.Movers_FlightplanSalesForecast
 		on Movers_FlightplanSalesForecast.idProduct_LU_TBL_FK=Product_LU_TBL.idProduct_LU_TBL)
 
 union 
-
+------Response and Saves
 (select idFlight_Plan_Records
 	, 'Response' as KPI_Type
 	, KPI_Type as Product_Code
@@ -60,7 +60,7 @@ from bvt_prod.Movers_FlightplanKPIForecast
 		on Movers_FlightplanKPIForecast.idkpi_types_FK=KPI_Types.idKPI_Types)
 		
 union
-
+---------Volume Forecast
 (select idFlight_Plan_Records
 	, 'Volume' as KPI_Type
 	, 'Volume' as Product_Code
