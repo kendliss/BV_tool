@@ -524,4 +524,7 @@
   <ItemGroup>
     <RefactorLog Include="Best_View_Dbase.refactorlog" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="UVLB CV Transforation.sql" />
+  </ItemGroup>
 </Project>

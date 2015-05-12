@@ -40,7 +40,7 @@ CREATE VIEW [bvt_prod].[Movers_Scorecard_Best_View_Forecast_VW]
 
 	union 
 -------Drag Sales-----------
-	select 150801, 'DR', 'Telesales', Product_Code, Media_Year, Media_Month, Media_Week, sum(drag_calls*conversion_rate) as Forecast
+	select 150801 as tactic_id, 'DR' as media, 'Telesales' as kpi_type, Product_Code, Media_Year, Media_Month, Media_Week, sum(drag_calls*conversion_rate) as Forecast
 
 		from [bvt_prod].[Movers_Drag_Forecast_VW] as a 
 			inner join bvt_prod.Drag_Conversion_Start_End_VW as b
