@@ -42,4 +42,32 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="idDrag_Conversions" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="8fa342b8-8506-48a6-af06-40af6a66f4ab" ChangeDateTime="06/10/2015 21:37:38">
+    <Property Name="ElementName" Value="[bvt_prod].[Managers_LU_TBL].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[bvt_prod].[Managers_LU_TBL]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="idManagers" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="651c797f-4311-443f-aa4a-d823d8945d4b" ChangeDateTime="06/10/2015 21:39:47">
+    <Property Name="ElementName" Value="[bvt_prod].[Touch_Managers_TBL].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[bvt_prod].[Touch_Managers_TBL]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="idTouch_Managers" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="df4942ca-3a83-4fce-a8b1-04b271e8e9a6" ChangeDateTime="06/10/2015 21:43:45">
+    <Property Name="ElementName" Value="[bvt_prod].[Touch_Managers_TBL].[id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[bvt_prod].[Touch_Managers_TBL]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="idProgram_Touch_Definitions_TBL_FK" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="1da9205a-f3fd-425a-83de-98e64ba31ce0" ChangeDateTime="06/10/2015 21:46:38">
+    <Property Name="ElementName" Value="[bvt_prod].[Touch_Managers_TBL].[Start_DAte]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[bvt_prod].[Touch_Managers_TBL]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Start_Date" />
+  </Operation>
 </Operations>

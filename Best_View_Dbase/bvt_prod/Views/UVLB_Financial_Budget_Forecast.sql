@@ -28,7 +28,7 @@ as select
 		else CPP*Volume end as budget
 	, mediaweek
 	
-	from bvt_procoessed.UVLB_Flight_Plan as flight_plan_records
+	from bvt_processed.UVLB_Flight_Plan as flight_plan_records
 		left join bvt_prod.Flight_Plan_Record_Budgets
 			on flight_plan_records.idFlight_Plan_Records=idFlight_Plan_Records_FK
 		LEFT join bvt_processed.CPP_Start_End
