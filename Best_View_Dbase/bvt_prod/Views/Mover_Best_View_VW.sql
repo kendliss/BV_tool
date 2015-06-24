@@ -84,7 +84,9 @@ CREATE VIEW [bvt_prod].[Mover_Best_View_VW]
 		---Join CV to Current Forecast Table
 		full join 
 			(select [id_Flight_Plan_Records_FK], [idProgram_Touch_Definitions_TBL_FK], [Campaign_Name], [InHome_Date], 
-			[Media_Year], [Media_Month], [Media_Week], [KPI_TYPE], [Product_Code], sum([Forecast]) as forecast, 
+			[Media_Year], [Media_Month], [Media_Week], [KPI_TYPE], [Product_Code], 
+			case when kpi_type='Volume' and campaign_name like '%TFN%'
+				then 0 else sum([Forecast]) end as forecast, 
 			[Touch_Name], [Program_Name], [Tactic], [Media], [Audience], [Creative_Name], [Goal], [Offer], [Campaign_Type]
 			from [bvt_processed].[Commitment_Views] 
 				-----Bring in touch definition labels 
