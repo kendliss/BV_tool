@@ -21,11 +21,11 @@ as select
 	
 	, case when Budget_Type_LU_TBL_idBudget_Type_LU_TBL=2 then Bill_Month
 		when MONTH(Flight_Plan_Records.InHome_Date)=12 then 12
-		else month(DATEADD(month,bill_timing,Flight_Plan_Records.InHome_Date)) 
+		else month(DATEADD(month,bill_timing,dateadd(DAY,days_before_inhome,Flight_Plan_Records.InHome_Date))) 
 		end as bill_month
 	, case when Budget_Type_LU_TBL_idBudget_Type_LU_TBL=2 then Bill_Year
 		when month(Flight_Plan_Records.InHome_Date)=12 then YEAR(Flight_Plan_Records.inhome_date)
-		else year(DATEADD(month,bill_timing,Flight_Plan_Records.InHome_Date)) 
+		else year(DATEADD(month,bill_timing,dateadd(DAY,days_before_inhome,Flight_Plan_Records.InHome_Date))) 
 		end as bill_year
 	, case when Budget_Type_LU_TBL_idBudget_Type_LU_TBL=2 then Budget
 		else CPP*Volume end as budget
@@ -39,6 +39,9 @@ as select
 			and flight_plan_records.InHome_Date between CPP_Start_End.CPP_Start_Date and CPP_Start_End.END_DATE
 		LEFT join bvt_prod.Movers_Flightplan_Volume_Forecast_VW as FPV
 			on flight_plan_records.idFlight_Plan_Records=FPV.idFlight_Plan_Records
+		left join bvt_processed.Dropdate_Start_End as dropdate
+			on flight_plan_records.idProgram_Touch_Definitions_TBL_FK=dropdate.idProgram_Touch_Definitions_TBL_FK
+				and inhome_date between drop_start_date and dropdate.end_date
 		
 		right join (select min(iso_week) as mediaweek, MediaMonth, MediaMonth_year from dim.Media_Calendar_Daily group by MediaMonth, MediaMonth_year) as A
 			on (case when Budget_Type_LU_TBL_idBudget_Type_LU_TBL=2 then Bill_Month
