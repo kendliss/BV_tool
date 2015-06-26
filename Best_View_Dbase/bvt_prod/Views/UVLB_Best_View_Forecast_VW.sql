@@ -63,7 +63,7 @@ union
 (select idFlight_Plan_Records
 	, 'Volume' as KPI_Type
 	, 'Volume' as Product_Code
-	, inhome_date as Forecast_DayDate
+	, dropdate as Forecast_DayDate
 	, Volume as Forecast
 from bvt_prod.UVLB_Flightplan_Volume_Forecast_VW)) as metricsa) as metrics
 	on fpr.idFlight_Plan_Records=metrics.idFlight_Plan_Records
