@@ -121,7 +121,7 @@ CREATE VIEW [bvt_prod].[Mover_Best_View_VW]
 
 ----Join Actuals
 		--Volume and Budget
-		left join 
+		full outer join 
 			(select idFlight_Plan_Records_FK, iso_week_year as Media_Year, iso_week as Media_Week, KPI_TYPE, Product_Code, Actual
 
 			from 
@@ -158,7 +158,7 @@ CREATE VIEW [bvt_prod].[Mover_Best_View_VW]
 
 
 -----Join Response and Sales
-		left join (select idFlight_Plan_Records_FK, Report_Year as Media_Year, Report_Week as Media_Week
+		full outer join (select idFlight_Plan_Records_FK, Report_Year as Media_Year, Report_Week as Media_Week
 
 , case 
 	when kpiproduct='ITP_Dir_Calls' then 'Response'
