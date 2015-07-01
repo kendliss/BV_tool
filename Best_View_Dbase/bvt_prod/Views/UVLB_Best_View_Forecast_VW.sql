@@ -1,4 +1,5 @@
-﻿
+﻿DROP VIEW [bvt_prod].[UVLB_Best_View_Forecast_VW]
+GO
 
 
 CREATE view [bvt_prod].[UVLB_Best_View_Forecast_VW]

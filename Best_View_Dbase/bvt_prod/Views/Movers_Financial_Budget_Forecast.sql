@@ -20,16 +20,18 @@ as select
 	, [owner_type_matrix_id_FK]
 	
 	, case when Budget_Type_LU_TBL_idBudget_Type_LU_TBL=2 then Bill_Month
-		when MONTH(Flight_Plan_Records.InHome_Date)=12 then 12
-		else month(DATEADD(month,bill_timing,dateadd(DAY,days_before_inhome,Flight_Plan_Records.InHome_Date))) 
+		when Date_month=12 then 12
+		when idcpp_category_fk in (5) then Date_Month
+		else MediaMonth
 		end as bill_month
 	, case when Budget_Type_LU_TBL_idBudget_Type_LU_TBL=2 then Bill_Year
-		when month(Flight_Plan_Records.InHome_Date)=12 then YEAR(Flight_Plan_Records.inhome_date)
-		else year(DATEADD(month,bill_timing,dateadd(DAY,days_before_inhome,Flight_Plan_Records.InHome_Date))) 
+		when Date_month=12 then Date_Year
+		when idcpp_category_fk in (5) then Date_Year
+		else MediaMonth_Year
 		end as bill_year
 	, case when Budget_Type_LU_TBL_idBudget_Type_LU_TBL=2 then Budget
 		else CPP*Volume end as budget
-	, mediaweek
+	, ISO_Week as mediaweek
 	
 	from bvt_processed.Movers_Flight_Plan as flight_plan_records
 		left join bvt_prod.Flight_Plan_Record_Budgets
@@ -42,15 +44,9 @@ as select
 		left join bvt_processed.Dropdate_Start_End as dropdate
 			on flight_plan_records.idProgram_Touch_Definitions_TBL_FK=dropdate.idProgram_Touch_Definitions_TBL_FK
 				and inhome_date between drop_start_date and dropdate.end_date
-		
-		right join (select min(iso_week) as mediaweek, MediaMonth, MediaMonth_year from dim.Media_Calendar_Daily group by MediaMonth, MediaMonth_year) as A
-			on (case when Budget_Type_LU_TBL_idBudget_Type_LU_TBL=2 then Bill_Month
-		when MONTH(Flight_Plan_Records.InHome_Date)=12 then 12
-		else month(DATEADD(month,bill_timing,Flight_Plan_Records.InHome_Date)) 
-		end)= A.MediaMonth and (case when Budget_Type_LU_TBL_idBudget_Type_LU_TBL=2 then Bill_Year
-		when month(Flight_Plan_Records.InHome_Date)=12 then YEAR(Flight_Plan_Records.inhome_date)
-		else year(DATEADD(month,bill_timing,Flight_Plan_Records.InHome_Date)) 
-		end)=A.MediaMonth_Year
+
+		left join dim.Media_Calendar_Daily as A
+			on dateadd(DAY,days_before_inhome,Flight_Plan_Records.InHome_Date)=a.[date]
 		left join
 		-----Bring in touch definition labels 
 (select idProgram_Touch_Definitions_TBL, Touch_Name, Program_Name, Tactic, Media, Audience, Creative_Name, Goal, Offer, Campaign_Type, [owner_type_matrix_id_FK]
