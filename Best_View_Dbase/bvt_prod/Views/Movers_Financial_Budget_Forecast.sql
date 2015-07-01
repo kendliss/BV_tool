@@ -22,7 +22,7 @@ as select
 	, case when Budget_Type_LU_TBL_idBudget_Type_LU_TBL=2 then Bill_Month
 		when Date_month=12 then 12
 		when idcpp_category_fk in (5) then Date_Month
-		else MediaMonth
+		else MediaMonth+bill_timing
 		end as bill_month
 	, case when Budget_Type_LU_TBL_idBudget_Type_LU_TBL=2 then Bill_Year
 		when Date_month=12 then Date_Year
