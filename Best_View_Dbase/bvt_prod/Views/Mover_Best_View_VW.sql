@@ -4,12 +4,26 @@ GO
 CREATE VIEW [bvt_prod].[Mover_Best_View_VW]
 	AS 
 	select 
-		forecast_cv.[idFlight_Plan_Records_FK], [Campaign_Name], forecast_cv.[InHome_Date], forecast_cv.[Media_Year], 
-		forecast_cv.[Media_Week], [Media_Month], [Touch_Name], [Program_Name], [Tactic], [Media], 
-		[Campaign_Type], [Audience], [Creative_Name], [Goal], [Offer], forecast_cv.[KPI_Type], forecast_cv.[Product_Code], 
-		Forecast
-		,Commitment ---a Comment for Git
-		,coalesce(actual_volume.Actual,actual_results.Actual) as Actual
+		coalesce(forecast_cv.[idFlight_Plan_Records_FK],actual_volume.[idFlight_Plan_Records_FK],actual_results.[idFlight_Plan_Records_FK]) as [idFlight_Plan_Records_FK],
+		coalesce(forecast_cv.[Campaign_Name],actual_volume.[Campaign_Name],actual_results.[Campaign_Name]) as [Campaign_Name],
+		coalesce(forecast_cv.[InHome_Date],actual_volume.[InHome_Date],actual_results.[InHome_Date]) as [InHome_Date],
+		coalesce(forecast_cv.[Media_Year],actual_volume.[Media_Year],actual_results.[Media_Year]) as [Media_Year],
+		coalesce(forecast_cv.[Media_Week],actual_volume.[Media_Week],actual_results.[Media_Week]) as [Media_Week],
+		coalesce(forecast_cv.[Media_Month],actual_volume.[Media_Month]) as [Media_Month],
+		coalesce(forecast_cv.[Touch_Name],actual_volume.[Touch_Name],actual_results.[Touch_Name]) as [Touch_Name], 
+		coalesce(forecast_cv.[Program_Name],actual_volume.[Program_Name],actual_results.[Program_Name]) as [Program_Name], 
+		coalesce(forecast_cv.[Tactic],actual_volume.[Tactic],actual_results.[Tactic]) as [Tactic], 
+		coalesce(forecast_cv.[Media], actual_volume.[Media],actual_results.[Media]) as [Media],
+		coalesce(forecast_cv.[Campaign_Type], actual_volume.[Campaign_Type],actual_results.[Campaign_Type]) as [Campaign_Type],
+		coalesce(forecast_cv.[Audience], actual_volume.[Audience],actual_results.[Audience]) as [Audience],
+		coalesce(forecast_cv.[Creative_Name], actual_volume.[Creative_Name],actual_results.[Creative_Name]) as [Creative_Name],
+		coalesce(forecast_cv.[Goal], actual_volume.[Goal],actual_results.[Goal]) as [Goal],
+		coalesce(forecast_cv.[Offer], actual_volume.[Offer],actual_results.[Offer]) as [Offer],
+		coalesce(forecast_cv.[KPI_Type], actual_volume.[KPI_Type],actual_results.[KPI_Type]) as [KPI_Type],
+		coalesce(forecast_cv.[Product_Code], actual_volume.[Product_Code],actual_results.[Product_Code]) as [Product_Code]
+		,isnull(Forecast,0) as Forecast
+		,isnull(Commitment,0) as Commitment
+		,isnull(coalesce(actual_volume.Actual,actual_results.Actual),0) as Actual
 		,case when forecast_cv.Media_Week>(case when DATEPART(weekday,getdate()) <= 5 then DATEPART(wk,getdate())-2 else DATEPART(wk,getdate())-1	end) then Forecast
 			--Short term work around for missing volume in scorecard
 			when forecast_cv.[KPI_Type]='Volume' then Forecast
@@ -122,7 +136,10 @@ CREATE VIEW [bvt_prod].[Mover_Best_View_VW]
 ----Join Actuals
 		--Volume and Budget
 		full outer join 
-			(select idFlight_Plan_Records_FK, iso_week_year as Media_Year, iso_week as Media_Week, KPI_TYPE, Product_Code, Actual
+			(select idFlight_Plan_Records_FK, [Campaign_Name], iso_week_year as Media_Year, mediamonth as Media_Month, iso_week as Media_Week, 
+			inhome_date, [Touch_Name], [Program_Name], [Tactic], [Media], 
+			[Campaign_Type], [Audience], [Creative_Name], [Goal], [Offer],
+			KPI_TYPE, Product_Code, Actual
 
 			from 
 			(select idFlight_Plan_Records_FK, Start_Date
@@ -150,7 +167,9 @@ CREATE VIEW [bvt_prod].[Mover_Best_View_VW]
 				, case when kpiproduct='CTD_Quantity' then 'Volume'
 					when kpiproduct='CTD_Budget' then 'Budget'
 					end) as pivotmetrics
-			inner join dim.media_calendar_daily on start_date=[date]) as actual_volume --END OF VOLUME BUDGET QUERY
+			inner join dim.media_calendar_daily on start_date=[date]
+			inner join [bvt_processed].[UVLB_Flight_Plan] on idFlight_Plan_Records_FK=[idFlight_Plan_Records]
+			inner join [bvt_prod].[Touch_Definition_VW] on [idProgram_Touch_Definitions_TBL]=[idProgram_Touch_Definitions_TBL_FK]) as actual_volume --END OF VOLUME BUDGET QUERY
 
 		on forecast_cv.[idFlight_Plan_Records_FK]=actual_volume.idFlight_plan_records_FK and forecast_cv.media_year=actual_volume.media_year
 		 and forecast_cv.media_week=actual_volume.media_week and forecast_cv.kpi_type=actual_volume.KPI_Type
@@ -158,7 +177,13 @@ CREATE VIEW [bvt_prod].[Mover_Best_View_VW]
 
 
 -----Join Response and Sales
-		full outer join (select idFlight_Plan_Records_FK, Report_Year as Media_Year, Report_Week as Media_Week
+		full outer join 
+		(select idFlight_Plan_Records_FK, Media_Year, Media_Week, 
+			inhome_date, [Touch_Name], [Program_Name], [Tactic], [Media], [Campaign_Name],
+			[Campaign_Type], [Audience], [Creative_Name], [Goal], [Offer],
+			KPI_TYPE, Product_Code, Actual
+		from
+		(select idFlight_Plan_Records_FK, Report_Year as Media_Year, Report_Week as Media_Week
 
 , case 
 	when kpiproduct='ITP_Dir_Calls' then 'Response'
@@ -234,7 +259,9 @@ GROUP BY idFlight_Plan_Records_FK, Report_Year, Report_Week
 	when kpiproduct like '%DLIFE%' then 'Digital Life'
 	when kpiproduct like '%WHP%' then 'WRLS Home'
 	end 
-	) as actual_results
+	) as actuals 
+	inner join [bvt_processed].[UVLB_Flight_Plan] on idFlight_Plan_Records_FK=[idFlight_Plan_Records]
+	inner join [bvt_prod].[Touch_Definition_VW] on [idProgram_Touch_Definitions_TBL]=[idProgram_Touch_Definitions_TBL_FK]) as actual_results
 	  
 	 ON forecast_cv.[idFlight_Plan_Records_FK]=actual_results.idFlight_plan_records_FK and forecast_cv.media_year=actual_results.media_year
 		 and forecast_cv.media_week=actual_results.media_week and forecast_cv.kpi_type=actual_results.KPI_Type 
