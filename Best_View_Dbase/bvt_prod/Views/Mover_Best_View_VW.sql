@@ -168,7 +168,7 @@ CREATE VIEW [bvt_prod].[Mover_Best_View_VW]
 					when kpiproduct='CTD_Budget' then 'Budget'
 					end) as pivotmetrics
 			inner join dim.media_calendar_daily on start_date=[date]
-			inner join [bvt_processed].[UVLB_Flight_Plan] on idFlight_Plan_Records_FK=[idFlight_Plan_Records]
+			inner join [bvt_processed].[Movers_Flight_Plan] on idFlight_Plan_Records_FK=[idFlight_Plan_Records]
 			inner join [bvt_prod].[Touch_Definition_VW] on [idProgram_Touch_Definitions_TBL]=[idProgram_Touch_Definitions_TBL_FK]) as actual_volume --END OF VOLUME BUDGET QUERY
 
 		on forecast_cv.[idFlight_Plan_Records_FK]=actual_volume.idFlight_plan_records_FK and forecast_cv.media_year=actual_volume.media_year
@@ -260,7 +260,7 @@ GROUP BY idFlight_Plan_Records_FK, Report_Year, Report_Week
 	when kpiproduct like '%WHP%' then 'WRLS Home'
 	end 
 	) as actuals 
-	inner join [bvt_processed].[UVLB_Flight_Plan] on idFlight_Plan_Records_FK=[idFlight_Plan_Records]
+	inner join [bvt_processed].[Movers_Flight_Plan] on idFlight_Plan_Records_FK=[idFlight_Plan_Records]
 	inner join [bvt_prod].[Touch_Definition_VW] on [idProgram_Touch_Definitions_TBL]=[idProgram_Touch_Definitions_TBL_FK]) as actual_results
 	  
 	 ON forecast_cv.[idFlight_Plan_Records_FK]=actual_results.idFlight_plan_records_FK and forecast_cv.media_year=actual_results.media_year

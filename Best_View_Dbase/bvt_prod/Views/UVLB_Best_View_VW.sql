@@ -151,7 +151,10 @@ CREATE VIEW [bvt_prod].[UVLB_Best_View_VW]
 
 			, sum(Actuals.Actual) as Actual
 
-			from bvt_prod.UVLB_Actuals_VW
+			from 
+				(select idFlight_Plan_Records_FK, Start_Date, CTD_Quantity, CTD_Budget 
+				from bvt_prod.UVLB_Actuals_VW 
+				group by idFlight_Plan_Records_FK, Start_Date, CTD_Quantity, CTD_Budget) as actual_query
 
 				UNPIVOT (Actual for kpiproduct in 
 					([CTD_Quantity], [CTD_Budget])) as Actuals

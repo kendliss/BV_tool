@@ -521,6 +521,7 @@
     <Build Include="bvt_prod\Tables\Managers_LU_TBL.sql" />
     <Build Include="bvt_prod\Stored Procedures\Movers_Best_View_Forecast_PR.sql" />
     <Build Include="bvt_prod\Views\Manager_Start_End_VW.sql" />
+    <Build Include="bvt_prod\Stored Procedures\Campaign_Data_Weekly_Main_2012_PR.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="Best_View_Dbase.refactorlog" />
