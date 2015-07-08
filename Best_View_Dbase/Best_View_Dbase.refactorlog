@@ -70,4 +70,11 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="Start_Date" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="33754e90-ebfb-403b-87b2-dbb328889041" ChangeDateTime="07/07/2015 21:45:23">
+    <Property Name="ElementName" Value="[bvt_prod].[FPR_Manual_CPP].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[bvt_prod].[FPR_Manual_CPP]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="IdFPR_Manual_CPP" />
+  </Operation>
 </Operations>
