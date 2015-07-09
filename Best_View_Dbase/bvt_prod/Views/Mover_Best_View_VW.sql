@@ -9,7 +9,7 @@ CREATE VIEW [bvt_prod].[Mover_Best_View_VW]
 		coalesce(forecast_cv.[InHome_Date],actual_volume.[InHome_Date],actual_results.[InHome_Date]) as [InHome_Date],
 		coalesce(forecast_cv.[Media_Year],actual_volume.[Media_Year],actual_results.[Media_Year]) as [Media_Year],
 		coalesce(forecast_cv.[Media_Week],actual_volume.[Media_Week],actual_results.[Media_Week]) as [Media_Week],
-		coalesce(forecast_cv.[Media_Month],actual_volume.[Media_Month]) as [Media_Month],
+		coalesce(forecast_cv.[Media_Month],actual_volume.[Media_Month],actual_results.Media_Month) as [Media_Month],
 		coalesce(forecast_cv.[Touch_Name],actual_volume.[Touch_Name],actual_results.[Touch_Name]) as [Touch_Name], 
 		coalesce(forecast_cv.[Program_Name],actual_volume.[Program_Name],actual_results.[Program_Name]) as [Program_Name], 
 		coalesce(forecast_cv.[Tactic],actual_volume.[Tactic],actual_results.[Tactic]) as [Tactic], 
