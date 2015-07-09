@@ -180,7 +180,7 @@ CREATE VIEW [bvt_prod].[Mover_Best_View_VW]
 
 -----Join Response and Sales
 		full outer join 
-		(select idFlight_Plan_Records_FK, Media_Year, Media_Week, 
+		(select idFlight_Plan_Records_FK, Media_Year, Media_Week,  MediaMonth as Media_Month,
 			inhome_date, [Touch_Name], [Program_Name], [Tactic], [Media], [Campaign_Name],
 			[Campaign_Type], [Audience], [Creative_Name], [Goal], [Offer],
 			KPI_TYPE, Product_Code, Actual
@@ -263,7 +263,9 @@ GROUP BY idFlight_Plan_Records_FK, Report_Year, Report_Week
 	end 
 	) as actuals 
 	inner join [bvt_processed].[Movers_Flight_Plan] on idFlight_Plan_Records_FK=[idFlight_Plan_Records]
-	inner join [bvt_prod].[Touch_Definition_VW] on [idProgram_Touch_Definitions_TBL]=[idProgram_Touch_Definitions_TBL_FK]) as actual_results
+	inner join [bvt_prod].[Touch_Definition_VW] on [idProgram_Touch_Definitions_TBL]=[idProgram_Touch_Definitions_TBL_FK]
+	inner join (Select distinct ISO_week, ISO_Week_Year, MediaMonth from DIM.Media_Calendar_Daily) d
+on Media_week = d.ISO_Week and Media_Year = d.ISO_Week_Year) as actual_results
 	  
 	 ON forecast_cv.[idFlight_Plan_Records_FK]=actual_results.idFlight_plan_records_FK and forecast_cv.media_year=actual_results.media_year
 		 and forecast_cv.media_week=actual_results.media_week and forecast_cv.kpi_type=actual_results.KPI_Type 
