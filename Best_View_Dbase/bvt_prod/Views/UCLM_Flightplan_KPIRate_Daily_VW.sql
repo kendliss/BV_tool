@@ -1,4 +1,6 @@
-﻿
+﻿DROP VIEW [bvt_prod].[UCLM_Flightplan_KPIRate_Daily_VW]
+GO
+
 CREATE view [bvt_prod].[UCLM_Flightplan_KPIRate_Daily_VW]
 as
 ----Join Seasonality Adjustments
@@ -35,7 +37,7 @@ from
 	, KPI_Join.idProgram_Touch_Definitions_TBL_FK
 	, KPI_Join.idkpi_types_FK
 	, Day_of_Week
-	, KPI_Daily = KPI_Rate*Day_Percent
+	, KPI_Daily = KPI_Rate*Day_Percent/7
 	, inhome_date
 	, idTarget_Rate_Reasons_LU_TBL_FK
 
