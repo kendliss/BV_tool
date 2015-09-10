@@ -1,20 +1,9 @@
-USE [UVAQ]
-GO
+DROP VIEW [bvt_prod].[UCLM_Best_View_VW]
 
-/****** Object:  View [bvt_prod].[UCLM_Best_View_VW]    Script Date: 09/09/2015 15:39:05 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
 GO
 
 
-
-
-
-
-
-ALTER VIEW [bvt_prod].[UCLM_Best_View_VW]
+CREATE VIEW [bvt_prod].[UCLM_Best_View_VW]
 	AS 
 	select 
 		coalesce(forecast_cv.[idFlight_Plan_Records_FK],actual_volume.[idFlight_Plan_Records_FK],actual_results.[idFlight_Plan_Records_FK]) as [idFlight_Plan_Records_FK],
@@ -37,10 +26,8 @@ ALTER VIEW [bvt_prod].[UCLM_Best_View_VW]
 		,isnull(Forecast,0) as Forecast
 		,isnull(Commitment,0) as Commitment
 		,isnull(coalesce(actual_volume.Actual,actual_results.Actual),0) as Actual
-		,case when Forecast_Cv.KPI_Type = 'Volume' AND forecast_CV.Media_Week>(case when DATEPART(weekday,getdate()) <= 5 then DATEPART(wk,getdate())-6 else DATEPART(wk,getdate())-5	end) then isnull(Forecast,0)
-			WHEN forecast_CV.KPI_Type = 'Volume' THEN coalesce(actual_volume.Actual,forecast)
-			when forecast_CV.Media_Week>(case when DATEPART(weekday,getdate()) <= 5 then DATEPART(wk,getdate())-2 else DATEPART(wk,getdate())-1	end) then isnull(Forecast,0)
-			ELSE coalesce(actual_results.Actual,0) 
+		,case when forecast_cv.Media_Week>(case when DATEPART(weekday,getdate()) <= 5 then DATEPART(wk,getdate())-2 else DATEPART(wk,getdate())-1	end) then isnull(Forecast,0)
+			else coalesce(actual_volume.Actual,actual_results.Actual,forecast)
 			end as Best_View
 		
 	FROM	
@@ -282,8 +269,6 @@ on Media_week = d.ISO_Week and Media_Year = d.ISO_Week_Year) as actual_results
 	 ON forecast_cv.[idFlight_Plan_Records_FK]=actual_results.idFlight_plan_records_FK and forecast_cv.media_year=actual_results.media_year
 		 and forecast_cv.media_week=actual_results.media_week and forecast_cv.kpi_type=actual_results.KPI_Type 
 		 and forecast_cv.product_code=actual_results.product_code
-
-
 
 
 
