@@ -1,8 +1,18 @@
-﻿
+USE [UVAQ]
+GO
+
+/****** Object:  View [bvt_prod].[UCLM_Flightplan_SalesRate_Daily_VW]    Script Date: 09/09/2015 17:07:50 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
 
 
 -------------------------------------------
-CREATE view [bvt_prod].[UCLM_Flightplan_SalesRate_Daily_VW]
+ALTER view [bvt_prod].[UCLM_Flightplan_SalesRate_Daily_VW]
 as
 ----Join Seasonality Adjustments
 select idFlight_Plan_Records
@@ -26,7 +36,8 @@ from
 	, idProduct_LU_TBL_FK
 	, Daily_Join.Day_of_Week
 	, Salesrate_Daily*week_percent as Sales_Rate_Daily
-	, DATEADD(day,c.week_id-1,InHome_Date) as Forecast_DayDate
+	--, DATEADD(day,c.week_id-1,InHome_Date) as Forecast_DayDate
+	, DATEADD(day,c.Week_ID,InHome_Date) as Forecast_DayDate
 	, ISO_week
 	, ISO_Week_Year
 	, MediaMonth
@@ -89,5 +100,9 @@ from bvt_processed.UCLM_Flight_Plan as A
 		and ResponseByDay.idProgram_Touch_Definitions_TBL_FK=Target_adjustment_start_end.idProgram_Touch_Definitions_TBL_FK
 		and responsebyday.inhome_date between Adj_Start_Date and end_date
 
+
+
+
+GO
 
 
