@@ -75,6 +75,8 @@ WHEN Media_Code = 'VAS' THEN 173
 --GoLocal DM
 WHEN Media_Code = 'DM' AND (ecrw_project_name LIKE '%Local%' OR eCRW_Project_Name LIKE '%PreGreen%') THEN 60
 
+WHEN Media_Code = 'DM' AND eCRW_Project_Name like '%ChicagoInitiave%' THEN 640
+
 --Direct Mail TV Upsell
 WHEN Media_Code = 'DM' AND (Campaign_Name LIKE '%TV UP%' OR eCRW_Project_Name LIKE '%HSIAONLY%' OR eCRW_Project_Name LIKE '%TV%UP%') AND ((Campaign_Name LIKE ('%never%') OR Campaign_Name LIKE ('% NH %') OR Campaign_Name LIKE ('% NH%')OR Campaign_Name LIKE ('%NH%'))) AND (Campaign_Name NOT LIKE '%mid%' OR Campaign_Name NOT LIKE '%early%' OR Campaign_Name NOT LIKE '%late%') THEN 75
 WHEN Media_Code = 'DM' AND (Campaign_Name LIKE '%TV UP%' OR eCRW_Project_Name LIKE '%HSIAONLY%' OR eCRW_Project_Name LIKE '%TV%UP%') AND ((Campaign_Name LIKE ('%win%') or Campaign_Name LIKE ('% WB %')or Campaign_Name LIKE ('% WB%')or Campaign_Name LIKE ('%WB%'))) AND (Campaign_Name NOT LIKE '%mid%' OR Campaign_Name NOT LIKE '%early%' OR Campaign_Name NOT LIKE '%late%') THEN 74

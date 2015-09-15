@@ -1,4 +1,4 @@
-DROP PROC [bvt_stagin].[UCLM_ParentID_FlightRecord_Link_PR]
+DROP PROC [bvt_staging].[UCLM_ParentID_FlightRecord_Link_PR]
 
 GO
 
@@ -88,13 +88,15 @@ WHEN Media_Code = 'FPC' AND eCRW_Project_Name LIKE 'Epix%' THEN 549 --EPiX FPC
 
 
 --FYI
-/*Still missing 240,246,249,254,333,335,342,343,344,347,348,349,350,353,358,360*/
+/*Still missing 240,246,254,333,342,343,344,347,348,349,350,353,358,360*/
 
 WHEN Media_Code = 'FYI' AND eCRW_Project_Name NOT LIKE '%Onsert%' AND eCRW_Project_Name LIKE '%Epix%' THEN 243 --Epix FYI
+WHEN Media_Code = 'FYI' AND eCRW_Project_Name NOT LIKE '%Onsert%' AND eCRW_Project_Name LIKE '%HBO%' THEN 249 --HBO Upgrade FYI
 WHEN Media_Code = 'FYI' AND eCRW_Project_Name NOT LIKE '%Onsert%' AND eCRW_Project_Name NOT LIKE '% OE%' AND (eCRW_Project_Name LIKE '%Non-HSIA%' OR eCRW_Project_Name LIKE '%HSIA%Cross%Sell%') THEN 255 --HSIA Xsell FYI
 WHEN Media_Code = 'FYI' AND eCRW_Project_Name NOT LIKE '%Onsert%' AND eCRW_Project_Name NOT LIKE '% OE%' AND eCRW_Project_Name LIKE '%HSIA%' AND eCRW_Project_Name NOT LIKE '%Non-HSIA%' AND eCRW_Project_Name NOT LIKE '%Cross%Sell%' THEN 330 --HSIA Upgrade FYI
 WHEN Media_Code = 'FYI' AND eCRW_Project_Name NOT LIKE '%Onsert%' AND eCRW_Project_Name LIKE '%International%' THEN 332 --International FYI
 WHEN Media_Code = 'FYI' AND eCRW_Project_Name NOT LIKE '%Onsert%' AND eCRW_Project_Name LIKE '%Karaoke%' THEN 334 --Karaoke FYI
+WHEN Media_Code = 'FYI' AND eCRW_Project_Name NOT LIKE '%Onsert%' AND eCRW_Project_Name LIKE '%Live%TV%' THEN 335 --Live TV FYI
 WHEN Media_Code = 'FYI' AND eCRW_Project_Name NOT LIKE '%Onsert%' AND eCRW_Project_Name LIKE '%Movers%' THEN 338 --Movers NYCU FYI
 WHEN Media_Code = 'FYI' AND eCRW_Project_Name NOT LIKE '%Onsert%' AND eCRW_Project_Name LIKE '%MyAt&T%' THEN 341 --MyAT&T FYI
 WHEN Media_Code = 'FYI' AND eCRW_Project_Name NOT LIKE '%Onsert%' AND eCRW_Project_Name LIKE '%Screen%Pack%' THEN 345 --Screen Pack FYI
@@ -123,6 +125,7 @@ WHEN Media_Code = 'FYI' AND eCRW_Project_Name LIKE '%Onsert%' AND eCRW_Project_N
 WHEN Media_Code = 'FYI' AND eCRW_Project_Name LIKE '%Onsert%' AND (eCRW_Project_Name LIKE '%HSIA%Sell%' OR eCRW_Project_Name LIKE '%NON-HSIA%') THEN 562 --HSIA Xsell Onsert
 WHEN Media_Code = 'FYI' AND eCRW_Project_Name LIKE '%Onsert%' AND eCRW_Project_Name LIKE '%HSIA%Upgrade%' THEN 564 --HSIA Upgrade Onsert
 WHEN Media_Code = 'FYI' AND eCRW_Project_Name LIKE '%Onsert%' AND eCRW_Project_Name LIKE '%Karaoke%' THEN 569 --Karaoke Onsert
+WHEN Media_Code = 'FYI' AND eCRW_Project_Name LIKE '%Onsert%' AND eCRW_Project_Name LIKE '%Live%TV%' THEN 570 --Live TV Onsert
 WHEN Media_Code = 'FYI' AND eCRW_Project_Name LIKE '%Onsert%' AND eCRW_Project_Name LIKE '%MyAt&T%' THEN 575 --MyAT&T Onsert
 WHEN Media_Code = 'FYI' AND eCRW_Project_Name LIKE '%Onsert%' AND eCRW_Project_Name LIKE '%TV%Upgrade%' THEN 587 --IPTV Upgrade Onsert
 
