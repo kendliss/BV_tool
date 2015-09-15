@@ -1,12 +1,14 @@
-﻿drop view [bvt_prod].[Mover_Best_View_VW]
+DROP VIEW [bvt_prod].[UCLM_Best_View_VW]
+
 GO
 
-CREATE VIEW [bvt_prod].[Mover_Best_View_VW]
+
+CREATE VIEW [bvt_prod].[UCLM_Best_View_VW]
 	AS 
 	select 
 		coalesce(forecast_cv.[idFlight_Plan_Records_FK],actual_volume.[idFlight_Plan_Records_FK],actual_results.[idFlight_Plan_Records_FK]) as [idFlight_Plan_Records_FK],
 		coalesce(forecast_cv.[Campaign_Name],actual_volume.[Campaign_Name],actual_results.[Campaign_Name]) as [Campaign_Name],
-		coalesce(forecast_cv.[InHome_Date],actual_volume.[InHome_Date],actual_results.[InHome_Date]) as [InHome_Date],
+		coalesce(forecast_cv.[InHome_Date],actual_volume.inhome_date,actual_results.[InHome_Date]) as [InHome_Date],
 		coalesce(forecast_cv.[Media_Year],actual_volume.[Media_Year],actual_results.[Media_Year]) as [Media_Year],
 		coalesce(forecast_cv.[Media_Week],actual_volume.[Media_Week],actual_results.[Media_Week]) as [Media_Week],
 		coalesce(forecast_cv.[Media_Month],actual_volume.[Media_Month],actual_results.Media_Month) as [Media_Month],
@@ -24,11 +26,8 @@ CREATE VIEW [bvt_prod].[Mover_Best_View_VW]
 		,isnull(Forecast,0) as Forecast
 		,isnull(Commitment,0) as Commitment
 		,isnull(coalesce(actual_volume.Actual,actual_results.Actual),0) as Actual
-		,case when forecast_cv.Media_Week>(case when DATEPART(weekday,getdate()) <= 5 then DATEPART(wk,getdate())-2 else DATEPART(wk,getdate())-1	end) then Forecast
-			--Short term work around for missing volume in scorecard
-			when forecast_cv.[KPI_Type]='Volume' then Forecast
-				---Remove when volume problem fixed
-			else coalesce(actual_volume.Actual,actual_results.Actual)
+		,case when forecast_cv.Media_Week>(case when DATEPART(weekday,getdate()) <= 5 then DATEPART(wk,getdate())-2 else DATEPART(wk,getdate())-1	end) then isnull(Forecast,0)
+			else coalesce(actual_volume.Actual,actual_results.Actual,forecast)
 			end as Best_View
 		
 	FROM	
@@ -75,8 +74,8 @@ CREATE VIEW [bvt_prod].[Mover_Best_View_VW]
       ,[Product_Code]
 	  ,SUM(Forecast) as forecast
 	  from
-	  [bvt_processed].[Movers_Best_View_Forecast]
-	   where [load_dt]=(select max([load_dt]) from [bvt_processed].[Movers_Best_View_Forecast])
+	  [bvt_processed].[UCLM_Best_View_Forecast]
+	   where [load_dt]=(select max([load_dt]) from [bvt_processed].[UCLM_Best_View_Forecast])
 	  group by [idFlight_Plan_Records]
       ,Campaign_Name
       , InHome_Date
@@ -98,14 +97,12 @@ CREATE VIEW [bvt_prod].[Mover_Best_View_VW]
 		---Join CV to Current Forecast Table
 		full join 
 			(select [id_Flight_Plan_Records_FK], [idProgram_Touch_Definitions_TBL_FK], [Campaign_Name], [InHome_Date], 
-			[Media_Year], [Media_Month], [Media_Week], [KPI_TYPE], [Product_Code], 
-			case when kpi_type='Volume' and campaign_name like '%TFN%'
-				then 0 else sum([Forecast]) end as forecast, 
+			[Media_Year], [Media_Month], [Media_Week], [KPI_TYPE], [Product_Code], sum([Forecast]) as forecast, 
 			[Touch_Name], [Program_Name], [Tactic], [Media], [Audience], [Creative_Name], [Goal], [Offer], [Campaign_Type]
 			from [bvt_processed].[Commitment_Views] 
 				-----Bring in touch definition labels 
 				left join [bvt_prod].[Touch_Definition_VW] on [Commitment_Views].[idProgram_Touch_Definitions_TBL_FK]=[Touch_Definition_VW].[idProgram_Touch_Definitions_TBL]
-			where extract_date='2015-08-26'
+			where extract_date = '2015-08-07'
 			GROUP BY [id_Flight_Plan_Records_FK], [idProgram_Touch_Definitions_TBL_FK], [Campaign_Name], [InHome_Date], 
 			[Media_Year], [Media_Month], [Media_Week], [KPI_TYPE], [Product_Code],
 			[Touch_Name], [Program_Name], [Tactic], [Media], [Audience], [Creative_Name], [Goal], [Offer], [Campaign_Type] ) as CV
@@ -156,8 +153,9 @@ CREATE VIEW [bvt_prod].[Mover_Best_View_VW]
 
 			, sum(Actuals.Actual) as Actual
 
-			from (select idFlight_Plan_Records_FK, Start_Date, CTD_Quantity, CTD_Budget 
-				from bvt_prod.Movers_Actuals_VW 
+			from 
+				(select idFlight_Plan_Records_FK, Start_Date, CTD_Quantity, CTD_Budget 
+				from bvt_prod.UCLM_Actuals_VW 
 				group by idFlight_Plan_Records_FK, Start_Date, CTD_Quantity, CTD_Budget) as actual_query
 
 				UNPIVOT (Actual for kpiproduct in 
@@ -169,8 +167,9 @@ CREATE VIEW [bvt_prod].[Mover_Best_View_VW]
 				, case when kpiproduct='CTD_Quantity' then 'Volume'
 					when kpiproduct='CTD_Budget' then 'Budget'
 					end) as pivotmetrics
-			inner join dim.media_calendar_daily on start_date=[date]
-			inner join [bvt_processed].[Movers_Flight_Plan] on idFlight_Plan_Records_FK=[idFlight_Plan_Records]
+
+			inner join [bvt_processed].[UCLM_Flight_Plan] on idFlight_Plan_Records_FK=[idFlight_Plan_Records]
+			inner join dim.media_calendar_daily on inhome_date=[date]
 			inner join [bvt_prod].[Touch_Definition_VW] on [idProgram_Touch_Definitions_TBL]=[idProgram_Touch_Definitions_TBL_FK]) as actual_volume --END OF VOLUME BUDGET QUERY
 
 		on forecast_cv.[idFlight_Plan_Records_FK]=actual_volume.idFlight_plan_records_FK and forecast_cv.media_year=actual_volume.media_year
@@ -201,7 +200,7 @@ CREATE VIEW [bvt_prod].[Mover_Best_View_VW]
 	when kpiproduct like '%CING_VOICE%' then 'WRLS Voice'
 	when kpiproduct like '%CING_FAMILY%' then 'WRLS Family'
 	when kpiproduct like '%CING_DATA%' then 'WRLS Data'
-	when kpiproduct like '%DISH%' then 'Satellite'
+	when kpiproduct like '%DISH%' then 'DIRECTV'
 	when kpiproduct like '%DSL_DRY%' then 'DSL Direct'
 	when kpiproduct like '%DSL_REG%' then 'DSL'
 	when kpiproduct like '%HSIA%' then 'HSIA'
@@ -219,7 +218,7 @@ CREATE VIEW [bvt_prod].[Mover_Best_View_VW]
 
 , sum(Actuals.Actual) as Actual
 
-from bvt_prod.Movers_Actuals_VW
+from bvt_prod.UCLM_Actuals_VW
 
 UNPIVOT (Actual for kpiproduct in 
 			([ITP_Dir_Calls], [ITP_Dir_Clicks], 
@@ -247,7 +246,7 @@ GROUP BY idFlight_Plan_Records_FK, Report_Year, Report_Week
 	when kpiproduct like '%CING_VOICE%' then 'WRLS Voice'
 	when kpiproduct like '%CING_FAMILY%' then 'WRLS Family'
 	when kpiproduct like '%CING_DATA%' then 'WRLS Data'
-	when kpiproduct like '%DISH%' then 'Satellite'
+	when kpiproduct like '%DISH%' then 'DIRECTV'
 	when kpiproduct like '%DSL_DRY%' then 'DSL Direct'
 	when kpiproduct like '%DSL_REG%' then 'DSL'
 	when kpiproduct like '%HSIA%' then 'HSIA'
@@ -262,12 +261,19 @@ GROUP BY idFlight_Plan_Records_FK, Report_Year, Report_Week
 	when kpiproduct like '%WHP%' then 'WRLS Home'
 	end 
 	) as actuals 
-	inner join [bvt_processed].[Movers_Flight_Plan] on idFlight_Plan_Records_FK=[idFlight_Plan_Records]
+	inner join [bvt_processed].[UCLM_Flight_Plan] on idFlight_Plan_Records_FK=[idFlight_Plan_Records]
 	inner join [bvt_prod].[Touch_Definition_VW] on [idProgram_Touch_Definitions_TBL]=[idProgram_Touch_Definitions_TBL_FK]
 	inner join (Select distinct ISO_week, ISO_Week_Year, MediaMonth from DIM.Media_Calendar_Daily) d
 on Media_week = d.ISO_Week and Media_Year = d.ISO_Week_Year) as actual_results
-	  
+  
 	 ON forecast_cv.[idFlight_Plan_Records_FK]=actual_results.idFlight_plan_records_FK and forecast_cv.media_year=actual_results.media_year
 		 and forecast_cv.media_week=actual_results.media_week and forecast_cv.kpi_type=actual_results.KPI_Type 
 		 and forecast_cv.product_code=actual_results.product_code
+
+
+
+
+
 GO
+
+

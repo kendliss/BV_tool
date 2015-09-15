@@ -6,7 +6,7 @@ as
 declare @lst_load datetime
 select @lst_load = (select MAX(load_dt) from bvt_processed.Movers_Best_View_Forecast)
 
-select KPIs.*, costs.Budget
+select KPIs.*, costs.Budget, MediaMonth_Year,MediaMonth,MediaMonth_YYYYMM
 
 from
 (select * from
@@ -72,4 +72,7 @@ from
 
 	on KPIs.idFlight_Plan_Records=costs.idFlight_Plan_Records
 	
-
+	left join
+	
+	DIM.Media_Calendar_Daily
+	on Dateadd(D,-7, KPIs.InHome_Date)=DIM.Media_Calendar_Daily.Date
