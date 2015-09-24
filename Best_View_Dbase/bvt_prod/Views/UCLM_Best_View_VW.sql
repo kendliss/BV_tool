@@ -26,7 +26,7 @@ CREATE VIEW [bvt_prod].[UCLM_Best_View_VW]
 		,isnull(Forecast,0) as Forecast
 		,isnull(Commitment,0) as Commitment
 		,isnull(coalesce(actual_volume.Actual,actual_results.Actual),0) as Actual
-		,case when forecast_cv.Media_Week>(case when DATEPART(weekday,getdate()) <= 5 then DATEPART(wk,getdate())-2 else DATEPART(wk,getdate())-1	end) then isnull(Forecast,0)
+		,case when forecast_cv.Media_Week>(case when DATEPART(weekday,getdate()) <= 5 then DATEPART(wk,getdate())-6 else DATEPART(wk,getdate())-1	end) then isnull(Forecast,0)
 			else coalesce(actual_volume.Actual,actual_results.Actual,forecast)
 			end as Best_View
 		
