@@ -11,9 +11,6 @@
     [CV_Submission]                      VARCHAR (255) NOT NULL,
     [Extract_Date]                       DATE          NOT NULL,
     PRIMARY KEY CLUSTERED ([idCommitment_Views_Financial] ASC),
-    FOREIGN KEY ([idFlight_Plan_Records_FK]) REFERENCES [bvt_prod].[Flight_Plan_Records] ([idFlight_Plan_Records]),
-    FOREIGN KEY ([idFlight_Plan_Records_FK]) REFERENCES [bvt_prod].[Flight_Plan_Records] ([idFlight_Plan_Records]),
-    FOREIGN KEY ([idProgram_Touch_Definitions_TBL_FK]) REFERENCES [bvt_prod].[Program_Touch_Definitions_TBL] ([idProgram_Touch_Definitions_TBL]),
     FOREIGN KEY ([idProgram_Touch_Definitions_TBL_FK]) REFERENCES [bvt_prod].[Program_Touch_Definitions_TBL] ([idProgram_Touch_Definitions_TBL])
 );
 
