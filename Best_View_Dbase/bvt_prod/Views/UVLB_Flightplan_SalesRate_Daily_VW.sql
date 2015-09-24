@@ -1,5 +1,6 @@
-﻿
+﻿DROP VIEW [bvt_prod].[UVLB_Flightplan_SalesRate_Daily_VW]
 
+GO
 -------------------------------------------
 create view [bvt_prod].[UVLB_Flightplan_SalesRate_Daily_VW]
 as
@@ -21,8 +22,8 @@ from
 	, idProduct_LU_TBL_FK
 	, Daily_Join.Day_of_Week
 	, Salesrate_Daily*week_percent as Sales_Rate_Daily
-	, DATEADD(week,c.Week_ID-1,DATEADD(day,Days_Before_Inhome,InHome_Date)) as Forecast_Week_Date
-	, DATEADD(day,Day_of_Week-1,DATEADD(week,c.Week_ID-1,DATEADD(day,Days_Before_Inhome,InHome_Date))) as Forecast_DayDate
+	, DATEADD(week,c.Week_ID,DATEADD(day,Days_Before_Inhome,InHome_Date)) as Forecast_Week_Date
+	, DATEADD(day,Day_of_Week,DATEADD(week,c.Week_ID-1,DATEADD(day,Days_Before_Inhome,InHome_Date))) as Forecast_DayDate
 	, ISO_week
 	, ISO_Week_Year
 	, MediaMonth
