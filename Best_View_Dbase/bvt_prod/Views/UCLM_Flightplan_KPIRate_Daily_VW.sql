@@ -1,4 +1,7 @@
-﻿
+Drop View [bvt_prod].[UCLM_Flightplan_KPIRate_Daily_VW]
+
+GO
+
 CREATE view [bvt_prod].[UCLM_Flightplan_KPIRate_Daily_VW]
 as
 ----Join Seasonality Adjustments
@@ -22,7 +25,7 @@ from
 	, Daily_Join.idkpi_types_FK
 	, Daily_Join.Day_of_Week
 	, KPI_Daily*week_percent as KPI_Daily
-	, DATEADD(day,c.Week_ID-1,InHome_Date) as Forecast_DayDate
+	, DATEADD(day,c.Week_ID,InHome_Date) as Forecast_DayDate
 	, ISO_week
 	, ISO_Week_Year
 	, MediaMonth
@@ -35,7 +38,8 @@ from
 	, KPI_Join.idProgram_Touch_Definitions_TBL_FK
 	, KPI_Join.idkpi_types_FK
 	, Day_of_Week
-	, KPI_Daily = KPI_Rate*Day_Percent
+	, case when Day_percent is null then  KPI_Rate/7		
+		else KPI_Rate*Day_Percent/7 end as KPI_Daily
 	, inhome_date
 	, idTarget_Rate_Reasons_LU_TBL_FK
 
@@ -84,5 +88,9 @@ from bvt_processed.UCLM_Flight_Plan as A
 		and ResponseByDay.idProgram_Touch_Definitions_TBL_FK=Target_adjustment_start_end.idProgram_Touch_Definitions_TBL_FK
 		and responsebyday.inhome_date between Adj_Start_Date and end_date
 
+
+
+
+GO
 
 
