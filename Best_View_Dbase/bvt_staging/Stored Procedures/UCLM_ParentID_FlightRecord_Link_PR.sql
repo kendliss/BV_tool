@@ -50,10 +50,11 @@ Select ParentID,
 CASE 
 
 --Bill Media -- Bill Inserts
-/*still missing 206,207,209,210,213,217,224,226,239,556,567,573,586,630,631*/
+/*still missing 206,207,209,210,217,224,226,239,567,573,630,631*/
 
-WHEN Media_Code = 'BI' AND Campaign_Name LIKE '%Upgrade%' AND Campaign_Name LIKE '%HBO%' THEN 208 -- HBO BI 
-WHEN Media_Code = 'BI' AND Campaign_Name LIKE '%Upgrade%' AND Campaign_Name LIKE '%HD%' THEN 211 -- HD BI 
+WHEN Media_Code = 'BI' AND Campaign_Name LIKE '%HBO%' THEN 208 -- HBO BI 
+WHEN Media_Code = 'BI' AND Campaign_Name LIKE '%HD%' AND Campaign_Name NOT LIKE '%Premium%' THEN 211 -- HD BI
+WHEN Media_Code = 'BI' AND Campaign_Name LIKE '%HD%' AND Campaign_Name LIKE '%Premium%' THEN 213 --HD Premium Upgrade BI
 WHEN Media_Code = 'BI' AND (Campaign_Name LIKE '%HSIA%Sell%' OR Campaign_Name LIKE '%NON-HSIA%') THEN 214 -- HSIA XSell BI
 WHEN Media_Code = 'BI' AND Campaign_Name LIKE '%HSIA%Upgrade%' THEN 215 --HSIA Upgrade BI
 WHEN Media_Code = 'BI' AND Campaign_Name LIKE '%HSN%' THEN 216 -- HSN BI
@@ -70,13 +71,15 @@ WHEN Media_Code = 'BI' AND Campaign_Name LIKE '%TV Upgrade%' AND Campaign_Name L
 WHEN Media_Code = 'BI' AND Campaign_Name LIKE '%Uguide%' THEN 231 -- U-guide BI
 WHEN Media_Code = 'BI' AND Campaign_Name LIKE '%Welcome%' THEN 238 --Welcome BI
 WHEN Media_Code = 'BI' AND Campaign_Name LIKE '%Digital%Life%' THEN 547 --Digital Life BI
+WHEN Media_Code = 'BI' AND Campaign_Name LIKE '%Hallmark%' THEN 556 --Hallkmark BI
 WHEN Media_Code = 'BI' AND Campaign_Name LIKE '%NBA%' THEN 579 --NBA League Pass BI
 WHEN Media_Code = 'BI' AND Campaign_Name LIKE '%TV Upgrade%' AND Campaign_Name LIKE '%3 Months%' THEN 590 -- IPTV Upgrade 3 Months Free BI
 WHEN Media_Code = 'BI' AND Campaign_Name LIKE '%TV Upgrade%' AND Campaign_Name LIKE '%Reward Card%' THEN 591 -- IPTV Upgrade Reward Card BI
+WHEN Media_Code = 'BI' AND Campaign_Name LIKE '%TV Upgrade%' THEN 586 --TV Upgrade BI
 
 
 --First Page Communicators
-/*still missing 241,245,352,354,357,554,558,566*/
+/*still missing 241,245,352,354,357,558,566*/
 
 WHEN Media_Code = 'FPC' AND eCRW_Project_Name LIKE '%Gigapower%' THEN 247 --Gigapower FPC
 WHEN Media_Code = 'FPC' AND eCRW_Project_Name LIKE '%HBO%' THEN 250 --HBO FPC
@@ -85,6 +88,7 @@ WHEN Media_Code = 'FPC' AND eCRW_Project_Name LIKE '%HSIA%' THEN 331 --HSIA FPC
 WHEN Media_Code = 'FPC' AND eCRW_Project_Name LIKE '%Movers%' THEN 337 --Movers FPC
 WHEN Media_Code = 'FPC' AND eCRW_Project_Name LIKE '%Voice%' THEN 409 -- Voice FPC
 WHEN Media_Code = 'FPC' AND eCRW_Project_Name LIKE 'Epix%' THEN 549 --EPiX FPC
+WHEN Media_Code = 'FPC' AND eCRW_Project_Name LIKE '%OnDemand%' THEN 554 --Free On Demand FPC
 
 
 --FYI
@@ -131,9 +135,9 @@ WHEN Media_Code = 'FYI' AND eCRW_Project_Name LIKE '%Onsert%' AND eCRW_Project_N
 
 
 --Direct Mail
-/*still missing 363,364,366,378,380,412,413*/
+/*still missing 363,364,366,378,380,413*/
 
-WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%Benefit%' THEN 362 --Benefits Self Mailer DM 
+WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%Benefit%' AND eCRW_Project_Name NOT LIKE '%Hispanic%'THEN 362 --Benefits Self Mailer DM 
 WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%EOY Letter%' THEN 365 --EOY Letter Letter Kit DM
 WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%Giga%Announcement_1%' THEN 367 --Announcement 1 Self Mailer DM
 WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%Giga%Announcement_2%' THEN 368 --Announcement 2 Self Mailer DM
@@ -151,6 +155,7 @@ WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%TVUpgrade%' AND (Campaign_Na
 WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%TVUpgrade%' AND (Campaign_Name LIKE '%PC%' OR Campaign_Name LIKE '%Postcard%' OR Campaign_Name LIKE '%Post Card%') THEN 382 --IPTV Post Card DM
 WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%Welcome%' THEN 410 --2 Month Welcome CSM DM
 WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%Big_Data%' THEN 411 --Big Data Letter Kid DM
+WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%Benefit%' and eCRW_Project_Name LIKE '%Hispanic%' THEN 412 --Hispanic Benefits Self Mailer DM
 WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%Seniors%' THEN 414 --Seniors Self Mailer DM
 WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%Appreciation%' THEN 571 --Member Appreciation DM
 WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%GigaPower%' AND eCRW_Project_Name LIKE '%Low%'THEN 598 --Gigapower Monthly Self Mailer HP DM
@@ -194,6 +199,7 @@ WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%TV_Upgrade%' AND Campaign_Na
 WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%VOICE%' THEN 595 --Voice Cross Sell EM
 WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%GigaPower%' AND eCRW_Project_Name LIKE '%LOW%' THEN 597 --Gigapower Monthly lP EM
 WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Movie%Time%3%' THEN 602 --Movie Time 3 EM
+WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%NFL%' THEN 696 --NFL Sunday Ticket EM
 
 
 --Device/App
@@ -358,8 +364,4 @@ END
 
 
 
-
-
 GO
-
-
