@@ -524,6 +524,7 @@
     <Build Include="bvt_prod\Stored Procedures\Campaign_Data_Weekly_Main_2012_PR.sql" />
     <Build Include="bvt_prod\Tables\FPR_Manual_CPP.sql" />
     <Build Include="bvt_prod\Views\Movers_Best_View_Forecast_Weekly_VW.sql" />
+    <Build Include="bvt_prod\Views\UCLM_Drag_Forecast_VW.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="Best_View_Dbase.refactorlog" />
