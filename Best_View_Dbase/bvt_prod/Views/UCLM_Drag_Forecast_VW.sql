@@ -1,4 +1,7 @@
-﻿CREATE VIEW [bvt_prod].[UCLM_Drag_Forecast_VW]
+﻿DROP VIEW [bvt_prod].[UCLM_Drag_Forecast_VW]
+GO
+
+CREATE VIEW [bvt_prod].[UCLM_Drag_Forecast_VW]
 	AS 
 	--calculate daily calls based on method
 	SELECT 
@@ -16,7 +19,7 @@
 					from dim.media_calendar_daily as calendar
 				
 				left join (select [Day_of_Week],[Day_Percent],[Daily_Start_Date],[END_DATE]  from [bvt_processed].[Response_Daily_Start_End]
-							where [idProgram_Touch_Definitions_TBL_FK]=417 and [idkpi_type_FK]=1) as response_daily
+							where [idProgram_Touch_Definitions_TBL_FK]=804 and [idkpi_type_FK]=1) as response_daily
 				on datepart(weekday,calendar.date)=[Day_of_Week] and [date] between [Daily_Start_Date] and [END_DATE]
 				
 				left join (select [Forecast_DayDate], sum(forecast) as FV_Calls 
