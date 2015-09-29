@@ -1,4 +1,7 @@
-﻿CREATE VIEW [bvt_prod].[UVLB_Forecast_WithSales_2016_VW]
+﻿drop view [bvt_prod].[UVLB_Forecast_WithSales_2016_VW]
+GO
+
+CREATE VIEW [bvt_prod].[UVLB_Forecast_WithSales_2016_VW]
 	AS 
 (select idFlight_Plan_Records
 	, Campaign_Name
@@ -25,7 +28,7 @@
 	, Product_Code
 	, Forecast
 
-from bvt_prod.UVLB_Forecast_NOSALES_VW where Media_Year>2015)
+from bvt_prod.UVLB_Forecast_NOSALES_2016_VW where Media_Year>2015)
 
 union
 
