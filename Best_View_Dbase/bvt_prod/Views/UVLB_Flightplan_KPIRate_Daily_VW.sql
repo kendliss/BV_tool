@@ -19,8 +19,8 @@ from
 	, Daily_Join.idkpi_types_FK
 	, Daily_Join.Day_of_Week
 	, KPI_Daily*week_percent as KPI_Daily
-	, DATEADD(week,c.Week_ID-1,DATEADD(day,Days_Before_Inhome,InHome_Date)) as Forecast_Week_Date
-	, DATEADD(day,Day_of_Week-1,DATEADD(week,c.Week_ID-1,DATEADD(day,Days_Before_Inhome,InHome_Date))) as Forecast_DayDate
+	, DATEADD(week,c.Week_ID,DATEADD(day,Days_Before_Inhome,InHome_Date)) as Forecast_Week_Date
+	, DATEADD(day,Day_of_Week,DATEADD(week,c.Week_ID-1,DATEADD(day,Days_Before_Inhome,InHome_Date))) as Forecast_DayDate
 	, ISO_week
 	, ISO_Week_Year
 	, MediaMonth
