@@ -32,13 +32,13 @@ as select
 		else CPP*Volume end as budget
 	, mediaweek
 	
-	from bvt_processed.UVLB_Flight_Plan as flight_plan_records
-		left join [bvt_processed].[Dropdate_Start_End]
+	from [bvt_prod].[UVLB_Flight_Plan_VW] as flight_plan_records
+		left join (SELECT * FROM [bvt_prod].[Dropdate_Start_End_FUN]('UVLB')) AS [Dropdate_Start_End]
 			on flight_plan_records.[idProgram_Touch_Definitions_TBL_FK]=[Dropdate_Start_End].[idProgram_Touch_Definitions_TBL_FK]
 			and flight_plan_records.InHome_Date between [Dropdate_Start_End].[drop_start_date] and [Dropdate_Start_End].[END_DATE]
 		left join bvt_prod.Flight_Plan_Record_Budgets
 			on flight_plan_records.idFlight_Plan_Records=idFlight_Plan_Records_FK
-		LEFT join bvt_processed.CPP_Start_End
+		LEFT join (SELECT * FROM [bvt_prod].[CPP_Start_End_FUN]('UVLB')) AS CPP_Start_End
 			on flight_plan_records.idProgram_Touch_Definitions_TBL_FK=CPP_Start_End.idProgram_Touch_Definitions_TBL_FK
 			and flight_plan_records.InHome_Date between CPP_Start_End.CPP_Start_Date and CPP_Start_End.END_DATE
 		LEFT join bvt_prod.UVLB_Flightplan_Volume_Forecast_VW as FPV

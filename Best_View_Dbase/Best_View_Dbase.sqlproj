@@ -525,6 +525,21 @@
     <Build Include="bvt_prod\Tables\FPR_Manual_CPP.sql" />
     <Build Include="bvt_prod\Views\Movers_Best_View_Forecast_Weekly_VW.sql" />
     <Build Include="bvt_prod\Views\UCLM_Drag_Forecast_VW.sql" />
+    <Build Include="bvt_prod\Functions\Dropdate_Start_End_FUN.sql" />
+    <Build Include="bvt_prod\Functions\KPI_Rate_Start_End_FUN.sql" />
+    <Build Include="bvt_prod\Functions\CPP_Start_End_FUN.sql" />
+    <Build Include="bvt_prod\Functions\Response_Curve_Start_End_FUN.sql" />
+    <Build Include="bvt_prod\Functions\Response_Daily_Start_End_FUN.sql" />
+    <Build Include="bvt_prod\Functions\Sales_Curve_Start_End_fun.sql" />
+    <Build Include="bvt_prod\Functions\Sales_Rate_Start_End_FUN.sql" />
+    <Build Include="bvt_prod\Functions\Target_adjustment_start_end_FUN.sql" />
+    <Build Include="bvt_prod\Views\UVLB_Forecast_NOSALES_VW.sql" />
+    <Build Include="bvt_prod\Views\UVLB_Flightplan_SalesRate_Weekly_VW.sql" />
+    <Build Include="bvt_prod\Views\UVLB_SaleForecast_Weekly_VW.sql" />
+    <Build Include="bvt_prod\Views\UVLB_Forecast_WithSales_VW.sql" />
+    <Build Include="bvt_prod\Views\Movers_Forecast_NOSALES_VW.sql" />
+    <Build Include="bvt_prod\Views\Movers_SaleForecast_Weekly_VW.sql" />
+    <Build Include="bvt_prod\Views\Movers_Forecast_WithSales_VW.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="Best_View_Dbase.refactorlog" />
