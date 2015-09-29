@@ -1,4 +1,7 @@
-﻿CREATE VIEW [bvt_prod].[UVLB_SaleForecast_Weekly_2016_VW]
+﻿DROP VIEW [bvt_prod].[UVLB_SaleForecast_Weekly_2016_VW]
+GO
+
+CREATE VIEW [bvt_prod].[UVLB_SaleForecast_Weekly_2016_VW]
 as 
 select 
 	idFlight_Plan_Records
@@ -27,7 +30,7 @@ select
 	, D.Product_Code
 	, Forecast*[Sales_Rate]/[KPI_Rate] as Forecast
 
-from [bvt_prod].[UVLB_Forecast_NOSALES_VW] as A
+from [bvt_prod].[UVLB_Forecast_NOSALES_2016_VW] as A
 	inner join (SELECT * FROM [bvt_prod].[KPI_Rate_Start_End_FUN]('UVLB')) as B
 		on A.idProgram_Touch_Definitions_TBL_FK=B.idProgram_Touch_Definitions_TBL_FK
 		AND InHome_Date between Rate_Start_Date and b.END_DATE and A.idkpi_types_FK=B.idkpi_types_FK
