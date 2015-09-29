@@ -545,6 +545,7 @@
     <Build Include="bvt_prod\Views\UVLB_Flightplan_KPIRate_Daily_2016_VW.sql" />
     <Build Include="bvt_prod\Views\UVLB_FlightplanKPIForecast_2016.sql" />
     <Build Include="bvt_prod\Views\UVLB_Forecast_NOSALES_2016_VW.sql" />
+    <Build Include="bvt_prod\Views\Movers_Forecast_Campaign_Summary_VW.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="Best_View_Dbase.refactorlog" />

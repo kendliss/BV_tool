@@ -1,4 +1,7 @@
-﻿CREATE VIEW [bvt_prod].[UVLB_Forecast_NOSALES_2016_VW]
+﻿DROP VIEW [bvt_prod].[UVLB_Forecast_NOSALES_2016_VW]
+GO
+
+CREATE VIEW [bvt_prod].[UVLB_Forecast_NOSALES_2016_VW]
 as
 select FPR.idFlight_Plan_Records
 	, [idProgram_Touch_Definitions_TBL_FK]
@@ -67,6 +70,7 @@ left join
 [bvt_prod].[Touch_Definition_VW] as touchdef
 		on FPR.idProgram_Touch_Definitions_TBL_FK=idProgram_Touch_Definitions_TBL
 
+where ISO_Week_Year is not null
 GROUP BY FPR.idFlight_Plan_Records
 	, [idProgram_Touch_Definitions_TBL_FK]
 	, FPR.Campaign_Name
