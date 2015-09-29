@@ -540,6 +540,8 @@
     <Build Include="bvt_prod\Views\Movers_Forecast_NOSALES_VW.sql" />
     <Build Include="bvt_prod\Views\Movers_SaleForecast_Weekly_VW.sql" />
     <Build Include="bvt_prod\Views\Movers_Forecast_WithSales_VW.sql" />
+    <Build Include="bvt_prod\Views\UVLB_SaleForecast_Weekly_2016_VW.sql" />
+    <Build Include="bvt_prod\Views\UVLB_Forecast_WithSales_2016_VW.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="Best_View_Dbase.refactorlog" />
