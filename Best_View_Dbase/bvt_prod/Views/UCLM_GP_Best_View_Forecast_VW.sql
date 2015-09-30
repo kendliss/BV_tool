@@ -1,8 +1,19 @@
-﻿drop view [bvt_prod].[UCLM_Best_View_Forecast_VW]
+USE [UVAQ]
+GO
+
+/****** Object:  View [bvt_prod].[UCLM_GP_Best_View_Forecast_VW]    Script Date: 09/29/2015 19:39:45 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+drop view [bvt_prod].[UCLM_GP_Best_View_Forecast_VW]
 go
 
 
-CREATE view [bvt_prod].[UCLM_Best_View_Forecast_VW]
+ALTER view [bvt_prod].[UCLM_GP_Best_View_Forecast_VW]
 as
 select FPR.idFlight_Plan_Records
 	, FPR.Campaign_Name
@@ -30,7 +41,7 @@ select FPR.idFlight_Plan_Records
 	, Forecast_DayDate
 	, Forecast
 
-from bvt_processed.UCLM_Flight_Plan as FPR
+from bvt_processed.UCLM_GP_Flight_Plan as FPR
 
 left join
 -------------Bring in the Metrics----------------------------------------------------------------------
@@ -44,38 +55,30 @@ left join
 	, Product_Code
 	, Forecast_DayDate
 	, Sales_Forecast as Forecast
-from bvt_prod.UCLM_FlightplanSalesForecast
+from bvt_prod.UCLM_GP_FlightplanSalesForecast
  left join bvt_prod.Product_LU_TBL
-		on UCLM_FlightplanSalesForecast.idProduct_LU_TBL_FK=Product_LU_TBL.idProduct_LU_TBL
+		on UCLM_GP_FlightplanSalesForecast.idProduct_LU_TBL_FK=Product_LU_TBL.idProduct_LU_TBL
   where idkpi_types_FK<>3)
 
-<<<<<<< HEAD
-union all
-=======
-union ALL
->>>>>>> 9cd6a257d7a1a430772d67e752500dd3fca71dfe
+union 
 
 (select idFlight_Plan_Records
 	, 'Response' as KPI_Type
 	, KPI_Type as Product_Code
 	, Forecast_DayDate
 	, KPI_Forecast as Forecast
-from bvt_prod.UCLM_FlightplanKPIForecast
+from bvt_prod.UCLM_GP_FlightplanKPIForecast
  left join bvt_prod.KPI_Types
-		on UCLM_FlightplanKPIForecast.idkpi_types_FK=KPI_Types.idKPI_Types)
+		on UCLM_GP_FlightplanKPIForecast.idkpi_types_FK=KPI_Types.idKPI_Types)
 		
-<<<<<<< HEAD
-union all
-=======
-union ALL
->>>>>>> 9cd6a257d7a1a430772d67e752500dd3fca71dfe
+union
 
 (select idFlight_Plan_Records
 	, 'Volume' as KPI_Type
 	, 'Volume' as Product_Code
 	, inhome_date as Forecast_DayDate
 	, Volume as Forecast
-from bvt_prod.UCLM_Flightplan_Volume_Forecast_VW)) as metricsa) as metrics
+from bvt_prod.UCLM_GP_Flightplan_Volume_Forecast_VW)) as metricsa) as metrics
 	on fpr.idFlight_Plan_Records=metrics.idFlight_Plan_Records
 -----------------------------------------------------------------	
 --Media Calendar Information-------------------------------------
@@ -98,5 +101,10 @@ left join
 		on FPR.idProgram_Touch_Definitions_TBL_FK=idProgram_Touch_Definitions_TBL
 
 where Tactic <> 'Cost'	
+
+
+
+
+GO
 
 
