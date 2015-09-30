@@ -49,7 +49,7 @@ from bvt_prod.UCLM_FlightplanSalesForecast
 		on UCLM_FlightplanSalesForecast.idProduct_LU_TBL_FK=Product_LU_TBL.idProduct_LU_TBL
   where idkpi_types_FK<>3)
 
-union 
+union all
 
 (select idFlight_Plan_Records
 	, 'Response' as KPI_Type
@@ -60,7 +60,7 @@ from bvt_prod.UCLM_FlightplanKPIForecast
  left join bvt_prod.KPI_Types
 		on UCLM_FlightplanKPIForecast.idkpi_types_FK=KPI_Types.idKPI_Types)
 		
-union
+union all
 
 (select idFlight_Plan_Records
 	, 'Volume' as KPI_Type
