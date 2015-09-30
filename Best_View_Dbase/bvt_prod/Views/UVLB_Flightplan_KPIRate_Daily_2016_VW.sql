@@ -1,9 +1,13 @@
-﻿CREATE VIEW [bvt_prod].[UVLB_Flightplan_KPIRate_Daily_2016_VW]
+﻿DROP VIEW [bvt_prod].[UVLB_Flightplan_KPIRate_Daily_2016_VW]
+GO
+
+CREATE VIEW [bvt_prod].[UVLB_Flightplan_KPIRate_Daily_2016_VW]
 as
 ----Join Seasonality Adjustments
 select idFlight_Plan_Records
 	, responsebyday.idProgram_Touch_Definitions_TBL_FK
 	, idkpi_types_FK
+	, inhome_date
 	, Day_of_Week
 	, case when ResponseByDay.idTarget_Rate_Reasons_LU_TBL_FK is null then KPI_Daily*Seasonality_Adj
 		else KPI_Daily*Seasonality_Adj*Rate_Adjustment_Factor end as KPI_Daily
@@ -77,4 +81,4 @@ from [bvt_prod].[UVLB_Flight_Plan_VW] as A
 		on ResponseByDay.idTarget_Rate_Reasons_LU_TBL_FK=Target_adjustment_start_end.idTarget_Rate_Reasons_LU_TBL_FK 
 		and ResponseByDay.idProgram_Touch_Definitions_TBL_FK=Target_adjustment_start_end.idProgram_Touch_Definitions_TBL_FK
 		and responsebyday.inhome_date between Adj_Start_Date and end_date
-where ISO_Week_Year>=2016
+where Forecast_DayDate>='2015-12-28'

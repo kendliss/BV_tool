@@ -60,7 +60,7 @@ union
 	, dropdate as Forecast_DayDate
 	, Volume as Forecast
 	, null as idkpi_types_FK
-from bvt_prod.UVLB_Flightplan_Volume_Forecast_VW where dropdate>='2015-12-28')) as metricsa) as metrics
+from bvt_prod.UVLB_Flightplan_Volume_Forecast_VW)) as metricsa) as metrics
 	on fpr.idFlight_Plan_Records=metrics.idFlight_Plan_Records
 -----------------------------------------------------------------	
 --Media Calendar Information-------------------------------------
