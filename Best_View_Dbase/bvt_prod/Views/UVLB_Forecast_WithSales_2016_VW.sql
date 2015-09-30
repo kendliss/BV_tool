@@ -24,6 +24,7 @@ CREATE VIEW [bvt_prod].[UVLB_Forecast_WithSales_2016_VW]
 	, Offer
 
 ----Metrics
+	, Metric_Category
 	, KPI_Type
 	, Product_Code
 	, Forecast
@@ -53,6 +54,7 @@ union
 	, Offer
 
 ----Metrics
+	, Metric_Category
 	, KPI_Type
 	, Product_Code
 	, Forecast

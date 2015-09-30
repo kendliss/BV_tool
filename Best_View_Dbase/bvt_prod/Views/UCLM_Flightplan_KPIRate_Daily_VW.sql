@@ -51,17 +51,17 @@ from
 	, idkpi_types_FK
 	
   --Code to account for having a TFN or URL or not in flightplan entry
-	, case when tfn_ind=-1 and idkpi_types_FK=1 then KPI_Rate
-		when TFN_ind=0 and idkpi_types_FK=1 then 0
-		when URL_ind=-1 and idkpi_types_FK=2 then KPI_Rate
-		when URL_ind=0 and idkpi_types_FK=2 then 0
-		when idkpi_types_FK=3 then KPI_Rate/100
+	, case when abs(tfn_ind)=1 and idkpi_types_FK=1 then KPI_Rate
+		when abs(TFN_ind)=0 and idkpi_types_FK=1 then 0
+		when abs(URL_ind)=1 and idkpi_types_FK=2 then KPI_Rate
+		when abs(URL_ind)=0 and idkpi_types_FK=2 then 0
+		when idkpi_types_FK=3 then KPI_Rate/-1000
 		end as KPI_Rate
 	, InHome_Date
 	, idTarget_Rate_Reasons_LU_TBL_FK
 from bvt_prod.UCLM_Flight_Plan_VW as A
 	
-	left join(SELECT * FROM [bvt_prod].[KPI_Rate_Start_End_FUN]('UVCLM')) as B on A.idProgram_Touch_Definitions_TBL_FK=B.idProgram_Touch_Definitions_TBL_FK
+	left join (SELECT * FROM [bvt_prod].[KPI_Rate_Start_End_FUN]('UVCLM')) as B on A.idProgram_Touch_Definitions_TBL_FK=B.idProgram_Touch_Definitions_TBL_FK
 	AND InHome_Date between Rate_Start_Date and b.END_DATE
 	) as KPI_Join
 ---End Join KPI and Flight Plan	

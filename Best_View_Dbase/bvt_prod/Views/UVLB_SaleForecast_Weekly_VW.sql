@@ -26,6 +26,7 @@ select
 	, Offer
 
 ----Metrics
+	, 'Sales' as Category
 	, KPI_Type
 	, D.Product_Code
 	, Forecast*[Sales_Rate]/[KPI_Rate] as Forecast

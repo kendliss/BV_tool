@@ -1,4 +1,7 @@
-﻿CREATE VIEW [bvt_prod].[Movers_SaleForecast_Weekly_VW]
+﻿DROP VIEW [bvt_prod].[Movers_SaleForecast_Weekly_VW]
+GO
+
+CREATE VIEW [bvt_prod].[Movers_SaleForecast_Weekly_VW]
 as 
 select 
 	idFlight_Plan_Records
@@ -23,6 +26,7 @@ select
 	, Offer
 
 ----Metrics
+	, 'Sales' as Metric_Category
 	, KPI_Type
 	, D.Product_Code
 	, Forecast*[Sales_Rate]/[KPI_Rate] as Forecast
@@ -33,7 +37,7 @@ from [bvt_prod].[Movers_Forecast_NOSALES_VW] as A
 		AND InHome_Date between Rate_Start_Date and b.END_DATE and A.idkpi_types_FK=B.idkpi_types_FK
 
 	inner join (SELECT * FROM [bvt_prod].[Sales_Rate_Start_End_FUN]('MOVERS') where sales_rate>0) as c 
-		on A.idProgram_Touch_Definitions_TBL_FK=B.idProgram_Touch_Definitions_TBL_FK
+		on A.idProgram_Touch_Definitions_TBL_FK=c.idProgram_Touch_Definitions_TBL_FK
 		and InHome_Date between Sales_Rate_Start_Date and c.END_DATE and A.idkpi_types_FK=c.idkpi_type_FK
 
 	left join [bvt_prod].[Product_LU_TBL] as D

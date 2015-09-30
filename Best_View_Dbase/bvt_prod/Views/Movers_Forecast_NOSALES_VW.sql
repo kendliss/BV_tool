@@ -26,6 +26,7 @@ select FPR.idFlight_Plan_Records
 	, [owner_type_matrix_id_FK]
 
 ----Metrics
+	, Metric_Category
 	, KPI_Type
 	, Product_Code
 	, idkpi_types_FK
@@ -43,7 +44,8 @@ left join
 
 ------Response and Saves
 (select idFlight_Plan_Records
-	, 'Response' as KPI_Type
+	, 'Response' as Metric_Category
+	, KPI_Type
 	, KPI_Type as Product_Code
 	, Forecast_DayDate
 	, KPI_Forecast as Forecast
@@ -55,6 +57,7 @@ from bvt_prod.Movers_FlightplanKPIForecast
 union
 ---------Volume Forecast
 (select idFlight_Plan_Records
+	, 'Volume' as Metric_Category
 	, 'Volume' as KPI_Type
 	, 'Volume' as Product_Code
 	, Drop_Date as Forecast_DayDate
@@ -106,6 +109,7 @@ GROUP BY FPR.idFlight_Plan_Records
 	, [owner_type_matrix_id_FK]
 
 ----Metrics
+	, Metric_Category
 	, KPI_Type
 	, Product_Code
 	, idkpi_types_FK

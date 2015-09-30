@@ -25,6 +25,7 @@ select FPR.idFlight_Plan_Records
 	, Offer
 
 ----Metrics
+	, Metric_Category
 	, KPI_Type
 	, Product_Code
 	, idkpi_types_FK
@@ -40,7 +41,8 @@ left join
 (--This is where sales was cut from 
 
 (select idFlight_Plan_Records
-	, 'Response' as KPI_Type
+	, 'Response' as Metric_Category
+	, KPI_Type
 	, KPI_Type as Product_Code
 	, Forecast_DayDate
 	, KPI_Forecast as Forecast
@@ -52,6 +54,7 @@ from bvt_prod.UVLB_FlightplanKPIForecast_2016
 union
 
 (select idFlight_Plan_Records
+	, 'Volume' as Metric_Category
 	, 'Volume' as KPI_Type
 	, 'Volume' as Product_Code
 	, dropdate as Forecast_DayDate
@@ -93,6 +96,7 @@ GROUP BY FPR.idFlight_Plan_Records
 	, Offer
 
 ----Metrics
+	, Metric_Category
 	, KPI_Type
 	, Product_Code
 	, idkpi_types_FK

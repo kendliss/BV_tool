@@ -1,16 +1,13 @@
-﻿DROP VIEW [bvt_prod].[Movers_Forecast_WithSales_VW]
-GO
-
-CREATE VIEW [bvt_prod].[Movers_Forecast_WithSales_VW]
-	AS 
-(select idFlight_Plan_Records
+﻿CREATE VIEW [bvt_prod].[UCLM_Best_View_Forecast_Weekly_VW]
+as
+select idFlight_Plan_Records
 	, Campaign_Name
 	, InHome_Date
 	
 ---Media_Calendar_Info
 	, Media_Year
-	, Media_Month
 	, Media_Week
+	, Media_Month
 	
 ---Touch Lookup Tables
 	, Touch_Name
@@ -24,23 +21,20 @@ CREATE VIEW [bvt_prod].[Movers_Forecast_WithSales_VW]
 	, Offer
 
 ----Metrics
-	, Metric_Category
 	, KPI_Type
 	, Product_Code
-	, Forecast
+	, sum(Forecast) as Forecast
 
-from bvt_prod.Movers_Forecast_NOSALES_VW)
+from [bvt_prod].[UCLM_Best_View_Forecast_VW]
 
-union
-
-(select idFlight_Plan_Records
+GROUP BY idFlight_Plan_Records
 	, Campaign_Name
 	, InHome_Date
 	
 ---Media_Calendar_Info
 	, Media_Year
-	, Media_Month
 	, Media_Week
+	, Media_Month
 	
 ---Touch Lookup Tables
 	, Touch_Name
@@ -54,8 +48,5 @@ union
 	, Offer
 
 ----Metrics
-	, Metric_Category
 	, KPI_Type
 	, Product_Code
-	, Forecast
-from [bvt_prod].[Movers_SaleForecast_Weekly_VW])

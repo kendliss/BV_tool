@@ -26,6 +26,7 @@ select
 	, Offer
 
 ----Metrics
+	, Metric_Category
 	, KPI_Type
 	, D.Product_Code
 	, case when isnull(kpi_rate,0)=0 then 0
@@ -56,6 +57,7 @@ from
 	, Offer
 
 ----Metrics
+	, 'Sales' as Metric_Category
 	, KPI_Type
 	, idkpi_types_FK
 	, idProduct_LU_TBL_FK
