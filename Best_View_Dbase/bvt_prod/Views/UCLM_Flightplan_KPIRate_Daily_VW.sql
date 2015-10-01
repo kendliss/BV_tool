@@ -55,7 +55,7 @@ from
 		when abs(TFN_ind)=0 and idkpi_types_FK=1 then 0
 		when abs(URL_ind)=1 and idkpi_types_FK=2 then KPI_Rate
 		when abs(URL_ind)=0 and idkpi_types_FK=2 then 0
-		when idkpi_types_FK=3 then KPI_Rate/-1000
+		when idkpi_types_FK=3 then KPI_Rate
 		end as KPI_Rate
 	, InHome_Date
 	, idTarget_Rate_Reasons_LU_TBL_FK
