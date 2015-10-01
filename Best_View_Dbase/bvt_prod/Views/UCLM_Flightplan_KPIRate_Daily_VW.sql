@@ -1,9 +1,6 @@
-<<<<<<< HEAD
-﻿DROP VIEW [bvt_prod].[UCLM_Flightplan_KPIRate_Daily_VW]
-=======
+
 Drop View [bvt_prod].[UCLM_Flightplan_KPIRate_Daily_VW]
 
->>>>>>> 9cd6a257d7a1a430772d67e752500dd3fca71dfe
 GO
 
 CREATE view [bvt_prod].[UCLM_Flightplan_KPIRate_Daily_VW]
@@ -42,12 +39,10 @@ from
 	, KPI_Join.idProgram_Touch_Definitions_TBL_FK
 	, KPI_Join.idkpi_types_FK
 	, Day_of_Week
-<<<<<<< HEAD
+
 	--Case statement allows a forecast with flat daily rate if day percent is null
-	, case when Day_percent is null then KPI_Rate/7
-=======
-	, case when Day_percent is null then  KPI_Rate/7		
->>>>>>> 9cd6a257d7a1a430772d67e752500dd3fca71dfe
+
+	, case when Day_percent is null then  KPI_Rate		
 		else KPI_Rate*Day_Percent/7 end as KPI_Daily
 	, inhome_date
 	, idTarget_Rate_Reasons_LU_TBL_FK
