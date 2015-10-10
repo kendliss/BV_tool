@@ -1,3 +1,4 @@
+
 Drop View [bvt_prod].[UCLM_Flightplan_KPIRate_Daily_VW]
 
 GO
@@ -38,7 +39,10 @@ from
 	, KPI_Join.idProgram_Touch_Definitions_TBL_FK
 	, KPI_Join.idkpi_types_FK
 	, Day_of_Week
-	, case when Day_percent is null then  KPI_Rate/7		
+
+	--Case statement allows a forecast with flat daily rate if day percent is null
+
+	, case when Day_percent is null then  KPI_Rate		
 		else KPI_Rate*Day_Percent/7 end as KPI_Daily
 	, inhome_date
 	, idTarget_Rate_Reasons_LU_TBL_FK
@@ -51,31 +55,31 @@ from
 	, idkpi_types_FK
 	
   --Code to account for having a TFN or URL or not in flightplan entry
-	, case when tfn_ind=-1 and idkpi_types_FK=1 then KPI_Rate
-		when TFN_ind=0 and idkpi_types_FK=1 then 0
-		when URL_ind=-1 and idkpi_types_FK=2 then KPI_Rate
-		when URL_ind=0 and idkpi_types_FK=2 then 0
-		else KPI_Rate
+	, case when abs(tfn_ind)=1 and idkpi_types_FK=1 then KPI_Rate
+		when abs(TFN_ind)=0 and idkpi_types_FK=1 then 0
+		when abs(URL_ind)=1 and idkpi_types_FK=2 then KPI_Rate
+		when abs(URL_ind)=0 and idkpi_types_FK=2 then 0
+		when idkpi_types_FK=3 then KPI_Rate
 		end as KPI_Rate
 	, InHome_Date
 	, idTarget_Rate_Reasons_LU_TBL_FK
-from bvt_processed.UCLM_Flight_Plan as A
+from bvt_prod.UCLM_Flight_Plan_VW as A
 	
-	left join bvt_processed.KPI_Rate_Start_End as B on A.idProgram_Touch_Definitions_TBL_FK=B.idProgram_Touch_Definitions_TBL_FK
+	left join (SELECT * FROM [bvt_prod].[KPI_Rate_Start_End_FUN]('UVCLM')) as B on A.idProgram_Touch_Definitions_TBL_FK=B.idProgram_Touch_Definitions_TBL_FK
 	AND InHome_Date between Rate_Start_Date and b.END_DATE
 	) as KPI_Join
 ---End Join KPI and Flight Plan	
 
-	left join bvt_processed.Response_Daily_Start_End as B 
+	left join (SELECT * FROM [bvt_prod].[Response_Daily_Start_End_FUN]('UVCLM'))as B 
 		on KPI_Join.idProgram_Touch_Definitions_TBL_FK=b.idProgram_Touch_Definitions_TBL_FK and KPI_Join.idkpi_types_FK=b.idkpi_type_FK
 		and InHome_Date between daily_Start_Date and b.END_DATE) as Daily_Join
 	
 ---End Join Daily Percentages
 
-	left join bvt_processed.Response_Curve_Start_End as C
+	left join  (SELECT * FROM [bvt_prod].[Response_Curve_Start_End_FUN]('UVCLM'))  as C
 		on Daily_Join.idProgram_Touch_Definitions_TBL_FK=c.idProgram_Touch_Definitions_TBL_FK and Daily_Join.idkpi_types_FK=c.idkpi_type_FK
 		and inhome_date between Curve_Start_Date and c.END_DATE
-	left join bvt_processed.Dropdate_Start_End as D
+	left join (SELECT * FROM [bvt_prod].[Dropdate_Start_End_FUN]('UVCLM')) as D
 		on Daily_Join.idProgram_Touch_Definitions_TBL_FK=d.idProgram_Touch_Definitions_TBL_FK
 		and inhome_date between drop_start_date and d.end_date
 	left join  dim.Media_Calendar_Daily 
@@ -83,7 +87,7 @@ from bvt_processed.UCLM_Flight_Plan as A
 ----------End  Weekly Response Curve and Media Calendar		
 	left join bvt_prod.Seasonality_Adjustements as E
 		on ResponseByDay.idProgram_Touch_Definitions_TBL_FK=E.idProgram_Touch_Definitions_TBL_FK and iso_week_year=Media_Year and mediamonth=Media_Month AND ISO_Week=Media_Week
-	left join bvt_processed.Target_adjustment_start_end
+	left join (SELECT * FROM [bvt_prod].[Target_adjustment_start_end_FUN]('UVCLM')) as Target_adjustment_start_end
 		on ResponseByDay.idTarget_Rate_Reasons_LU_TBL_FK=Target_adjustment_start_end.idTarget_Rate_Reasons_LU_TBL_FK 
 		and ResponseByDay.idProgram_Touch_Definitions_TBL_FK=Target_adjustment_start_end.idProgram_Touch_Definitions_TBL_FK
 		and responsebyday.inhome_date between Adj_Start_Date and end_date

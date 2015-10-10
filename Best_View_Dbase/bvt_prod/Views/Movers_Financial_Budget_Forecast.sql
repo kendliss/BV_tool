@@ -20,30 +20,30 @@ as select
 	, [owner_type_matrix_id_FK]
 	
 	, case when Budget_Type_LU_TBL_idBudget_Type_LU_TBL=2 then Bill_Month
-		when Date_month=12 then 12
-		when idcpp_category_fk in (5) then Date_Month
-		else MediaMonth+bill_timing
+		when [idCPP_Category_FK]=5 then month(DATEADD(month,bill_timing,dateadd(day,[Days_Before_Inhome],Flight_Plan_Records.InHome_Date))) 
+		when MONTH(Flight_Plan_Records.InHome_Date)=12 then 12
+		else month(DATEADD(month,bill_timing,dateadd(day,[Days_Before_Inhome],Flight_Plan_Records.InHome_Date))) 
 		end as bill_month
 	, case when Budget_Type_LU_TBL_idBudget_Type_LU_TBL=2 then Bill_Year
-		when Date_month=12 then Date_Year
-		when idcpp_category_fk in (5) then Date_Year
-		else MediaMonth_Year
+		when [idCPP_Category_FK]=5 then year(DATEADD(month,bill_timing,dateadd(day,[Days_Before_Inhome],Flight_Plan_Records.InHome_Date))) 
+		when MONTH(Flight_Plan_Records.InHome_Date)=12 then year(Flight_Plan_Records.InHome_Date)
+		else year(DATEADD(month,bill_timing,dateadd(day,[Days_Before_Inhome],Flight_Plan_Records.InHome_Date))) 
 		end as bill_year
 	, case when Budget_Type_LU_TBL_idBudget_Type_LU_TBL=2 then Budget
 		else CPP*Volume end as budget
 	, ISO_Week as mediaweek
 	
-	from bvt_processed.Movers_Flight_Plan as flight_plan_records
+	from bvt_prod.Movers_Flight_Plan_VW as flight_plan_records
 		left join bvt_prod.Flight_Plan_Record_Budgets
 			on flight_plan_records.idFlight_Plan_Records=idFlight_Plan_Records_FK
-		LEFT join bvt_processed.CPP_Start_End
+		LEFT join (SELECT * FROM [bvt_prod].[CPP_Start_End_FUN]('MOVERS')) AS CPP_Start_End
 			on flight_plan_records.idProgram_Touch_Definitions_TBL_FK=CPP_Start_End.idProgram_Touch_Definitions_TBL_FK
 			and flight_plan_records.InHome_Date between CPP_Start_End.CPP_Start_Date and CPP_Start_End.END_DATE
 		LEFT join bvt_prod.Movers_Flightplan_Volume_Forecast_VW as FPV
 			on flight_plan_records.idFlight_Plan_Records=FPV.idFlight_Plan_Records
-		left join bvt_processed.Dropdate_Start_End as dropdate
-			on flight_plan_records.idProgram_Touch_Definitions_TBL_FK=dropdate.idProgram_Touch_Definitions_TBL_FK
-				and inhome_date between drop_start_date and dropdate.end_date
+		left join (SELECT * FROM [bvt_prod].[Dropdate_Start_End_FUN]('MOVERS')) AS dropdate_start_end
+			on flight_plan_records.idProgram_Touch_Definitions_TBL_FK=dropdate_start_end.[idProgram_Touch_Definitions_TBL_FK]
+				and inhome_date between [drop_start_date] and dropdate_start_end.end_date
 
 		left join dim.Media_Calendar_Daily as A
 			on dateadd(DAY,days_before_inhome,Flight_Plan_Records.InHome_Date)=a.[date]
