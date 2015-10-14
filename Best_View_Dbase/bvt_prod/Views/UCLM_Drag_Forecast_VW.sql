@@ -10,7 +10,7 @@ CREATE VIEW [bvt_prod].[UCLM_Drag_Forecast_VW]
 		MediaMonth as Media_Month,
 		Media_Year,
 		Media_Week,
-		case when [idDrag_Method_LU_TBL_FK]=1 then [Metric]*[Day_Percent] 
+		case when [idDrag_Method_LU_TBL_FK]=1 then [Metric]*[Day_Percent]/7 
 			when [idDrag_Method_LU_TBL_FK]=2 then [Metric]*[FV_Calls]
 			else 0
 			end as Drag_Calls
@@ -34,6 +34,6 @@ CREATE VIEW [bvt_prod].[UCLM_Drag_Forecast_VW]
 		left join
 
 				(select * from [bvt_prod].[Drag_Method_Start_End_VW] 
-					where [idProgram_LU_TBL_FK]=4) as A
+					where [idProgram_LU_TBL_FK]=3) as A
 		
 		on Daily.Date between [drag_start_date] and [END_DATE]

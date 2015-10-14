@@ -1,7 +1,21 @@
-DROP PROC [bvt_staging].[UCLM_ParentID_FlightRecord_Link_PR]
+--DROP PROC [bvt_staging].[UCLM_ParentID_FlightRecord_Link_PR]
 
+--GO
+
+USE [UVAQ]
 GO
 
+/****** Object:  StoredProcedure [bvt_staging].[UCLM_ParentID_FlightRecord_Link_PR]    Script Date: 10/02/2015 11:40:56 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+/*removed gigapower to put in seperate program. KL 10/2/15
+
+*/
 
 CREATE PROC [bvt_staging].[UCLM_ParentID_FlightRecord_Link_PR]
 
@@ -43,6 +57,8 @@ AND (a.[Start_Date]<= '27-DEC-2016' AND a.End_Date_Traditional>='28-DEC-2014')
 	AND a.campaign_name NOT LIKE '%Remaining data%'
 	AND a.campaign_name NOT LIKE '%best View Objectives%'
 	AND a.Start_Date >= '10/1/14'
+	AND ((a.Media_COde IN ('DM','EM','FPC') AND a.eCRW_Project_Name NOT LIKE '%Giga%')
+		OR a.Media_Code in ('BI','FYI','Device/Tablet'))
 
 
 
@@ -81,7 +97,7 @@ WHEN Media_Code = 'BI' AND Campaign_Name LIKE '%TV Upgrade%' THEN 586 --TV Upgra
 --First Page Communicators
 /*still missing 241,245,352,354,357,558,566*/
 
-WHEN Media_Code = 'FPC' AND eCRW_Project_Name LIKE '%Gigapower%' THEN 247 --Gigapower FPC
+--WHEN Media_Code = 'FPC' AND eCRW_Project_Name LIKE '%Gigapower%' THEN 247 --Gigapower FPC
 WHEN Media_Code = 'FPC' AND eCRW_Project_Name LIKE '%HBO%' THEN 250 --HBO FPC
 WHEN Media_Code = 'FPC' AND eCRW_Project_Name LIKE '%HD%' THEN 252 --HD FPC
 WHEN Media_Code = 'FPC' AND eCRW_Project_Name LIKE '%HSIA%' THEN 331 --HSIA FPC
@@ -139,13 +155,13 @@ WHEN Media_Code = 'FYI' AND eCRW_Project_Name LIKE '%Onsert%' AND eCRW_Project_N
 
 WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%Benefit%' AND eCRW_Project_Name NOT LIKE '%Hispanic%'THEN 362 --Benefits Self Mailer DM 
 WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%EOY Letter%' THEN 365 --EOY Letter Letter Kit DM
-WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%Giga%Announcement_1%' THEN 367 --Announcement 1 Self Mailer DM
-WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%Giga%Announcement_2%' THEN 368 --Announcement 2 Self Mailer DM
+--WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%Giga%Announcement_1%' THEN 367 --Announcement 1 Self Mailer DM
+--WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%Giga%Announcement_2%' THEN 368 --Announcement 2 Self Mailer DM
 WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%HBO_Upgrade%' AND (Campaign_Name LIKE '%GC%' OR Campaign_Name LIKE '%Greeting Card%') THEN 369 --HBO Greeting Card DM
 WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%HBO_Upgrage%' AND (Campaign_Name LIKE '%SP%' OR Campaign_Name LIKE '%Poster%') THEN 370 -- HBO SP DM
 WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%HBO_Upgrade%' AND (Campaign_Name LIKE '%PC%' OR Campaign_Name LIKE '%Postcard%' OR Campaign_Name LIKE '%Post Card%') THEN 371 --HBO Post Card DM
 WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%HSIA_Upgrade%' AND Campaign_Name NOT LIKE '%Non-HSIA%' AND Campaign_Name NOT LIKE '%Cross%Sell%' THEN 372 --HSIA Letter Kit DM
-WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%GigaPower%' AND eCRW_Project_Name NOT LIKE '%Low%'THEN 373 --Gigapower Monthly Self Mailer HP DM
+--WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%GigaPower%' AND eCRW_Project_Name NOT LIKE '%Low%'THEN 373 --Gigapower Monthly Self Mailer HP DM
 WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%Movers%' THEN 374 --Movers Post Card DM
 WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%MovieTime%' THEN 375 --MovieTime Self Mailer DM
 WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%HSIA_Upgrade%' AND (Campaign_Name LIKE '%Non-HSIA%' OR Campaign_Name LIKE '%Cross%Sell%') THEN 376 --Non-HSIA Letter Kit DM
@@ -158,25 +174,25 @@ WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%Big_Data%' THEN 411 --Big Da
 WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%Benefit%' and eCRW_Project_Name LIKE '%Hispanic%' THEN 412 --Hispanic Benefits Self Mailer DM
 WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%Seniors%' THEN 414 --Seniors Self Mailer DM
 WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%Appreciation%' THEN 571 --Member Appreciation DM
-WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%GigaPower%' AND eCRW_Project_Name LIKE '%Low%'THEN 598 --Gigapower Monthly Self Mailer HP DM
+--WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%GigaPower%' AND eCRW_Project_Name LIKE '%Low%'THEN 598 --Gigapower Monthly Self Mailer HP DM
 
 
 --EMail
-/*still missing 385,415,552,557,560,599,600,601*/
+/*still missing 385,415,552,557,560,600,601*/
 
 WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Benefit%' AND eCRW_Project_Name NOT LIKE '%HSIA%' THEN 383 --Benefits EM
 WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Engagement_Stream%' THEN 384 --Engagement Stream EM
-WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Giga%Announcement_1%' THEN 386 --Announcement 1 EM
-WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Giga%Announcement_2%' THEN 387 --Announcement 2 EM
+--WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Giga%Announcement_1%' THEN 386 --Announcement 1 EM
+--WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Giga%Announcement_2%' THEN 387 --Announcement 2 EM
 WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Groundhog%' THEN 388 --Groundhof's Day EM
-WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%HBO_Upgrade%' THEN 389 -- HBO EM
-WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%HBO_Upgrade%' AND Campaign_Name LIKE '%Follow%Up%' THEN 390 --HBO Follow Up EM
-WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%HBO_Upgrade%' AND Campaign_Name LIKE '%Initial%' THEN 391 --HBO Initial EM
+WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%HBO%' AND (Campaign_Name LIKE '%Follow%Up%' OR Campaign_Name LIKE '%FU%') THEN 390 --HBO Follow Up EM
+WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%HBO%' AND Campaign_Name LIKE '%Initial%' THEN 391 --HBO Initial EM
+WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%HBO%' THEN 389 -- HBO EM
 WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Benefit%' AND eCRW_Project_Name LIKE '%HSIA%' AND eCRW_Project_Name NOT LIKE '%HSIA%Only%' THEN 392 --HSIA Beneits EM
 WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%HSIA%Only%' AND eCRW_Project_Name LIKE '%Welcome%' THEN 393 --HSIA Only Welcome EM
 WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%HSIA_Upgrade%' AND Campaign_Name NOT LIKE '%Non-HSIA%' AND Campaign_Name NOT LIKE '%Cross%Sell%' THEN 394 --HSIA Upgrade/Cross Sell EM
 WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%MDU_Movers%' THEN 395 --MDU Movers EM 
-WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%GigaPower%' AND eCRW_Project_Name NOT LIKE '%LOW%' THEN 396 --Gigapower Monthly HP EM
+--WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%GigaPower%' AND eCRW_Project_Name NOT LIKE '%LOW%' THEN 396 --Gigapower Monthly HP EM
 WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Movers%' THEN 397 -- Movers EM
 WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Movie%Time%' THEN 398 --Movie Time EM
 WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%HSIA_Upgrade%' AND (Campaign_Name LIKE '%Non-HSIA%' OR Campaign_Name LIKE '%Cross%Sell%') THEN 399 --Non-HSIA EM
@@ -197,7 +213,8 @@ WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Skin%' AND (eCRW_Project_Nam
 WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%TV_Upgrade%' AND Campaign_Name  LIKE '%Initial%' THEN 588 --IPTV Upgrade Initial EM
 WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%TV_Upgrade%' AND Campaign_Name LIKE '%Follow%Up%' THEN 589 --IPTV Upgrade Follow Up EM
 WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%VOICE%' THEN 595 --Voice Cross Sell EM
-WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%GigaPower%' AND eCRW_Project_Name LIKE '%LOW%' THEN 597 --Gigapower Monthly lP EM
+WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Epix_12%' THEN 599 --Free Epix Upgrade Announcement EM 
+--WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%GigaPower%' AND eCRW_Project_Name LIKE '%LOW%' THEN 597 --Gigapower Monthly lP EM
 WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Movie%Time%3%' THEN 602 --Movie Time 3 EM
 WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%NFL%' THEN 696 --NFL Sunday Ticket EM
 
@@ -364,4 +381,7 @@ END
 
 
 
+
 GO
+
+
