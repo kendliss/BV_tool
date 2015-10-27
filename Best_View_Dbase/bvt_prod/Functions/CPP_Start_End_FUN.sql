@@ -11,6 +11,7 @@ WITH T1 AS
 (SELECT Row_Number() OVER(ORDER BY
 idProgram_Touch_Definitions_TBL_FK,
 idCPP_Category_FK,
+Bill_Timing,
 CPP_Start_Date
 ) N, 
 	
