@@ -27,6 +27,8 @@ CREATE VIEW [bvt_prod].[Mover_Best_View_VW]
 		,case when forecast_cv.Media_Week>(case when DATEPART(weekday,getdate()) <= 5 then DATEPART(wk,getdate())-2 else DATEPART(wk,getdate())-1	end) then Forecast
 			--Short term work around for missing volume in scorecard
 			when forecast_cv.[KPI_Type]='Volume' then Forecast
+			--work around to prevent double counting forecast and actual volumes due to mismatched drop date timing
+			when actual_volume.KPI_type='Volume'  and forecast_cv.KPI_Type is null then 0
 				---Remove when volume problem fixed
 			else coalesce(actual_volume.Actual,actual_results.Actual)
 			end as Best_View
@@ -75,8 +77,8 @@ CREATE VIEW [bvt_prod].[Mover_Best_View_VW]
       ,[Product_Code]
 	  ,SUM(Forecast) as forecast
 	  from
-	  [bvt_processed].[Movers_Best_View_Forecast]
-	   where [load_dt]=(select max([load_dt]) from [bvt_processed].[Movers_Best_View_Forecast])
+	  [bvt_prod].[Movers_Best_View_Forecast_VW]
+	   
 	  group by [idFlight_Plan_Records]
       ,Campaign_Name
       , InHome_Date
@@ -170,7 +172,7 @@ CREATE VIEW [bvt_prod].[Mover_Best_View_VW]
 					when kpiproduct='CTD_Budget' then 'Budget'
 					end) as pivotmetrics
 			inner join dim.media_calendar_daily on start_date=[date]
-			inner join [bvt_processed].[Movers_Flight_Plan] on idFlight_Plan_Records_FK=[idFlight_Plan_Records]
+			inner join [bvt_prod].[Movers_Flight_Plan_VW] on idFlight_Plan_Records_FK=[idFlight_Plan_Records]
 			inner join [bvt_prod].[Touch_Definition_VW] on [idProgram_Touch_Definitions_TBL]=[idProgram_Touch_Definitions_TBL_FK]) as actual_volume --END OF VOLUME BUDGET QUERY
 
 		on forecast_cv.[idFlight_Plan_Records_FK]=actual_volume.idFlight_plan_records_FK and forecast_cv.media_year=actual_volume.media_year
@@ -262,7 +264,7 @@ GROUP BY idFlight_Plan_Records_FK, Report_Year, Report_Week
 	when kpiproduct like '%WHP%' then 'WRLS Home'
 	end 
 	) as actuals 
-	inner join [bvt_processed].[Movers_Flight_Plan] on idFlight_Plan_Records_FK=[idFlight_Plan_Records]
+	inner join [bvt_prod].[Movers_Flight_Plan_VW] on idFlight_Plan_Records_FK=[idFlight_Plan_Records]
 	inner join [bvt_prod].[Touch_Definition_VW] on [idProgram_Touch_Definitions_TBL]=[idProgram_Touch_Definitions_TBL_FK]
 	inner join (Select distinct ISO_week, ISO_Week_Year, MediaMonth from DIM.Media_Calendar_Daily) d
 on Media_week = d.ISO_Week and Media_Year = d.ISO_Week_Year) as actual_results
