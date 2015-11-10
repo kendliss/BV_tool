@@ -50,7 +50,6 @@ AND (a.[Start_Date]<= '27-DEC-2016' AND a.End_Date_Traditional>='28-DEC-2014')
 	AND a.ParentID > 1334
 	AND a.parentID  NOT IN (SELECT parentID from bvt_staging.UCLM_GP_ActiveCampaigns)
 	AND a.campaign_name NOT LIKE '%Commitment View%'
-	AND a.campaign_name NOT LIKE '%Remaining data%'
 	AND a.campaign_name NOT LIKE '%best View Objectives%'
 	AND a.Start_Date >= '10/1/14'
 	AND a.eCRW_Project_Name LIKE '%Giga%'

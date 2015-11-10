@@ -1,9 +1,12 @@
+USE [UVAQ_STAGING]
+GO
+
+
 DROP PROC [bvt_staging].[UCLM_ParentID_FlightRecord_Link_PR]
 
 GO
 
-USE [UVAQ_STAGING]
-GO
+
 
 /****** Object:  StoredProcedure [bvt_staging].[UCLM_ParentID_FlightRecord_Link_PR]    Script Date: 10/02/2015 11:40:56 ******/
 SET ANSI_NULLS ON
@@ -54,7 +57,6 @@ AND (a.[Start_Date]<= '27-DEC-2016' AND a.End_Date_Traditional>='28-DEC-2014')
 	AND a.ParentID > 1334
 	AND a.parentID  NOT IN (SELECT parentID from bvt_staging.UCLM_ActiveCampaigns)
 	AND a.campaign_name NOT LIKE '%Commitment View%'
-	AND a.campaign_name NOT LIKE '%Remaining data%'
 	AND a.campaign_name NOT LIKE '%best View Objectives%'
 	AND a.Start_Date >= '10/1/14'
 	AND ((a.Media_COde IN ('DM','EM','FPC') AND a.eCRW_Project_Name NOT LIKE '%Giga%')
@@ -189,7 +191,7 @@ WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%HSIA_Upgrade%' AND Campaign_
 WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%MDU_Movers%' THEN 395 --MDU Movers EM 
 WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Movers%' THEN 397 -- Movers EM
 WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Movie%Time%' THEN 398 --Movie Time EM
-WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%HSIA_Upgrade%' AND (Campaign_Name LIKE '%Non-HSIA%' OR Campaign_Name LIKE '%Cross%Sell%') THEN 399 --Non-HSIA EM
+WHEN Media_Code = 'EM' AND (eCRW_Project_Name LIKE '%HSIA_Upgrade%' OR eCRW_Project_Name LIKE '%HSIA_Star%') AND (Campaign_Name LIKE '%Non-HSIA%' OR Campaign_Name LIKE '%Cross%Sell%' OR Campaign_Name LIKE '%x-Sell%') THEN 399 --Non-HSIA EM
 WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Quiz%' THEN 400 --Quiz with Rewards EM
 WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Reaffirm_Stream%' THEN 401 --Reaffirm Stream EM
 WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Spotlight%' THEN 402 --Spotlight EM

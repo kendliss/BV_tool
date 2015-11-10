@@ -41,6 +41,7 @@ AND b.scorecard_program_channel NOT LIKE '%Prospect%'
 AND (a.[Start_Date]<= '27-DEC-2016' AND a.End_Date_Traditional>='28-DEC-2014') 
 	AND a.Media_Code <> 'DR'
 	AND a.ParentID > 1334
+	AND a.ParentID <> 250911
 	AND a.parentID  NOT IN (SELECT parentID FROM bvt_staging.UVLB_ActiveCampaigns)
 	AND a.campaign_name NOT LIKE '%Commitment View%'
 	AND a.campaign_name NOT LIKE '%Remaining data%'
@@ -91,7 +92,7 @@ WHEN Media_Code = 'DM' AND (Campaign_Name LIKE '%WINBACK%' OR eCRW_Project_Name 
 WHEN Media_Code = 'DM' AND (Campaign_Name LIKE '%Click Responder%' OR eCRW_Project_Name LIKE '%clickresponder%') THEN 95
 WHEN Media_Code = 'DM' AND (Campaign_Name LIKE '%RESPONDER%' OR eCRW_Project_Name LIKE '%responder%') THEN 113
 WHEN Media_Code = 'DM' AND (Campaign_Name LIKE '%DATA%' OR eCRW_Project_Name LIKE '%databust%') THEN 98
-WHEN Media_Code = 'DM' AND (Campaign_Name LIKE '%ONLINE%' OR campaign_name LIKE '%oec%' OR eCRW_Project_Name LIKE '%online%' OR eCRW_Project_Name LIKE '%oec%') THEN 94
+WHEN Media_Code = 'DM' AND (Campaign_Name LIKE '%ONLINE%' OR campaign_name LIKE '%oec%' OR eCRW_Project_Name LIKE '%online%' OR eCRW_Project_Name LIKE '%oec%' OR eCRW_Project_Name LIKE '%EligibilityConfirmed%') THEN 94
 WHEN Media_Code = 'DM' AND (Campaign_Name LIKE '%SMART%' OR Campaign_Name LIKE '%SP%' OR eCRW_Project_Name LIKE '%smart%') AND Campaign_Name NOT LIKE '%Prospect%' AND Campaign_Name NOT LIKE '%USPS%' AND Campaign_Name NOT LIKE '%HISP%' AND Campaign_Name NOT LIKE '%SP TAG%' AND Campaign_Name NOT LIKE '%Spanish%' AND eCRW_Project_Name NOT LIKE '%HISP%' THEN 106
 WHEN Media_Code = 'DM' AND (Campaign_Name LIKE '%TRIG%' OR Campaign_Name LIKE '%GO LOCAL EMERGENCY%') AND (Campaign_Name LIKE '%Gig%' OR eCRW_Project_Name LIKE '%giga%') THEN 99
 WHEN Media_Code = 'DM' AND (Campaign_Name LIKE '%CANCEL BEFORE%'OR Campaign_Name LIKE '%CANCEL B4%' OR campaign_name LIKE '%xcell B4%' OR Campaign_Name LIKE '%BUYERS REMORSE%' OR Campaign_Name LIKE '%INSTALLATION ISSUES%' OR eCRW_Project_Name LIKE '%Cancelbefore%') THEN 91
@@ -105,7 +106,7 @@ WHEN Media_Code = 'DM' AND Campaign_Name LIKE '%DSL%Mig%' THEN 49
 WHEN Media_Code = 'DM' AND Campaign_Name LIKE '%Phone Card%'  THEN 68
 --WHEN Media_Code = 'DM' AND Campaign_Name LIKE '%TWC%'  THEN 67
 
-WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%HISP%CROSS%' THEN 192
+WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%HISP%CROSS%' THEN 192 --LOOK AT!!! Most go into a different touch!
 
 
 WHEN Media_Code = 'DM' AND (eCRW_Project_Name NOT LIKE '%GIG%' OR (eCRW_Project_Name LIKE '%Gig%' AND Vendor = 'Aspen')) AND (Campaign_Name LIKE '%EARLY%' OR Campaign_name LIKE '% EM %') AND Campaign_Name NOT LIKE '%BILINGUAL%' AND Campaign_Name NOT LIKE '%HISP%' AND Campaign_Name NOT LIKE '%SPANISH%' AND Campaign_Name NOT LIKE '%SP Tag%' AND (Campaign_Name LIKE '%fresh%' OR Campaign_Name LIKE '% FR %') THEN 47
@@ -174,7 +175,7 @@ WHEN Media_Code = 'DM' AND (Campaign_Name LIKE '%New Green%' OR Campaign_Name LI
 
 --engagement email
 
-WHEN Media_Code = 'EM' AND Campaign_Name NOT LIKE '%re-eng%' AND Campaign_Name LIKE '%ENG%' AND(Campaign_Name LIKE '%EARLY%' OR Campaign_Name LIKE '%Mid%' OR Campaign_Name LIKE '%Late%' OR eCRW_Project_Name LIKE '%PostLaunchWeek1and2%' OR eCRW_Project_Name LIKE '%PostLaunchWeek3and4%' OR eCRW_Project_Name LIKE '%PostWeek5%') AND Campaign_Name NOT LIKE '%TRIG%' THEN 128
+WHEN Media_Code = 'EM' AND Campaign_Name NOT LIKE '%re-eng%' AND Campaign_Name LIKE '%ENG%' AND(Campaign_Name LIKE '%EARLY%' OR Campaign_Name LIKE '%Mid%' OR Campaign_Name LIKE '%Late%' OR eCRW_Project_Name LIKE '%PostLaunchWeek1and2%' OR eCRW_Project_Name LIKE '%PostLaunchWeek3and4%' OR eCRW_Project_Name LIKE '%PostWeek5%' OR eCRW_Project_Name LIKE '%CoreEarly%') AND Campaign_Name NOT LIKE '%TRIG%' THEN 128
 
 
 --triggers email
