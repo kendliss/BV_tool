@@ -74,8 +74,7 @@ CREATE VIEW [bvt_prod].[UCLM_GP_Best_View_VW]
       ,[Product_Code]
 	  ,SUM(Forecast) as forecast
 	  from
-	  [bvt_processed].[UCLM_GP_Best_View_Forecast]
-	   where [load_dt]=(select max([load_dt]) from [bvt_processed].[UCLM_GP_Best_View_Forecast])
+	  [bvt_prod].[UCLM_GP_Best_View_Forecast_VW]
 	  group by [idFlight_Plan_Records]
       ,Campaign_Name
       , InHome_Date
@@ -168,7 +167,7 @@ CREATE VIEW [bvt_prod].[UCLM_GP_Best_View_VW]
 					when kpiproduct='CTD_Budget' then 'Budget'
 					end) as pivotmetrics
 
-			inner join [bvt_processed].[UCLM_Flight_Plan] on idFlight_Plan_Records_FK=[idFlight_Plan_Records]
+			inner join [bvt_prod].[UCLM_Flight_Plan_VW] on idFlight_Plan_Records_FK=[idFlight_Plan_Records]
 			inner join dim.media_calendar_daily on inhome_date=[date]
 			inner join [bvt_prod].[Touch_Definition_VW] on [idProgram_Touch_Definitions_TBL]=[idProgram_Touch_Definitions_TBL_FK]) as actual_volume --END OF VOLUME BUDGET QUERY
 
@@ -261,7 +260,7 @@ GROUP BY idFlight_Plan_Records_FK, Report_Year, Report_Week
 	when kpiproduct like '%WHP%' then 'WRLS Home'
 	end 
 	) as actuals 
-	inner join [bvt_processed].[UCLM_GP_Flight_Plan] on idFlight_Plan_Records_FK=[idFlight_Plan_Records]
+	inner join [bvt_prod].[UCLM_GP_Flight_Plan_VW] on idFlight_Plan_Records_FK=[idFlight_Plan_Records]
 	inner join [bvt_prod].[Touch_Definition_VW] on [idProgram_Touch_Definitions_TBL]=[idProgram_Touch_Definitions_TBL_FK]
 	inner join (Select distinct ISO_week, ISO_Week_Year, MediaMonth from DIM.Media_Calendar_Daily) d
 on Media_week = d.ISO_Week and Media_Year = d.ISO_Week_Year) as actual_results

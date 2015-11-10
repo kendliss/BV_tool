@@ -30,7 +30,7 @@ select FPR.idFlight_Plan_Records
 	, Forecast_DayDate
 	, Forecast
 
-from bvt_processed.Movers_Flight_Plan as FPR
+from bvt_prod.Movers_Flight_Plan_VW as FPR
 
 left join
 -------------Bring in the Metrics----------------------------------------------------------------------

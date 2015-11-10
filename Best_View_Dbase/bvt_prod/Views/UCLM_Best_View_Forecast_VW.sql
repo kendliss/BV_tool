@@ -38,7 +38,7 @@ select FPR.idFlight_Plan_Records
 	, Forecast_DayDate
 	, Forecast
 
-from bvt_processed.UCLM_Flight_Plan as FPR
+from bvt_prod.UCLM_Flight_Plan_VW as FPR
 
 left join
 -------------Bring in the Metrics----------------------------------------------------------------------
@@ -87,7 +87,7 @@ union all
 from bvt_prod.UCLM_Drag_Forecast_VW 
 JOIN (Select idFlight_Plan_Records, Case when DATEPART(d,InHome_Date) = 1 and DATEPART(M,InHome_Date) = 1 then DATEPART(YYYY, Inhome_Date)
 	Else DATEPART(YYYY, Inhome_date)+1 END as MediaYear
-	from bvt_processed.UCLM_Flight_Plan a
+	from bvt_prod.UCLM_Flight_Plan_VW a
 	where idProgram_Touch_Definitions_TBL_FK = 800) medyear
 on UCLM_Drag_Forecast_VW.Media_Year = medyear.MediaYear)
 
@@ -101,7 +101,7 @@ union all
 from bvt_prod.UCLM_Drag_Sales_Forecast_VW 
 JOIN (Select idFlight_Plan_Records, Case when DATEPART(d,InHome_Date) = 1 and DATEPART(M,InHome_Date) = 1 then DATEPART(YYYY, Inhome_Date)
 	Else DATEPART(YYYY, Inhome_date)+1 END as MediaYear
-	from bvt_processed.UCLM_Flight_Plan a
+	from bvt_prod.UCLM_Flight_Plan_VW a
 	where idProgram_Touch_Definitions_TBL_FK = 800) medyear
 on UCLM_Drag_Sales_Forecast_VW.Media_Year = medyear.MediaYear)
 

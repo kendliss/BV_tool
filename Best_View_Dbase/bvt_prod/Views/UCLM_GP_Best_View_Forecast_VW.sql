@@ -1,19 +1,9 @@
-USE [UVAQ]
-GO
-
-/****** Object:  View [bvt_prod].[UCLM_GP_Best_View_Forecast_VW]    Script Date: 09/29/2015 19:39:45 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
 
 drop view [bvt_prod].[UCLM_GP_Best_View_Forecast_VW]
 go
 
 
-ALTER view [bvt_prod].[UCLM_GP_Best_View_Forecast_VW]
+CREATE view [bvt_prod].[UCLM_GP_Best_View_Forecast_VW]
 as
 select FPR.idFlight_Plan_Records
 	, FPR.Campaign_Name
@@ -41,7 +31,7 @@ select FPR.idFlight_Plan_Records
 	, Forecast_DayDate
 	, Forecast
 
-from bvt_processed.UCLM_GP_Flight_Plan as FPR
+from bvt_prod.UCLM_GP_Flight_Plan_VW as FPR
 
 left join
 -------------Bring in the Metrics----------------------------------------------------------------------

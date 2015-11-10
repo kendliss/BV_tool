@@ -28,7 +28,7 @@ CREATE VIEW [bvt_prod].[UVLB_Actuals_VW]
 
 		inner join 
 		
-		[bvt_processed].[UVLB_Flight_Plan] as fltpln
+		[bvt_prod].[UVLB_Flight_Plan_VW] as fltpln
 		
 
 		---linking fields

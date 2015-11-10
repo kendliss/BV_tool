@@ -1,15 +1,7 @@
-USE [UVAQ]
+DROP VIEW
+[bvt_prod].[UCLM_GP_Flightplan_SalesRate_Daily_VW]
+
 GO
-
-/****** Object:  View [bvt_prod].[UCLM_Flightplan_SalesRate_Daily_VW]    Script Date: 09/09/2015 17:07:50 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-
-
 
 -------------------------------------------
 CREATE view [bvt_prod].[UCLM_GP_Flightplan_SalesRate_Daily_VW]
@@ -71,7 +63,7 @@ from
 		end as Sales_Rate
 	, InHome_Date
 	, idTarget_Rate_Reasons_LU_TBL_FK
-from bvt_processed.UCLM_GP_Flight_Plan as A
+from bvt_prod.UCLM_GP_Flight_Plan_VW as A
 	
 	left join bvt_prod.Sales_Rates_Start_End_VW as B on A.idProgram_Touch_Definitions_TBL_FK=B.idProgram_Touch_Definitions_TBL_FK
 	and InHome_Date between Sales_Rate_Start_Date and b.END_DATE) as SalesRate_Join
