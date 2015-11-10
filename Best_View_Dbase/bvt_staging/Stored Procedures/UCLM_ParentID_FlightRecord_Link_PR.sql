@@ -230,7 +230,7 @@ WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%HSIA%Only%' AND eCRW_Project
 /*still missing 601*/
 
 WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Benefit%' AND eCRW_Project_Name NOT LIKE '%HSIA%' THEN 383 --Benefits EM
-WHEN Media_Code = 'EM' AND (eCRW_Project_Name LIKE '%Engagement%Stream%' OR eCRW_Project_Name LIKE '%TV%Welcome%') AND eCRW_Project_Name NOT LIKE '%Weekly%' AND eCRW_Project_Name NOT LIKE '%Touch%1%' THEN 384 --Engagement Stream EM
+WHEN Media_Code = 'EM' AND (eCRW_Project_Name LIKE '%Engagement%Stream%' OR eCRW_Project_Name LIKE '%Welcome%') AND eCRW_Project_Name NOT LIKE '%Weekly%' AND eCRW_Project_Name NOT LIKE '%Touch%1%' THEN 384 --Engagement Stream EM
 WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Free%Remote%' THEN 385 --Free Remotes EM
 WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Groundhog%' THEN 388 --Groundhof's Day EM
 WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%HBO%' AND (Campaign_Name LIKE '%Follow%Up%' OR Campaign_Name LIKE '%FU%') THEN 390 --HBO Follow Up EM
@@ -266,10 +266,10 @@ WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%VOICE%' THEN 595 --Voice Cro
 WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Epix_12%' THEN 599 --Free Epix Upgrade Announcement EM
 WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Epix_Reminder%' THEN 600 --Free Epix Upgrade Reminder EM
 WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Movie%Time%3%' THEN 602 --Movie Time 3 EM
-WHEN Media_Code = 'EM' AND (eCRW_Project_Name LIKE '%Engagement%Weekly%' OR eCRW_Project_Name LIKE '%TV%Welcome%') AND eCRW_Project_Name NOT LIKE '%Touch%1%' THEN 695 -- Engagement Stream Weekly EM
+WHEN Media_Code = 'EM' AND (eCRW_Project_Name LIKE '%Engagement%Weekly%' OR eCRW_Project_Name LIKE '%Welcome%') AND eCRW_Project_Name NOT LIKE '%Touch%1%' THEN 695 -- Engagement Stream Weekly EM
 WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%NFL%' THEN 696 --NFL Sunday Ticket EM
 WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%DTV%' THEN 739 --DTV Cross Sell EM
-WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%TV%Welcome%Touch%1%' THEN 740 --IPTV Welcome Touch 1 EM
+WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Welcome%Touch%1%' THEN 740 --IPTV Welcome Touch 1 EM
 WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Holiday%' THEN 782 --IPTV Holiday EM
 WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Downgrade%Trigger%' THEN 783 --Downgrade Trigger EM
 WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Wire%Trig%' THEN 784 --Wireless Trigger EM
