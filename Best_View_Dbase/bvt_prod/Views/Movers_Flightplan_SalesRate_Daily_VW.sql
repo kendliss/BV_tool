@@ -1,4 +1,6 @@
-﻿
+﻿DROP View [bvt_prod].[Movers_Flightplan_SalesRate_Daily_VW]
+go
+
 
 
 -------------------------------------------
@@ -56,7 +58,7 @@ from
 		end as Sales_Rate
 	, InHome_Date
 	, idTarget_Rate_Reasons_LU_TBL_FK
-from bvt_processed.Movers_Flight_Plan as A
+from bvt_prod.Movers_Flight_Plan_VW as A
 	
 	left join bvt_prod.Sales_Rates_Start_End_VW as B on A.idProgram_Touch_Definitions_TBL_FK=B.idProgram_Touch_Definitions_TBL_FK
 	and InHome_Date between Sales_Rate_Start_Date and b.END_DATE) as SalesRate_Join

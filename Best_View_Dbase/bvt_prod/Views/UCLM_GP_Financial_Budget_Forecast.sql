@@ -1,4 +1,7 @@
-﻿
+﻿DROP VIEW[bvt_prod].[UCLM_GP_Financial_Budget_Forecast]
+GO
+
+
 create view [bvt_prod].[UCLM_GP_Financial_Budget_Forecast]
 as select 
 	flight_plan_records.idFlight_Plan_Records
@@ -28,12 +31,12 @@ as select
 		else CPP*Volume end as budget
 	, mediaweek
 	
-	from bvt_processed.UCLM_GP_Flight_Plan as flight_plan_records
+	from bvt_prod.UCLM_GP_Flight_Plan_VW as flight_plan_records
 		left join bvt_prod.Flight_Plan_Record_Budgets
 			on flight_plan_records.idFlight_Plan_Records=idFlight_Plan_Records_FK
-		LEFT join bvt_processed.CPP_Start_End
-			on flight_plan_records.idProgram_Touch_Definitions_TBL_FK=CPP_Start_End.idProgram_Touch_Definitions_TBL_FK
-			and flight_plan_records.InHome_Date between CPP_Start_End.CPP_Start_Date and CPP_Start_End.END_DATE
+		LEFT join (Select * from bvt_prod.CPP_Start_End_FUN('UCLM_GP')) CPP
+			on flight_plan_records.idProgram_Touch_Definitions_TBL_FK=CPP.idProgram_Touch_Definitions_TBL_FK
+			and flight_plan_records.InHome_Date between CPP.CPP_Start_Date and CPP.END_DATE
 		LEFT join bvt_prod.UCLM_GP_Flightplan_Volume_Forecast_VW as FPV
 			on flight_plan_records.idFlight_Plan_Records=FPV.idFlight_Plan_Records
 		

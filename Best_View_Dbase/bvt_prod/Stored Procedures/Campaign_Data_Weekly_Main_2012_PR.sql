@@ -8,8 +8,8 @@ AS
 	
 	INSERT INTO from_javdb.IR_Campaign_Data_Weekly_MAIN_2012_Sbset
 
-	select Parentid, idFlight_Plan_Records_FK, [Report_Year], [Report_Week], [Start_Date], [End_Date_Traditional], [Campaign_Name], [media_code]
-		, [Toll_Free_Numbers] , [URL_List] , [CTD_Quantity], [CTD_Budget]
+	select Project_ID, Parentid, idFlight_Plan_Records_FK, [Report_Year], [Report_Week], [Start_Date], [End_Date_Traditional], [eCRW_Project_Name], [Campaign_Name]
+		, [media_code], Program, [Toll_Free_Numbers] , [URL_List] , [CTD_Quantity], [CTD_Budget]
 		, [ITP_Dir_Calls], [ITP_Dir_Calls_BH], [ITP_Dir_Clicks], [ITP_Dir_Sales_TS_CING_N], [ITP_Dir_Sales_TS_CING_VOICE_N], [ITP_Dir_Sales_TS_CING_FAMILY_N]
 		, [ITP_Dir_Sales_TS_CING_DATA_N], [ITP_Dir_Sales_TS_DISH_N], [ITP_Dir_Sales_TS_LD_N], [ITP_Dir_Sales_TS_DSL_REG_N], [ITP_Dir_Sales_TS_DSL_DRY_N]
 		, [ITP_Dir_Sales_TS_DSL_IP_N], [ITP_Dir_Sales_TS_UVRS_HSIA_N], [ITP_Dir_Sales_TS_UVRS_TV_N], [ITP_Dir_Sales_TS_UVRS_BOLT_N], [ITP_Dir_Sales_TS_LOCAL_ACCL_N]
