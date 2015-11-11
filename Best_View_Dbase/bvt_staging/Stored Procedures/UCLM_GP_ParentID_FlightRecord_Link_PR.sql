@@ -1,17 +1,9 @@
 USE [UVAQ_STAGING]
 GO
 
-/****** Object:  StoredProcedure [bvt_staging].[UCLM_ParentID_FlightRecord_Link_PR]    Script Date: 10/02/2015 11:40:56 ******/
-SET ANSI_NULLS ON
+DROP PROC [bvt_staging].[UCLM_GP_ParentID_FlightRecord_Link_PR]
 GO
 
-SET QUOTED_IDENTIFIER ON
-GO
-
-
-/*removed gigapower to put in seperate program. KL 10/2/15
-
-*/
 
 CREATE PROC [bvt_staging].[UCLM_GP_ParentID_FlightRecord_Link_PR]
 
@@ -36,10 +28,8 @@ TRUNCATE TABLE bvt_staging.UCLM_GP_pID_FlightPlan_Dups
 INSERT INTO bvt_staging.UCLM_GP_ActiveCampaigns
 SELECT DISTINCT a.ParentID, a.Campaign_Name, a.start_date as [In_Home_Date], a.Media_Code,  a.eCRW_Project_Name, GETDATE()
 
-	FROM JAVDB.IREPORT.dbo.IR_Campaign_Data_Latest_MAIN_2012 AS a JOIN JAVDB.IREPORT_2015.dbo.WB_00_Reporting_Hierarchy AS b
+	FROM JAVDB.IREPORT_2015.dbo.WB_01_Campaign_List AS a JOIN JAVDB.IREPORT_2015.dbo.WB_00_Reporting_Hierarchy AS b
       ON a.tactic_id=b.id
-    LEFT JOIN JAVDB.IREPORT_2015.dbo.WB_01_Campaign_List d
-	ON a.ParentID = d.ParentID
      WHERE b.Scorecard_Top_Tab = 'Direct Marketing'
 AND  b.Scorecard_LOB_Tab = 'U-verse'
 AND  b.Scorecard_tab = 'U-verse CLM'
@@ -50,7 +40,6 @@ AND (a.[Start_Date]<= '27-DEC-2016' AND a.End_Date_Traditional>='28-DEC-2014')
 	AND a.ParentID > 1334
 	AND a.parentID  NOT IN (SELECT parentID from bvt_staging.UCLM_GP_ActiveCampaigns)
 	AND a.campaign_name NOT LIKE '%Commitment View%'
-	AND a.campaign_name NOT LIKE '%Remaining data%'
 	AND a.campaign_name NOT LIKE '%best View Objectives%'
 	AND a.Start_Date >= '10/1/14'
 	AND a.eCRW_Project_Name LIKE '%Giga%'

@@ -1,10 +1,15 @@
-﻿drop proc [bvt_processed].[UVLB_Forecast_Campaign_Summary_PR]
+DROP Proc [bvt_processed].[UCLM_GP_Forecast_Campaign_Summary_PR]
+
 GO
 
-CREATE proc [bvt_processed].[UVLB_Forecast_Campaign_Summary_PR]
+
+USE [UVAQ]
+GO
+
+CREATE proc [bvt_processed].[UCLM_GP_Forecast_Campaign_Summary_PR]
 as
 --declare @lst_load datetime
---select @lst_load = (select MAX(load_dt) from bvt_processed.UVLB_Best_View_Forecast)
+--select @lst_load = (select MAX(load_dt) from bvt_processed.UCLM_GP_Best_View_Forecast)
 
 select KPIs.*, costs.Budget
 
@@ -25,7 +30,7 @@ from
 		, Offer
 		, Product_Code
 		, sum(Forecast) as Forecast
-	from bvt_prod.UVLB_Best_View_Forecast_VW
+	from bvt_prod.UCLM_GP_Best_View_Forecast_VW
 
 	group by idFlight_Plan_Records
 		, Campaign_Name
@@ -67,8 +72,14 @@ from
 	(select 
 		idFlight_Plan_Records
 		, sum(budget) as Budget
-	from bvt_prod.UVLB_Financial_Budget_Forecast
+	from bvt_prod.UCLM_GP_Financial_Budget_Forecast
 	GROUP by idFlight_Plan_Records) as costs
 
 	on KPIs.idFlight_Plan_Records=costs.idFlight_Plan_Records
 	
+
+
+
+GO
+
+

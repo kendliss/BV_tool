@@ -3,8 +3,8 @@ GO
 
 CREATE proc [bvt_processed].[UVLB_Forecast_Campaign_Summary_PR]
 as
-declare @lst_load datetime
-select @lst_load = (select MAX(load_dt) from bvt_processed.UVLB_Best_View_Forecast)
+--declare @lst_load datetime
+--select @lst_load = (select MAX(load_dt) from bvt_processed.UVLB_Best_View_Forecast)
 
 select KPIs.*, costs.Budget
 
@@ -25,8 +25,8 @@ from
 		, Offer
 		, Product_Code
 		, sum(Forecast) as Forecast
-	from bvt_processed.UVLB_Best_View_Forecast
-	where load_dt= @lst_load
+	from bvt_prod.UVLB_Best_View_Forecast_VW
+
 	group by idFlight_Plan_Records
 		, Campaign_Name
 		, InHome_Date
