@@ -114,7 +114,7 @@ WHEN Media_Code = 'FPC' AND eCRW_Project_Name LIKE '%ConnecTech%' THEN 241 --Con
 WHEN Media_Code = 'FPC' AND eCRW_Project_Name LIKE '%Football%' THEN 245 --Football FPC
 WHEN Media_Code = 'FPC' AND eCRW_Project_Name LIKE '%HBO%' THEN 250 --HBO FPC
 WHEN Media_Code = 'FPC' AND eCRW_Project_Name LIKE '%HD%' THEN 252 --HD FPC
-WHEN Media_Code = 'FPC' AND eCRW_Project_Name LIKE '%HSIA%' THEN 331 --HSIA FPC
+WHEN Media_Code = 'FPC' AND eCRW_Project_Name LIKE '%HSIA%' AND eCRW_Project_Name NOT LIKE '%Upsell%' AND eCRW_Project_Name NOT LIKE '%HSIA%Only%' THEN 331 --HSIA Upgrade FPC
 WHEN Media_Code = 'FPC' AND eCRW_Project_Name LIKE '%Movers%' THEN 337 --Movers FPC
 WHEN Media_Code = 'FPC' AND eCRW_Project_Name LIKE '%Tumblebooks%' THEN 352 --Tumblebooks FPC
 WHEN Media_Code = 'FPC' AND eCRW_Project_Name LIKE '%TV%Upgrade%' THEN 354 --IPTV Upgrade FPC
@@ -166,26 +166,28 @@ When Media_Code = 'FYI' AND eCRW_Project_Name LIKE '% OE%' and eCRW_Project_Name
 
 
 --Onserts
-/*still missing 576,577,596 694*/
+/*still missing 576,577*/
 
 WHEN Media_Code = 'FYI' AND eCRW_Project_Name LIKE '%Onsert%' AND eCRW_Project_Name LIKE '%Epix%' THEN 242 --Epix Onsert
 WHEN Media_Code = 'FYI' AND eCRW_Project_Name LIKE '%Onsert%' AND eCRW_Project_Name LIKE '%Football%' THEN 244 --Football Onsert
 WHEN Media_Code = 'FYI' AND eCRW_Project_Name LIKE '%Onsert%' AND eCRW_Project_Name LIKE '%HD%' THEN 251 --HD Onsert
 WHEN Media_Code = 'FYI' AND eCRW_Project_Name LIKE '%Onsert%' AND eCRW_Project_Name LIKE '%McAfee%' THEN 336 --McAfee Onsert
-WHEN Media_Code = 'FYI' AND eCRW_Project_Name LIKE '%Onsert%' AND eCRW_Project_Name LIKE '%Movers%' THEN 339 --Movers Onsert
+WHEN Media_Code = 'FYI' AND eCRW_Project_Name LIKE '%Onsert%' AND eCRW_Project_Name LIKE '%Movers%' AND eCRW_Project_Name NOT LIKE '%HSIA%Only%' THEN 339 --Movers Onsert
 WHEN Media_Code = 'FYI' AND eCRW_Project_Name LIKE '%Onsert%' AND eCRW_Project_Name LIKE '%Screen%Pack%' THEN 346 --Screen Pack Onsert
 WHEN Media_Code = 'FYI' AND eCRW_Project_Name LIKE '%Onsert%' AND eCRW_Project_Name LIKE '%ConnecTech%' THEN 546 --ConnecTech Onsert
 WHEN Media_Code = 'FYI' AND eCRW_Project_Name LIKE '%Onsert%' AND eCRW_Project_Name LIKE '%Free%Demand%' THEN 553 --Free On Demand Onsert
 WHEN Media_Code = 'FYI' AND eCRW_Project_Name LIKE '%Onsert%' AND eCRW_Project_Name LIKE '%Giga%Welcome%' THEN 555 --Gigapower Welcome Onsert
 WHEN Media_Code = 'FYI' AND eCRW_Project_Name LIKE '%Onsert%' AND eCRW_Project_Name LIKE '%HBO%' THEN 559 --HBO Onsert
 WHEN Media_Code = 'FYI' AND eCRW_Project_Name LIKE '%Onsert%' AND (eCRW_Project_Name LIKE '%HSIA%Sell%' OR eCRW_Project_Name LIKE '%NON-HSIA%') THEN 562 --HSIA Cross sell Onsert
-WHEN Media_Code = 'FYI' AND eCRW_Project_Name LIKE '%Onsert%' AND eCRW_Project_Name LIKE '%HSIA%Upgrade%' THEN 564 --HSIA Upgrade Onsert
+WHEN Media_Code = 'FYI' AND eCRW_Project_Name LIKE '%Onsert%' AND eCRW_Project_Name LIKE '%HSIA%Upgrade%' AND eCRW_Project_Name NOT LIKE '%HSIA%Only%' THEN 564 --HSIA Upgrade Onsert
 WHEN Media_Code = 'FYI' AND eCRW_Project_Name LIKE '%Onsert%' AND eCRW_Project_Name LIKE '%itcanwait%' THEN 568 --ItCanWait Onsert
 WHEN Media_Code = 'FYI' AND eCRW_Project_Name LIKE '%Onsert%' AND eCRW_Project_Name LIKE '%Karaoke%' THEN 569 --Karaoke Onsert
 WHEN Media_Code = 'FYI' AND eCRW_Project_Name LIKE '%Onsert%' AND eCRW_Project_Name LIKE '%Live%TV%' THEN 570 --Live TV Onsert
 WHEN Media_Code = 'FYI' AND eCRW_Project_Name LIKE '%Onsert%' AND eCRW_Project_Name LIKE '%MyAt&T%' THEN 575 --MyAT&T Onsert
 WHEN Media_Code = 'FYI' AND eCRW_Project_Name LIKE '%Onsert%' AND eCRW_Project_Name LIKE '%Spanish%att.net%' THEN 585 --Spanish att.net Onsert
 WHEN Media_Code = 'FYI' AND eCRW_Project_Name LIKE '%Onsert%' AND eCRW_Project_Name LIKE '%TV%Upgrade%' THEN 587 --IPTV Upgrade Onsert
+WHEN Media_Code = 'FYI' AND eCRW_Project_Name LIKE '%Onsert%' AND eCRW_Project_Name LIKE '%HSIA%Upgrade%' AND eCRW_Project_Name LIKE '%HSIA%Only%' THEN 596 --HSIA ONly Updrage Onsert
+WHEN Media_Code = 'FYI' AND eCRW_Project_Name LIKE '%Onsert%' AND eCRW_Project_Name LIKE '%Movers%' AND eCRW_Project_Name LIKE '%HSIA%Only%' THEN 694 --HSIA Only Movers Onsert
 WHEN Media_Code = 'FYI' AND eCRW_Project_Name LIKE '%Onsert%' AND eCRW_Project_Name LIKE '%Wiresless%Receiver%' THEN 797 --Wireless Receiver Onsery
 WHEN Media_Code = 'FYI' AND eCRW_Project_Name LIKE '%Onsert%' AND eCRW_Project_Name LIKE '%League%Pass%' THEN 806 --NBA League Pass Onsert
 
@@ -219,8 +221,8 @@ WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%TV%Thank%' THEN 777 --IPTV T
 WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%Trigger1%' THEN 778 --Trigger 1 Letter Kit DM
 WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%Trigger2%' THEN 779 --Trigger 2 Post Card DM
 WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%HSIA%Only%' AND eCRW_Project_Name LIKE '%Welcome%' THEN 413 --HSIA Only Welcome DM
-WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%HSIA%Only%' AND eCRW_Project_Name LIKE '%Touch2%' THEN 780 --HSIA Only Benefit SMSt DM
-WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%HSIA%Only%' AND eCRW_Project_Name LIKE '%Touch3%' THEN 781 --HSIA Only Touch 3 SMSt DM
+WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%HSIA%Only%' AND eCRW_Project_Name LIKE '%Benefit%' THEN 780 --HSIA Only Benefit SMSt DM
+
 
 
 
@@ -230,7 +232,7 @@ WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%HSIA%Only%' AND eCRW_Project
 /*still missing 601*/
 
 WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Benefit%' AND eCRW_Project_Name NOT LIKE '%HSIA%' THEN 383 --Benefits EM
-WHEN Media_Code = 'EM' AND (eCRW_Project_Name LIKE '%Engagement%Stream%' OR eCRW_Project_Name LIKE '%Welcome%') AND eCRW_Project_Name NOT LIKE '%Weekly%' AND eCRW_Project_Name NOT LIKE '%Touch%1%' THEN 384 --Engagement Stream EM
+WHEN Media_Code = 'EM' AND (eCRW_Project_Name LIKE '%Engagement%Stream%' OR eCRW_Project_Name LIKE '%Welcome%') AND eCRW_Project_Name NOT LIKE '%Weekly%' AND eCRW_Project_Name NOT LIKE '%Touch%1%' AND eCRW_Project_Name NOT LIKE '%HSIA%Only%'THEN 384 --Engagement Stream EM
 WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Free%Remote%' THEN 385 --Free Remotes EM
 WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Groundhog%' THEN 388 --Groundhof's Day EM
 WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%HBO%' AND (Campaign_Name LIKE '%Follow%Up%' OR Campaign_Name LIKE '%FU%') THEN 390 --HBO Follow Up EM
@@ -248,7 +250,7 @@ WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Reaffirm_Stream%' THEN 401 -
 WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Spotlight%' THEN 402 --Spotlight EM
 WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%TV%Upgrade%' THEN 403 --IPTV Upgrade EM
 WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Weekly%' AND eCRW_Project_Name LIKE '%Movies%' THEN 404 --Movies weekly EM
-WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Welcome%' THEN 405 --Membership Welcome EM
+WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Welcome%' AND eCRW_Project_Name NOT LIKE '%Welcome%Touch%' THEN 405 --Membership Welcome EM
 WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%HSIA%Only%' AND eCRW_Project_Name LIKE '%Benefit%' THEN 415 --HSIA Only EM
 WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%UGUIDE%' THEN 416 --U-guide EM
 WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Amazon%' THEN 545 --Amazon Offer EM
