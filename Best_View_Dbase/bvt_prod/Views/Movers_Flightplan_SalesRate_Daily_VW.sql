@@ -24,8 +24,8 @@ from
 	, idProduct_LU_TBL_FK
 	, Daily_Join.Day_of_Week
 	, Salesrate_Daily*week_percent as Sales_Rate_Daily
-	, DATEADD(week,c.Week_ID-1,DATEADD(day,Days_Before_Inhome,InHome_Date)) as Forecast_Week_Date
-	, DATEADD(day,Day_of_Week-1,DATEADD(week,c.Week_ID-1,DATEADD(day,Days_Before_Inhome,InHome_Date))) as Forecast_DayDate
+	, DATEADD(week,c.Week_ID-1,InHome_Date) as Forecast_Week_Date
+	, DATEADD(day,Day_of_Week-1,DATEADD(week,c.Week_ID-1,InHome_Date)) as Forecast_DayDate
 	, ISO_week
 	, ISO_Week_Year
 	, MediaMonth
@@ -82,7 +82,7 @@ from bvt_prod.Movers_Flight_Plan_VW as A
 ----------End  Weekly Response Curve and Media Calendar		
 	left join bvt_prod.Seasonality_Adjustements as E
 		on ResponseByDay.idProgram_Touch_Definitions_TBL_FK=E.idProgram_Touch_Definitions_TBL_FK and iso_week_year=Media_Year and mediamonth=Media_Month
-	left join bvt_processed.Target_adjustment_start_end
+	left join bvt_prod.Target_adjustment_start_end
 		on ResponseByDay.idTarget_Rate_Reasons_LU_TBL_FK=Target_adjustment_start_end.idTarget_Rate_Reasons_LU_TBL_FK 
 		and ResponseByDay.idProgram_Touch_Definitions_TBL_FK=Target_adjustment_start_end.idProgram_Touch_Definitions_TBL_FK
 		and responsebyday.inhome_date between Adj_Start_Date and end_date
