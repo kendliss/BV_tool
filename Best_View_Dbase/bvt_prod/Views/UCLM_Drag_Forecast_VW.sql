@@ -23,7 +23,7 @@ CREATE VIEW [bvt_prod].[UCLM_Drag_Forecast_VW]
 				on datepart(weekday,calendar.date)=[Day_of_Week] and [date] between [Daily_Start_Date] and [END_DATE]
 				
 				left join (select [Forecast_DayDate], sum(forecast) as FV_Calls 
-								from [bvt_prod].[UCLM_Best_View_Forecast_VW] 
+								from [bvt_processed].[UCLM_Best_View_Forecast] 
 								where [Product_Code]='Call'
 								and Touch_Name <> 'DRAG'
 								group by Forecast_DayDate) as FV
