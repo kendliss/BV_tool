@@ -36,7 +36,7 @@ as
 			, flight_plan_records.Campaign_Name
 			, flight_plan_records.InHome_Date
 			, flight_plan_records.idProgram_Touch_Definitions_TBL_FK
-			, '' as idCPP_Category_FK
+			, idCPP_Category_FK
 			, Bill_Month
 			, Bill_Year
 			, Budget
