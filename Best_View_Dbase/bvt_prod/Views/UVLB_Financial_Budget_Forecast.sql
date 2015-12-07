@@ -6,7 +6,7 @@ as select
 	flight_plan_records.idFlight_Plan_Records
 	, flight_plan_records.Campaign_Name
 	, flight_plan_records.InHome_Date
-	, idCPP_Category_FK
+	, CPP_Start_End.idCPP_Category_FK
 	
 	, Touch_Name
 	, Program_Name
@@ -19,12 +19,12 @@ as select
 	, Offer
 	
 	, case when Budget_Type_LU_TBL_idBudget_Type_LU_TBL=2 then Bill_Month
-		when [idCPP_Category_FK]=5 then month(DATEADD(month,bill_timing,dateadd(day,[Days_Before_Inhome],Flight_Plan_Records.InHome_Date))) 
+		when CPP_Start_End.[idCPP_Category_FK]=5 then month(DATEADD(month,bill_timing,dateadd(day,[Days_Before_Inhome],Flight_Plan_Records.InHome_Date))) 
 		when MONTH(Flight_Plan_Records.InHome_Date)=12 then 12
 		else month(DATEADD(month,bill_timing,dateadd(day,[Days_Before_Inhome],Flight_Plan_Records.InHome_Date))) 
 		end as bill_month
 	, case when Budget_Type_LU_TBL_idBudget_Type_LU_TBL=2 then Bill_Year
-		when [idCPP_Category_FK]=5 then year(DATEADD(month,bill_timing,dateadd(day,[Days_Before_Inhome],Flight_Plan_Records.InHome_Date))) 
+		when CPP_Start_End.[idCPP_Category_FK]=5 then year(DATEADD(month,bill_timing,dateadd(day,[Days_Before_Inhome],Flight_Plan_Records.InHome_Date))) 
 		when MONTH(Flight_Plan_Records.InHome_Date)=12 then year(Flight_Plan_Records.InHome_Date)
 		else year(DATEADD(month,bill_timing,dateadd(day,[Days_Before_Inhome],Flight_Plan_Records.InHome_Date))) 
 		end as bill_year

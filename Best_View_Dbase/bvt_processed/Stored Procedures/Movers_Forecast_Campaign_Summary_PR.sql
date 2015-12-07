@@ -75,4 +75,4 @@ from
 	left join
 	
 	DIM.Media_Calendar_Daily
-	on Dateadd(D,-7, KPIs.InHome_Date)=DIM.Media_Calendar_Daily.Date
+	on KPIs.InHome_Date=DIM.Media_Calendar_Daily.Date

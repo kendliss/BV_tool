@@ -1,4 +1,9 @@
-﻿CREATE VIEW [bvt_prod].[Movers_Forecast_Campaign_Summary_VW]
+﻿DROP VIEW [bvt_prod].[Movers_Forecast_Campaign_Summary_VW]
+
+GO
+
+
+CREATE VIEW [bvt_prod].[Movers_Forecast_Campaign_Summary_VW]
 	AS 
 
 select KPIs.*, costs.Budget, MediaMonth_Year,MediaMonth,MediaMonth_YYYYMM
@@ -69,4 +74,4 @@ from
 	left join
 	
 	DIM.Media_Calendar_Daily
-	on Dateadd(D,-7, KPIs.InHome_Date)=DIM.Media_Calendar_Daily.Date
+	on KPIs.InHome_Date=DIM.Media_Calendar_Daily.Date
