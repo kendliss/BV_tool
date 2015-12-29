@@ -12,7 +12,7 @@ select idFlight_Plan_Records
 		when idVolume_Type_LU_TBL_FK=2 then	Flight_Plan_Records_Volume.Volume 
 		when idVolume_Type_LU_TBL_FK=3 then sum(Flight_Plan_Record_Budgets.Budget)/sum(CPP_Start_End.CPP)
 		end as Volume
-	,dateadd(day,[Days_Before_Inhome],InHome_Date) as Drop_Date
+	,InHome_Date as Drop_Date
 	
 	from 
 		(select idFlight_Plan_Records, idProgram_Touch_Definitions_TBL_FK, idVolume_Type_LU_TBL_FK, idTarget_Rate_Reasons_LU_TBL_FK, 
@@ -29,11 +29,8 @@ select idFlight_Plan_Records
 			and flighting.inhome_date between Adj_Start_Date and Target_adjustment_start_end.end_date
 		left join (SELECT * FROM [bvt_prod].[CPP_Start_End_FUN]('MOVERS')) AS CPP_Start_End on flighting.idProgram_Touch_Definitions_TBL_FK=CPP_Start_End.idProgram_Touch_Definitions_TBL_FK
 			and InHome_Date between Cpp_start_date and CPP_Start_End.end_date
-		left join (SELECT * FROM [bvt_prod].[Dropdate_Start_End_FUN]('MOVERS')) AS dropdate_start_end
-			on flighting.idProgram_Touch_Definitions_TBL_FK=dropdate_start_end.[idProgram_Touch_Definitions_TBL_FK]
-				and inhome_date between [drop_start_date] and dropdate_start_end.end_date
 Group by idFlight_Plan_Records, idVolume_Type_LU_TBL_FK, Lead_Volumes.Volume, Target_adjustment_start_end.Volume_Adjustment
-	 , Flight_Plan_Records_Volume.Volume, dateadd(day,[Days_Before_Inhome],InHome_Date) 
+	 , Flight_Plan_Records_Volume.Volume, InHome_Date
 
 
 
