@@ -151,13 +151,13 @@ CREATE VIEW [bvt_prod].[UVLB_Best_View_VW]
 			, sum(Actuals.Actual) as Actual
 
 			from 
-				(select idFlight_Plan_Records_FK, Start_Date, CTD_Quantity, CTD_Budget 
+				(select parentid, idFlight_Plan_Records_FK, Start_Date, CTD_Quantity, CTD_Budget 
 				from bvt_prod.UVLB_Actuals_VW 
-				group by idFlight_Plan_Records_FK, Start_Date, CTD_Quantity, CTD_Budget) as actual_query
+				group by parentid, idFlight_Plan_Records_FK, Start_Date, CTD_Quantity, CTD_Budget) as actual_query
 
 				UNPIVOT (Actual for kpiproduct in 
 					([CTD_Quantity], [CTD_Budget])) as Actuals
-			GROUP BY idFlight_Plan_Records_FK, Start_Date
+			GROUP BY parentid, idFlight_Plan_Records_FK, Start_Date
 				, case when kpiproduct='CTD_Quantity' then 'Volume'
 					when kpiproduct='CTD_Budget' then 'Budget'
 					end 
