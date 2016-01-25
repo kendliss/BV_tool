@@ -1,5 +1,14 @@
-﻿DROP VIEW [bvt_prod].[UVLB_SaleForecast_Weekly_2016_VW]
+USE [UVAQ]
 GO
+
+/****** Object:  View [bvt_prod].[UVLB_SaleForecast_Weekly_2016_VW]    Script Date: 01/25/2016 09:34:21 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
 
 CREATE VIEW [bvt_prod].[UVLB_SaleForecast_Weekly_2016_VW]
 as 
@@ -24,6 +33,7 @@ select
 	, Creative_Name
 	, Goal
 	, Offer
+	, Channel
 
 ----Metrics
 	, Metric_Category
@@ -55,6 +65,7 @@ from
 	, Creative_Name
 	, Goal
 	, Offer
+	, Channel
 
 ----Metrics
 	, 'Sales' as Metric_Category
@@ -77,4 +88,9 @@ from [bvt_prod].[UVLB_Forecast_NOSALES_2016_VW] as A
 
 	left join [bvt_prod].[Product_LU_TBL] as D
 		on AA.[idProduct_LU_TBL_FK]=D.[idProduct_LU_TBL]
+
+
+
+GO
+
 
