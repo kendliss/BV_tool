@@ -92,7 +92,7 @@ WHEN Media_Code = 'DM' AND (Campaign_Name LIKE '%WINBACK%' OR eCRW_Project_Name 
 WHEN Media_Code = 'DM' AND (Campaign_Name LIKE '%Click Responder%' OR eCRW_Project_Name LIKE '%clickresponder%') THEN 95
 WHEN Media_Code = 'DM' AND (Campaign_Name LIKE '%RESPONDER%' OR eCRW_Project_Name LIKE '%responder%') THEN 113
 WHEN Media_Code = 'DM' AND (Campaign_Name LIKE '%DATA%' OR eCRW_Project_Name LIKE '%databust%') THEN 98
-WHEN Media_Code = 'DM' AND (Campaign_Name LIKE '%ONLINE%' OR campaign_name LIKE '%oec%' OR eCRW_Project_Name LIKE '%online%' OR eCRW_Project_Name LIKE '%oec%' OR eCRW_Project_Name LIKE '%EligibilityConfirmed%') THEN 94
+WHEN Media_Code = 'DM' AND (Campaign_Name LIKE '%Eligibility%' OR campaign_name LIKE '%oec%' OR eCRW_Project_Name LIKE '%online%' OR eCRW_Project_Name LIKE '%oec%' OR eCRW_Project_Name LIKE '%EligibilityConfirmed%') THEN 94
 WHEN Media_Code = 'DM' AND (Campaign_Name LIKE '%SMART%' OR Campaign_Name LIKE '%SP%' OR eCRW_Project_Name LIKE '%smart%') AND Campaign_Name NOT LIKE '%Prospect%' AND Campaign_Name NOT LIKE '%USPS%' AND Campaign_Name NOT LIKE '%HISP%' AND Campaign_Name NOT LIKE '%SP TAG%' AND Campaign_Name NOT LIKE '%Spanish%' AND eCRW_Project_Name NOT LIKE '%HISP%' THEN 106
 WHEN Media_Code = 'DM' AND (Campaign_Name LIKE '%TRIG%' OR Campaign_Name LIKE '%GO LOCAL EMERGENCY%') AND (Campaign_Name LIKE '%Gig%' OR eCRW_Project_Name LIKE '%giga%') THEN 99
 WHEN Media_Code = 'DM' AND (Campaign_Name LIKE '%CANCEL BEFORE%'OR Campaign_Name LIKE '%CANCEL B4%' OR campaign_name LIKE '%xcell B4%' OR Campaign_Name LIKE '%BUYERS REMORSE%' OR Campaign_Name LIKE '%INSTALLATION ISSUES%' OR eCRW_Project_Name LIKE '%Cancelbefore%') THEN 91
@@ -177,12 +177,15 @@ WHEN Media_Code = 'DM' AND (Campaign_Name LIKE '%New Green%' OR Campaign_Name LI
 
 WHEN Media_Code = 'EM' AND Campaign_Name NOT LIKE '%re-eng%' AND Campaign_Name LIKE '%ENG%' AND(Campaign_Name LIKE '%EARLY%' OR Campaign_Name LIKE '%Mid%' OR Campaign_Name LIKE '%Late%' OR eCRW_Project_Name LIKE '%PostLaunchWeek1and2%' OR eCRW_Project_Name LIKE '%PostLaunchWeek3and4%' OR eCRW_Project_Name LIKE '%PostWeek5%' OR eCRW_Project_Name LIKE '%CoreEarly%') AND Campaign_Name NOT LIKE '%TRIG%' THEN 128
 
+--OOF Email
+WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%OOF%' and (eCRW_Project_Name LIKE '%Redeploy%' OR eCRW_Project_Name LIKE '%Reblast%' OR eCRW_Project_Name LIKE '%RBT%') THEN 938 --OOF Engagement
+WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%OOF%' THEN 937 --OOF Initial EM
 
 --triggers email
 
 WHEN Media_Code = 'EM' AND (Campaign_Name LIKE '%TV UP%' OR eCRW_Project_Name LIKE '%HSIAONLY%') AND (Campaign_Name NOT LIKE '%reblast%' AND Campaign_Name NOT LIKE '% rb%' AND Campaign_Name NOT LIKE '%Re-Blast%' AND Campaign_Name NOT LIKE '%ENG%') THEN 193
 WHEN Media_Code = 'EM' AND (Campaign_Name LIKE '%TV UP%' OR eCRW_Project_Name LIKE '%HSIAONLY%') AND (Campaign_Name LIKE '%reblast%' OR Campaign_Name LIKE '% rb%' OR Campaign_Name LIKE '%Re-Blast%' OR Campaign_Name LIKE '%ENG%') THEN 194
-WHEN Media_Code = 'EM' AND (Campaign_Name LIKE '%ONLINE%' OR eCRW_Project_Name LIKE '%ONLINE%') AND (Campaign_Name NOT LIKE '%reblast%' AND Campaign_Name NOT LIKE '%rbt%' AND Campaign_Name NOT LIKE '%Re-Blast%') THEN 149 
+WHEN Media_Code = 'EM' AND (Campaign_Name LIKE '%eligibility%' OR eCRW_Project_Name LIKE '%eligibility%') AND (Campaign_Name NOT LIKE '%reblast%' AND Campaign_Name NOT LIKE '%rbt%' AND Campaign_Name NOT LIKE '%Re-Blast%') THEN 149 
 WHEN Media_Code = 'EM' AND (Campaign_Name LIKE '%RESPONDER%' OR eCRW_Project_Name LIKE '%Responder%') AND (Campaign_Name NOT LIKE '%reblast%' AND Campaign_Name NOT LIKE '%rbt%') AND Campaign_Name NOT LIKE '%NON%Respond%'THEN 162
 WHEN Media_Code = 'EM' AND eCRW_Project_Name NOT LIKE '%GIG%' AND (Campaign_Name LIKE '%SMART%' OR Campaign_Name LIKE '% SP %' OR eCRW_Project_Name LIKE '%Smart%') AND Campaign_Name NOT LIKE '%reblast%' AND Campaign_Name NOT LIKE '%rbt%' AND Campaign_Name NOT LIKE '%ENG%' AND Campaign_Name NOT LIKE '%data%' THEN 158
 WHEN Media_Code = 'EM' AND (Campaign_Name LIKE '%CONNECT%' OR eCRW_Project_Name LIKE '%Connect%') AND Campaign_Name NOT LIKE '%reblast%' AND Campaign_Name NOT LIKE '%rbt%' THEN 156
@@ -193,7 +196,7 @@ WHEN Media_Code = 'EM' AND (Campaign_Name LIKE '%WINBACK%'  OR eCRW_Project_Name
 WHEN Media_Code = 'EM' AND Campaign_Name LIKE '%TRIG%' AND Campaign_Name LIKE '%giga%' THEN 122
 WHEN Media_Code = 'EM' AND (Campaign_Name LIKE '%COMP%Resp%' OR eCRW_Project_Name LIKE '%Comp%Resp%') AND (Campaign_Name NOT LIKE '%reblast%' and Campaign_Name NOT LIKE '%rbt%') THEN 151
 
-WHEN Media_Code = 'EM' AND (Campaign_Name LIKE '%ONLINE%' OR eCRW_Project_Name LIKE '%Online%') AND (Campaign_Name LIKE '%reblast%' OR Campaign_Name LIKE '%rbt%' OR Campaign_Name LIKE '%Re-Blast%') THEN 150
+WHEN Media_Code = 'EM' AND (Campaign_Name LIKE '%eligibility%' OR eCRW_Project_Name LIKE '%eligibility%') AND (Campaign_Name LIKE '%reblast%' OR Campaign_Name LIKE '%rbt%' OR Campaign_Name LIKE '%Re-Blast%') THEN 150
 WHEN Media_Code = 'EM' AND (Campaign_Name LIKE '%RESPONDER%' OR eCRW_Project_Name LIKE '%responder%') AND (Campaign_Name LIKE '%reblast%' OR Campaign_Name LIKE '%rbt%' OR Campaign_Name LIKE '%Re-Blast%') AND Campaign_Name NOT LIKE '%NON%Respond%'THEN 163 
 WHEN Media_Code = 'EM' AND eCRW_Project_Name NOT LIKE '%GIG%' AND (Campaign_Name LIKE '%SMART%' OR Campaign_Name LIKE '% SP %'  OR eCRW_Project_Name LIKE '%smart%') AND (Campaign_Name LIKE '%reblast%' or Campaign_Name LIKE '%rbt%' OR Campaign_Name LIKE '%Re-Blast%') AND Campaign_Name NOT LIKE '%data%'THEN 159
 WHEN Media_Code = 'EM' AND (campaign_name like '%recontact%' OR eCRW_Project_Name LIKE '%recontact%') AND (Campaign_Name LIKE '%reblast%' OR Campaign_Name LIKE '%rbt%' OR Campaign_Name LIKE '%Re-Blast%') THEN 161

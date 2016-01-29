@@ -1,14 +1,7 @@
 USE [UVAQ_STAGING]
 GO
 
-
-DROP PROC [bvt_staging].[UCLM_ParentID_FlightRecord_Link_PR]
-
-GO
-
-
-
-/****** Object:  StoredProcedure [bvt_staging].[UCLM_ParentID_FlightRecord_Link_PR]    Script Date: 10/02/2015 11:40:56 ******/
+/****** Object:  StoredProcedure [bvt_staging].[UCLM_ParentID_FlightRecord_Link_PR]    Script Date: 01/27/2016 15:14:15 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -16,11 +9,12 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 
+
 /*removed gigapower to put in seperate program. KL 10/2/15
 
 */
 
-CREATE PROC [bvt_staging].[UCLM_ParentID_FlightRecord_Link_PR]
+ALTER PROC [bvt_staging].[UCLM_ParentID_FlightRecord_Link_PR]
 
 AS
 BEGIN
@@ -222,6 +216,7 @@ WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%Trigger1%' THEN 778 --Trigge
 WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%Trigger2%' THEN 779 --Trigger 2 Post Card DM
 WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%HSIA%Only%' AND eCRW_Project_Name LIKE '%Welcome%' THEN 413 --HSIA Only Welcome DM
 WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%HSIA%Only%' AND eCRW_Project_Name LIKE '%Benefit%' THEN 780 --HSIA Only Benefit SMSt DM
+WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%EPIX%' THEN 902 --Free EPiX Upgrade Announcement DM
 
 
 
@@ -438,6 +433,7 @@ AND b.AssignDate =Convert(date, getdate())
 ORDER BY a.idProgram_Touch_Definitions
 
 END
+
 
 
 

@@ -3,9 +3,9 @@
 
 INSERT INTO bvt_processed.Commitment_Views (id_Flight_Plan_Records_FK, idProgram_Touch_Definitions_TBL_FK,
 Campaign_Name, InHome_Date, Media_Year, Media_Month, Media_Week, KPI_TYPE, Product_Code, Forecast_DayDate, Forecast, CV_Submission, Extract_Date)
-SELECT a.idFlight_Plan_Records, idProgram_Touch_Definitions_TBL, Campaign_Name, InHome_Date, Media_Year, Media_Month, Media_Year,
- KPI_Type, Product_Code, a.forecast_DayDate, Forecast, 'UVLB 2016 Submission 20160121', '2016-01-21'
-FROM bvt_scenario.UVLB_Best_View_CV_20160121 a
+SELECT a.idFlight_Plan_Records, idProgram_Touch_Definitions_TBL, Campaign_Name, InHome_Date, Media_Year, Media_Month, Media_Week,
+ KPI_Type, Product_Code, a.forecast_DayDate, Forecast, 'UVLB 2016 Submission 20160125', '2016-01-25'
+FROM bvt_scenario.UVLB_Best_View_CV_20160125 a
 JOIN bvt_prod.Program_Touch_Definitions_TBL b
 ON a.Touch_Name = b.Touch_Name
 WHERE Media_Year = 2016
