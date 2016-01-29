@@ -99,7 +99,7 @@ CREATE VIEW [bvt_prod].[UVLB_Best_View_VW]
 			from [bvt_processed].[Commitment_Views] 
 				-----Bring in touch definition labels 
 				left join [bvt_prod].[Touch_Definition_VW] on [Commitment_Views].[idProgram_Touch_Definitions_TBL_FK]=[Touch_Definition_VW].[idProgram_Touch_Definitions_TBL]
-			where CV_Submission in ('UVLB Commitment View 2015', 'UVLB 2016 Submission 20160121') --extract_date='2015-06-26'
+			where CV_Submission in ('UVLB Commitment View 2015', 'UVLB 2016 Submission 20160125') --extract_date='2015-06-26'
 			GROUP BY [id_Flight_Plan_Records_FK], [idProgram_Touch_Definitions_TBL_FK], [Campaign_Name], [InHome_Date], 
 			[Media_Year], [Media_Month], [Media_Week], [KPI_TYPE], [Product_Code],
 			[Touch_Name], [Program_Name], [Tactic], [Media], [Audience], [Creative_Name], [Goal], [Offer], [Campaign_Type] ) as CV
