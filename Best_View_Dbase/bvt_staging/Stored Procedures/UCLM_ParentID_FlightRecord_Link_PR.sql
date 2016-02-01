@@ -1,14 +1,7 @@
 USE [UVAQ_STAGING]
 GO
 
-
-DROP PROC [bvt_staging].[UCLM_ParentID_FlightRecord_Link_PR]
-
-GO
-
-
-
-/****** Object:  StoredProcedure [bvt_staging].[UCLM_ParentID_FlightRecord_Link_PR]    Script Date: 10/02/2015 11:40:56 ******/
+/****** Object:  StoredProcedure [bvt_staging].[UCLM_ParentID_FlightRecord_Link_PR]    Script Date: 01/27/2016 15:14:15 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -16,11 +9,12 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 
+
 /*removed gigapower to put in seperate program. KL 10/2/15
 
 */
 
-CREATE PROC [bvt_staging].[UCLM_ParentID_FlightRecord_Link_PR]
+ALTER PROC [bvt_staging].[UCLM_ParentID_FlightRecord_Link_PR]
 
 AS
 BEGIN
@@ -40,7 +34,7 @@ IF Object_ID('bvt_staging.UCLM_pID_FlightPlan_Dups') IS NOT NULL
 TRUNCATE TABLE bvt_staging.UCLM_pID_FlightPlan_Dups
 
 
-INSERT INTO bvt_staging.UCLM_ActiveCampaigns
+INSERT INTO UVAQ.bvt_processed.UCLM_ActiveCampaigns
 SELECT DISTINCT a.ParentID, a.Campaign_Name, a.start_date as [In_Home_Date], a.Media_Code,  a.eCRW_Project_Name, GETDATE()
 
 	FROM JAVDB.IREPORT_2015.dbo.WB_01_Campaign_List AS a JOIN JAVDB.IREPORT_2015.dbo.WB_00_Reporting_Hierarchy AS b
@@ -53,7 +47,7 @@ AND  b.Scorecard_tab = 'U-verse CLM'
 AND (a.[Start_Date]<= '27-DEC-2016' AND a.End_Date_Traditional>='28-DEC-2014') 
 	AND a.Media_Code <> 'DR'
 	AND a.ParentID > 1334
-	AND a.parentID  NOT IN (SELECT parentID from bvt_staging.UCLM_ActiveCampaigns)
+	AND a.parentID  NOT IN (SELECT parentID from UVAQ.bvt_processed.UCLM_ActiveCampaigns)
 	AND a.campaign_name NOT LIKE '%Commitment View%'
 	AND a.campaign_name NOT LIKE '%best View Objectives%'
 	AND a.Start_Date >= '10/1/14'
@@ -222,6 +216,7 @@ WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%Trigger1%' THEN 778 --Trigge
 WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%Trigger2%' THEN 779 --Trigger 2 Post Card DM
 WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%HSIA%Only%' AND eCRW_Project_Name LIKE '%Welcome%' THEN 413 --HSIA Only Welcome DM
 WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%HSIA%Only%' AND eCRW_Project_Name LIKE '%Benefit%' THEN 780 --HSIA Only Benefit SMSt DM
+WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%EPIX%' THEN 902 --Free EPiX Upgrade Announcement DM
 
 
 
@@ -291,14 +286,14 @@ ELSE 0 END AS idProgram_Touch_Definitions,
 
 INTO #ParentID_ID_Link
 
-FROM bvt_staging.UCLM_ActiveCampaigns
+FROM UVAQ.bvt_processed.UCLM_ActiveCampaigns
 
 	
 SELECT a.[ParentID], a.idProgram_Touch_Definitions, c.idFlight_Plan_Records
 INTO #ParentID_ID_Link2
 
 FROM #ParentID_ID_Link a
-JOIN bvt_staging.UCLM_ActiveCampaigns b ON a.parentID = b.ParentID
+JOIN UVAQ.bvt_processed.UCLM_ActiveCampaigns b ON a.parentID = b.ParentID
 LEFT JOIN (SELECT Distinct 
        [idFlight_Plan_Records]
       ,idProgram_Touch_Definitions_TBL_FK 
@@ -320,7 +315,7 @@ SELECT Distinct a.ParentID, a.idProgram_Touch_Definitions, a.idFlight_Plan_Recor
  d.Campaign_Name as [FlightCampaignName], d.InHome_Date as [FlightInHomeDate], d.Touch_Name as [FlightTouchName], d.Program_Name as [FlightProgramName], d.Tactic as [FlightTactic], d.Media as [FlightMedia]
  , d.Campaign_Type as [FlightCampaignType], d.Audience as [FlightAudience], d.Creative_Name as [FlightCreativeName], d.Offer as [FlightOffer]
 FROM #ParentID_ID_Link2 a
-JOIN bvt_staging.UCLM_ActiveCampaigns b ON a.parentID = b.ParentID
+JOIN UVAQ.bvt_processed.UCLM_ActiveCampaigns b ON a.parentID = b.ParentID
 LEFT JOIN (SELECT DISTINCT 
        [idFlight_Plan_Records]
       ,idProgram_Touch_Definitions_TBL_FK 
@@ -350,7 +345,7 @@ SELECT Distinct a.ParentID, a.idProgram_Touch_Definitions, a.idFlight_Plan_Recor
  d.Campaign_Name as [FlightCampaignName], d.InHome_Date as [FlightInHomeDate], d.Touch_Name as [FlightTouchName], d.Program_Name as [FlightProgramName], d.Tactic as [FlightTactic], d.Media as [FlightMedia]
  , d.Campaign_Type as [FlightCampaignType], d.Audience as [FlightAudience], d.Creative_Name as [FlightCreativeName], d.Offer as [FlightOffer]
 FROM #ParentID_ID_Link2 a
-JOIN bvt_staging.UCLM_ActiveCampaigns b ON a.parentID = b.ParentID
+JOIN UVAQ.bvt_processed.UCLM_ActiveCampaigns b ON a.parentID = b.ParentID
 LEFT JOIN (SELECT DISTINCT 
        [idFlight_Plan_Records]
       ,idProgram_Touch_Definitions_TBL_FK 
@@ -380,7 +375,7 @@ SELECT Distinct a.ParentID, a.idProgram_Touch_Definitions, a.idFlight_Plan_Recor
  d.Campaign_Name as [FlightCampaignName], d.InHome_Date as [FlightInHomeDate], Coalesce(d.Touch_Name, e.Touch_Name) as [FlightTouchName], d.Program_Name as [FlightProgramName], d.Tactic as [FlightTactic], Coalesce(d.Media, e.Media) as [FlightMedia]
  , d.Campaign_Type as [FlightCampaignType], d.Audience as [FlightAudience], d.Creative_Name as [FlightCreativeName], d.Offer as [FlightOffer]
 FROM #ParentID_ID_Link2 a
-JOIN bvt_staging.UCLM_ActiveCampaigns b ON a.parentID = b.ParentID
+JOIN UVAQ.bvt_processed.UCLM_ActiveCampaigns b ON a.parentID = b.ParentID
 LEFT JOIN (SELECT DISTINCT 
        [idFlight_Plan_Records]
       ,idProgram_Touch_Definitions_TBL_FK 
@@ -415,7 +410,7 @@ SELECT Distinct a.ParentID, a.idProgram_Touch_Definitions, a.idFlight_Plan_Recor
  d.Campaign_Name as [FlightCampaignName], d.InHome_Date as [FlightInHomeDate], d.Touch_Name as [FlightTouchName], d.Program_Name as [FlightProgramName], d.Tactic as [FlightTactic], d.Media as [FlightMedia]
  , d.Campaign_Type as [FlightCampaignType], d.Audience as [FlightAudience], d.Creative_Name as [FlightCreativeName], d.Offer as [FlightOffer]
 FROM #ParentID_ID_Link2 a
-JOIN bvt_staging.UCLM_ActiveCampaigns b ON a.parentID = b.ParentID
+JOIN UVAQ.bvt_processed.UCLM_ActiveCampaigns b ON a.parentID = b.ParentID
 LEFT JOIN (SELECT DISTINCT 
        [idFlight_Plan_Records]
       ,idProgram_Touch_Definitions_TBL_FK 
@@ -438,6 +433,7 @@ AND b.AssignDate =Convert(date, getdate())
 ORDER BY a.idProgram_Touch_Definitions
 
 END
+
 
 
 
