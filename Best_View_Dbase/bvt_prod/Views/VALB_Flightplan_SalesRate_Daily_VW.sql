@@ -9,9 +9,9 @@ select idFlight_Plan_Records
 	, responsebyday.idProgram_Touch_Definitions_TBL_FK
 	, idkpi_type_FK
 	, idProduct_LU_TBL_FK
-	, Day_of_Week
-	, Sales_rate_Daily
-	, Forecast_DayDate
+	--, Day_of_Week
+	, SUM(Sales_rate_Weekly) as Sales_Rate_weekly
+	, Forecast_Week_Date
 
 from
 ----Join Weekly Response Curve and Media Calendar
@@ -19,10 +19,10 @@ from
 	, Daily_Join.idProgram_Touch_Definitions_TBL_FK
 	, Daily_Join.idkpi_type_FK
 	, idProduct_LU_TBL_FK
-	, Daily_Join.Day_of_Week
-	, Salesrate_Daily*week_percent/7 as Sales_Rate_Daily
+	--, Daily_Join.Day_of_Week
+	, (Sales_Rate*week_percent/7) as Sales_Rate_Weekly
 	, DATEADD(week,c.Week_ID-1,InHome_Date) as Forecast_Week_Date
-	, DATEADD(day,Day_of_Week,DATEADD(week,c.Week_ID-1,InHome_Date)) as Forecast_DayDate
+	--, DATEADD(day,Day_of_Week,DATEADD(week,c.Week_ID-1,InHome_Date)) as Forecast_DayDate
 	, ISO_week
 	, ISO_Week_Year
 	, MediaMonth
@@ -35,8 +35,7 @@ from
 	, SalesRate_Join.idProgram_Touch_Definitions_TBL_FK
 	, SalesRate_Join.idkpi_type_FK
 	, idProduct_LU_TBL_FK
-	, Day_of_Week
-	, salesrate_Daily = Sales_Rate*Day_Percent
+	, Sales_Rate
 	, inhome_date
 	, idTarget_Rate_Reasons_LU_TBL_FK
 
@@ -83,3 +82,9 @@ from [bvt_prod].[VALB_Flight_Plan_VW] as A
 		on ResponseByDay.idTarget_Rate_Reasons_LU_TBL_FK=Target_adjustment_start_end.idTarget_Rate_Reasons_LU_TBL_FK 
 		and ResponseByDay.idProgram_Touch_Definitions_TBL_FK=Target_adjustment_start_end.idProgram_Touch_Definitions_TBL_FK
 		and responsebyday.inhome_date between Adj_Start_Date and end_date
+
+group by idFlight_Plan_Records
+	, responsebyday.idProgram_Touch_Definitions_TBL_FK
+	, idkpi_type_FK
+	, idProduct_LU_TBL_FK
+	, Forecast_Week_Date

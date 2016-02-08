@@ -16,9 +16,6 @@ select idFlight_Plan_Records
 		(select idFlight_Plan_Records, idProgram_Touch_Definitions_TBL_FK, idVolume_Type_LU_TBL_FK, idTarget_Rate_Reasons_LU_TBL_FK, 
 			inhome_date, ISO_Week_Year , MediaMonth 
 			from [bvt_prod].[VALB_Flight_Plan_VW] left join dim.Media_Calendar_Daily on InHome_Date=Media_Calendar_Daily.Date) as flighting
-		left join (SELECT * FROM [bvt_prod].[Dropdate_Start_End_FUN]('VALB')) AS dropdate_start_end
-			on flighting.idProgram_Touch_Definitions_TBL_FK=dropdate_start_end.[idProgram_Touch_Definitions_TBL_FK]
-				and inhome_date between [drop_start_date] and dropdate_start_end.end_date
 		left join bvt_prod.Flight_Plan_Records_Volume on idFlight_Plan_Records=Flight_Plan_Records_Volume.idFlight_Plan_Records_FK
 		left join bvt_prod.Lead_Volumes on flighting.idProgram_Touch_Definitions_TBL_FK=Lead_Volumes.idProgram_Touch_Definitions_TBL_FK
 			and ISO_Week_Year=Media_Year and MediaMonth=Media_Month
