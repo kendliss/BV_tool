@@ -10,15 +10,12 @@ select idFlight_Plan_Records
 		when idVolume_Type_LU_TBL_FK=2 then	Flight_Plan_Records_Volume.Volume 
 		when idVolume_Type_LU_TBL_FK=3 then sum(Flight_Plan_Record_Budgets.Budget)/sum(CPP_Start_End.CPP)
 		end as Volume
-	,dateadd(day,[Days_Before_Inhome],InHome_Date) as DropDate
+	, InHome_Date as DropDate
 	
 	from 
 		(select idFlight_Plan_Records, idProgram_Touch_Definitions_TBL_FK, idVolume_Type_LU_TBL_FK, idTarget_Rate_Reasons_LU_TBL_FK, 
 			inhome_date, ISO_Week_Year , MediaMonth 
 			from [bvt_prod].[UVLB_Flight_Plan_VW] left join dim.Media_Calendar_Daily on InHome_Date=Media_Calendar_Daily.Date) as flighting
-		left join (SELECT * FROM [bvt_prod].[Dropdate_Start_End_FUN]('UVLB')) AS dropdate_start_end
-			on flighting.idProgram_Touch_Definitions_TBL_FK=dropdate_start_end.[idProgram_Touch_Definitions_TBL_FK]
-				and inhome_date between [drop_start_date] and dropdate_start_end.end_date
 		left join bvt_prod.Flight_Plan_Records_Volume on idFlight_Plan_Records=Flight_Plan_Records_Volume.idFlight_Plan_Records_FK
 		left join bvt_prod.Lead_Volumes on flighting.idProgram_Touch_Definitions_TBL_FK=Lead_Volumes.idProgram_Touch_Definitions_TBL_FK
 			and ISO_Week_Year=Media_Year and MediaMonth=Media_Month
@@ -30,7 +27,7 @@ select idFlight_Plan_Records
 		left join (SELECT * FROM [bvt_prod].[CPP_Start_End_FUN]('UVLB')) AS CPP_Start_End on flighting.idProgram_Touch_Definitions_TBL_FK=CPP_Start_End.idProgram_Touch_Definitions_TBL_FK
 			and InHome_Date between Cpp_start_date and CPP_Start_End.end_date
 Group by idFlight_Plan_Records, idVolume_Type_LU_TBL_FK, Lead_Volumes.Volume, Target_adjustment_start_end.Volume_Adjustment
-	 , Flight_Plan_Records_Volume.Volume,  dateadd(day,[Days_Before_Inhome],InHome_Date)
+	 , Flight_Plan_Records_Volume.Volume, InHome_Date
 
 
 

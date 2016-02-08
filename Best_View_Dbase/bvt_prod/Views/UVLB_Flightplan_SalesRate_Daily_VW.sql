@@ -22,8 +22,8 @@ from
 	, idProduct_LU_TBL_FK
 	, Daily_Join.Day_of_Week
 	, Salesrate_Daily*week_percent/7 as Sales_Rate_Daily
-	, DATEADD(week,c.Week_ID,DATEADD(day,Days_Before_Inhome,InHome_Date)) as Forecast_Week_Date
-	, DATEADD(day,Day_of_Week,DATEADD(week,c.Week_ID,DATEADD(day,Days_Before_Inhome,InHome_Date))) as Forecast_DayDate
+	, DATEADD(week,c.Week_ID,InHome_Date) as Forecast_Week_Date
+	, DATEADD(day,Day_of_Week,DATEADD(week,c.Week_ID,InHome_Date)) as Forecast_DayDate
 	, ISO_week
 	, ISO_Week_Year
 	, MediaMonth
@@ -72,9 +72,6 @@ from [bvt_prod].[UVLB_Flight_Plan_VW] as A
 	left join (SELECT * FROM [bvt_prod].[Sales_Curve_Start_End_FUN]('UVLB')) as C
 		on Daily_Join.idProgram_Touch_Definitions_TBL_FK=c.idProgram_Touch_Definitions_TBL_FK and Daily_Join.idkpi_type_FK=c.idkpi_type_FK
 		and inhome_date between Curve_Start_Date and c.END_DATE
-	left join (SELECT * FROM [bvt_prod].[Dropdate_Start_End_FUN]('UVLB')) as D
-		on Daily_Join.idProgram_Touch_Definitions_TBL_FK=d.idProgram_Touch_Definitions_TBL_FK
-		and inhome_date between drop_start_date and d.end_date
 	left join  dim.Media_Calendar_Daily 
 		on Daily_Join.InHome_Date=Media_Calendar_Daily.Date) as ResponseByDay
 ----------End  Weekly Response Curve and Media Calendar		
