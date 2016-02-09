@@ -21,7 +21,7 @@ from
 	, Daily_Join.idkpi_type_FK
 	, idProduct_LU_TBL_FK
 	, Daily_Join.Day_of_Week
-	, Salesrate_Daily*week_percent/7 as Sales_Rate_Daily
+	, Salesrate_Daily*week_percent as Sales_Rate_Daily
 	, DATEADD(week,c.Week_ID,InHome_Date) as Forecast_Week_Date
 	, DATEADD(day,Day_of_Week,DATEADD(week,c.Week_ID,InHome_Date)) as Forecast_DayDate
 	, ISO_week
