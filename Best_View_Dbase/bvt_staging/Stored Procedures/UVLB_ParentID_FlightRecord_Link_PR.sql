@@ -41,7 +41,8 @@ SELECT DISTINCT a.ParentID, a.Campaign_Name, a.Start_Date as [In_Home_Date], a.M
      WHERE b.Scorecard_Top_Tab = 'Direct Marketing'
 AND  b.Scorecard_LOB_Tab = 'U-verse'
 AND  b.Scorecard_tab = 'Uverse'
-AND b.scorecard_program_channel NOT LIKE '%Prospect%'
+AND (b.scorecard_program_channel NOT LIKE '%Prospect%'
+	OR (b.Scorecard_Program_Channel LIKE '%Prospect%' AND (a.eCRW_project_Name LIKE '%Giga%' OR a.eCRW_Project_Name LIKE '%_OOF_%') and a.Start_Date >= '12/28/15'))
 
 AND (a.[Start_Date]<= '27-DEC-2016' AND a.End_Date_Traditional>='28-DEC-2014') 
 	AND a.Media_Code <> 'DR'
@@ -136,15 +137,21 @@ WHEN Media_Code = 'DM' AND (eCRW_Project_Name LIKE '%Early%' OR eCRW_Project_Nam
 WHEN Media_Code = 'DM' AND (eCRW_Project_Name LIKE '%Early%' OR eCRW_Project_Name LIKE '%Mid%' OR eCRW_Project_Name LIKE '%Late%') AND eCRW_Project_Name LIKE '%DSL%' THEN 731 --Core BBMig DM
 
 WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%GIG%' AND eCRW_Project_Name LIKE '%ONGO%' AND Campaign_Name LIKE '%DTV%' THEN 641 --Gigapower Core DTV DM
+WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%GIG%' AND eCRW_Project_Name LIKE '%ONGO%' AND Campaign_Name LIKE '%PRO%' THEN 1018 --Gigapower Core Prospect DM
 WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%GIG%' AND eCRW_Project_Name LIKE '%ONGO%' THEN 52 --Gigapower Core WLN DM
 
 WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%GIG%' AND (eCRW_Project_Name LIKE '%LAUNCH%' OR Campaign_Name LIKE '%LNCH%') AND (Campaign_Name LIKE '%TOUCH 1%' OR Campaign_Name LIKE '%T1%') AND Campaign_Name NOT LIKE '%OCT1%' AND Campaign_Name LIKE '%DTV%' THEN 642 --Gigapower Touch 1 DTV DM
+WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%GIG%' AND (eCRW_Project_Name LIKE '%LAUNCH%' OR Campaign_Name LIKE '%LNCH%') AND (Campaign_Name LIKE '%TOUCH 1%' OR Campaign_Name LIKE '%T1%') AND Campaign_Name NOT LIKE '%OCT1%' AND Campaign_Name LIKE '%PRO%' THEN 1019 --Gigapower Touch 1 Prospect DM
 WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%GIG%' AND (eCRW_Project_Name LIKE '%LAUNCH%' OR Campaign_Name LIKE '%LNCH%') AND (Campaign_Name LIKE '%TOUCH 1%' OR Campaign_Name LIKE '%T1%') AND Campaign_Name NOT LIKE '%OCT1%' THEN 40 --Gigapower Touch 1 WRLN DM
+
 
 WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%GIG%' AND (eCRW_Project_Name LIKE '%LAUNCH%' OR Campaign_Name LIKE '%LNCH%') AND (Campaign_Name LIKE '%TOUCH 2%' OR Campaign_Name LIKE '%T2%' OR Campaign_Name LIKE '%T3%' OR Campaign_Name LIKE '%T4%') THEN 43 --Gigapower Touch 2 WRLN DM
 
 WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%GIG%' AND (eCRW_Project_Name LIKE '%LAUNCH%' OR Campaign_Name LIKE '%LNCH%') AND Campaign_Name LIKE '%DTV%' THEN 642 --Gigapower Touch 1 DTV DM
+WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%GIG%' AND (eCRW_Project_Name LIKE '%LAUNCH%' OR Campaign_Name LIKE '%LNCH%') AND Campaign_Name LIKE '%PRO%' THEN 1019 --Gigapower Touch 1 Prospect DM
 WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%GIG%' AND (eCRW_Project_Name LIKE '%LAUNCH%' OR Campaign_Name LIKE '%LNCH%') THEN 40 --Gigapower Touch 1 WRLN DM
+
+
 
 WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%IPTVSubsHSIA%' THEN 996 --Core IPTV DM (HSIA Cross Sell from CLM)
 --new green dm hispanic

@@ -1,12 +1,22 @@
-﻿DROP PROCEDURE  [bvt_prod].[Campaign_Data_Weekly_Main_2012_PR]
+USE [UVAQ]
 GO
 
-CREATE PROCEDURE [bvt_prod].[Campaign_Data_Weekly_Main_2012_PR]
+/****** Object:  StoredProcedure [bvt_prod].[Campaign_Data_Weekly_Main_2012_PR]    Script Date: 02/22/2016 13:42:41 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+ALTER PROCEDURE [bvt_prod].[Campaign_Data_Weekly_Main_2012_PR]
 	
 AS
 	TRUNCATE TABLE from_javdb.IR_Campaign_Data_Weekly_MAIN_2012_Sbset;
 	
 	INSERT INTO from_javdb.IR_Campaign_Data_Weekly_MAIN_2012_Sbset
+
+
 
 select Project_ID, Parentid, idFlight_Plan_Records_FK, [Report_Year], [Report_Week], [Start_Date], [End_Date_Traditional], [eCRW_Project_Name], [Campaign_Name]
 		, [media_code], Program, [Toll_Free_Numbers] , [URL_List] , [CTD_Quantity], [ITP_Quantity], [ITP_Quantity_Unapp] ,[CTD_Budget], [ITP_Budget]
@@ -33,5 +43,9 @@ from javdb.ireport.[dbo].[IR_Campaign_Data_Weekly_MAIN_2012]
 		group by Source_System_ID, idFlight_Plan_Records_FK) as linkage
 
 		---linking fields
-		on [IR_Campaign_Data_Weekly_MAIN_2012].parentid= linkage.Source_System_id 
+		on CAST([IR_Campaign_Data_Weekly_MAIN_2012].parentid as Varchar(20))=  linkage.Source_System_id 
 RETURN 0
+
+GO
+
+

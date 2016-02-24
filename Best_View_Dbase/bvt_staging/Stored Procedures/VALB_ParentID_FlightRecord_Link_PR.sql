@@ -1,7 +1,7 @@
 USE [UVAQ_STAGING]
 GO
 
-/****** Object:  StoredProcedure [bvt_staging].[VALB_ParentID_FlightRecord_Link_PR]    Script Date: 02/13/2016 10:27:36 ******/
+/****** Object:  StoredProcedure [bvt_staging].[VALB_ParentID_FlightRecord_Link_PR]    Script Date: 02/18/2016 17:05:21 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -16,7 +16,7 @@ GO
 
 
 
-CREATE PROC [bvt_staging].[VALB_ParentID_FlightRecord_Link_PR]
+ALTER PROC [bvt_staging].[VALB_ParentID_FlightRecord_Link_PR]
 
 AS
 BEGIN
@@ -38,8 +38,8 @@ TRUNCATE TABLE bvt_staging.VALB_pID_FlightPlan_Dups
 
 
 INSERT INTO UVAQ.bvt_processed.VALB_ActiveCampaigns
-SELECT DISTINCT a.ParentID, a.Campaign_Name, a.eCRW_Project_Name, eCRW_Classification_Name, d.Cell_DTV_FLAG, a.Start_Date, a.Media_Code, a.Vendor, GETDATE()
-	FROM JAVDB.IREPORT.dbo.IR_Campaign_Data_Latest_MAIN_2012 AS a JOIN JAVDB.IREPORT_2015.dbo.WB_00_Reporting_Hierarchy AS b
+SELECT DISTINCT a.ParentID, a.Campaign_Name, a.eCRW_Project_Name, a.eCRW_Classification_Name, d.Cell_DTV_FLAG, a.Start_Date, a.Media_Code, a.Vendor, GETDATE()
+	FROM JAVDB.IREPORT_2015.dbo.WB_01_Campaign_List AS a JOIN JAVDB.IREPORT_2015.dbo.WB_00_Reporting_Hierarchy AS b
       ON a.tactic_id=b.id
     LEFT JOIN JAVDB.IREPORT_2015.dbo.WB_01_Campaign_List d
 	ON a.ParentID = d.ParentID

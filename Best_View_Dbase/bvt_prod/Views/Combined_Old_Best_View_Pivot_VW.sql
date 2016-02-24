@@ -1,11 +1,22 @@
-﻿DROP VIEW [bvt_prod].[UVLB_Best_View_Pivot_VW]
+USE [UVAQ]
 GO
 
-CREATE VIEW [bvt_prod].[UVLB_Best_View_Pivot_VW]
-	AS 
+/****** Object:  View [bvt_prod].[Combined_Old_Best_View_Pivot_VW]    Script Date: 02/22/2016 13:38:20 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+
+
+
+ALTER View [bvt_prod].[Combined_Old_Best_View_Pivot_VW] 
+AS 
 	Select
 	[idFlight_Plan_Records_FK], [Campaign_Name], [InHome_Date], [Media_Year], [Media_Week], [Media_Month], [Touch_Name], [Program_Name], [Tactic], [Media], 
-	[Campaign_Type], [Audience], [Creative_Name], [Goal], [Offer], [Channel],
+	[Campaign_Type], [Audience], [Creative_Name], [Goal], [Offer],[Channel],
 sum(isnull([Call_CV], 0)) as [Call_CV], 
 sum(isnull([Online_CV], 0)) as [Online_CV], 
 sum(isnull([Online_sales_Access Line_CV], 0)) as [Online_sales_Access Line_CV], 
@@ -127,7 +138,7 @@ sum(isnull([Telesales_Access Line_AV], 0))+ sum(isnull([Telesales_DSL_AV], 0))+ 
 		,Case when kpi_type in ('Response','Volume','Budget') then Product_Code+'_BV'
 		Else [KPI_Type]+'_'+[Product_Code]+'_BV' end as BV_metric 
 
-	FROM [bvt_prod].[UVLB_Best_View_VW]) as transform
+	FROM [bvt_prod].[Combined_Old_Best_View_VW]) as transform
 
 	pivot 
 	(SUM(Commitment) for CV_METRIC IN ([Call_CV], 
@@ -237,3 +248,11 @@ sum(isnull([Telesales_Access Line_AV], 0))+ sum(isnull([Telesales_DSL_AV], 0))+ 
 
 group by [idFlight_Plan_Records_FK], [Campaign_Name], [InHome_Date], [Media_Year], [Media_Week], [Media_Month], [Touch_Name], [Program_Name], [Tactic], [Media], 
 	[Campaign_Type], [Audience], [Creative_Name], [Goal], [Offer], [Channel]
+	
+
+
+
+
+GO
+
+

@@ -1,8 +1,16 @@
-﻿DROP VIEW [bvt_prod].[UVLB_Flightplan_SalesRate_Daily_VW]
-go
+USE [UVAQ]
+GO
+
+/****** Object:  View [bvt_prod].[UVLB_Flightplan_SalesRate_Daily_VW]    Script Date: 02/24/2016 10:57:13 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
 
 -------------------------------------------
-create view [bvt_prod].[UVLB_Flightplan_SalesRate_Daily_VW]
+ALTER view [bvt_prod].[UVLB_Flightplan_SalesRate_Daily_VW]
 as
 ----Join Seasonality Adjustments
 select idFlight_Plan_Records
@@ -58,7 +66,7 @@ from
 	, idTarget_Rate_Reasons_LU_TBL_FK
 from [bvt_prod].[UVLB_Flight_Plan_VW] as A
 	
-	left join (SELECT * FROM [bvt_prod].[Sales_Rate_Start_End_FUN]('UVLB') where sales_rate>0) as B on A.idProgram_Touch_Definitions_TBL_FK=B.idProgram_Touch_Definitions_TBL_FK
+	left join (SELECT * FROM [bvt_prod].[Sales_Rate_Start_End_FUN]('UVLB')) as B on A.idProgram_Touch_Definitions_TBL_FK=B.idProgram_Touch_Definitions_TBL_FK
 	and InHome_Date between Sales_Rate_Start_Date and b.END_DATE) as SalesRate_Join
 ---End Join KPI and Flight Plan	
 
@@ -81,3 +89,7 @@ from [bvt_prod].[UVLB_Flight_Plan_VW] as A
 		on ResponseByDay.idTarget_Rate_Reasons_LU_TBL_FK=Target_adjustment_start_end.idTarget_Rate_Reasons_LU_TBL_FK 
 		and ResponseByDay.idProgram_Touch_Definitions_TBL_FK=Target_adjustment_start_end.idProgram_Touch_Definitions_TBL_FK
 		and responsebyday.inhome_date between Adj_Start_Date and end_date
+
+GO
+
+

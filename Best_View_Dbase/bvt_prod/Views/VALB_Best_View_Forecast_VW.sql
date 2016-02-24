@@ -1,10 +1,23 @@
-﻿DROP VIEW [bvt_prod].[VALB_Best_View_Forecast_VW]
+USE [UVAQ]
 GO
+
+/****** Object:  View [bvt_prod].[VALB_Best_View_Forecast_VW_FOR_LINK]    Script Date: 02/22/2016 12:26:15 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+
+
+
 
 
 CREATE view [bvt_prod].[VALB_Best_View_Forecast_VW]
 as
 select FPR.idFlight_Plan_Records
+
 	, FPR.Campaign_Name
 	, FPR.InHome_Date
 	
@@ -23,11 +36,12 @@ select FPR.idFlight_Plan_Records
 	, Creative_Name
 	, Goal
 	, Offer
+	, Channel
 
 ----Metrics
 	, KPI_Type
 	, Product_Code
-	, Forecast_DayDate
+	, Forecast_week_Date
 	, Forecast
 
 from bvt_prod.VALB_Flight_Plan_VW as FPR
@@ -42,7 +56,7 @@ left join
 		when idkpi_types_FK=2 then 'Online_sales'
 		else 'CHECK' end as KPI_Type 
 	, Product_Code
-	, Forecast_DayDate
+	, Forecast_week_Date
 	, Sales_Forecast as Forecast
 from bvt_prod.VALB_FlightplanSalesForecast
  left join bvt_prod.Product_LU_TBL
@@ -53,7 +67,7 @@ union
 (select idFlight_Plan_Records
 	, 'Response' as KPI_Type
 	, KPI_Type as Product_Code
-	, Forecast_DayDate
+	, Forecast_Week_Date
 	, KPI_Forecast as Forecast
 from bvt_prod.VALB_FlightplanKPIForecast
  left join bvt_prod.KPI_Types
@@ -64,30 +78,28 @@ union
 (select idFlight_Plan_Records
 	, 'Volume' as KPI_Type
 	, 'Volume' as Product_Code
-	, dropdate as Forecast_DayDate
+	, dropdate as Forecast_Week_Date
 	, Volume as Forecast
 from bvt_prod.VALB_Flightplan_Volume_Forecast_VW)) as metricsa) as metrics
 	on fpr.idFlight_Plan_Records=metrics.idFlight_Plan_Records
 -----------------------------------------------------------------	
 --Media Calendar Information-------------------------------------
 left join Dim.Media_Calendar_Daily
-		on metrics.Forecast_DayDate=Media_Calendar_Daily.Date
+		on metrics.Forecast_week_Date=Media_Calendar_Daily.Date
 -----------------------------------------------------------------
 
 left join
 -----Bring in touch definition labels 
-(select idProgram_Touch_Definitions_TBL, Touch_Name, Program_Name, Tactic, Media, Audience, Creative_Name, Goal, Offer, Campaign_Type
-		 from bvt_prod.Program_Touch_Definitions_TBL
-			left join bvt_prod.Audience_LU_TBL on idAudience_LU_TBL_FK=idAudience_LU_TBL
-			left join bvt_prod.Campaign_Type_LU_TBL on idCampaign_Type_LU_TBL_FK=idCampaign_Type_LU_TBL
-			left join bvt_prod.Creative_LU_TBL on idCreative_LU_TBL_fk=idCreative_LU_TBL
-			left join bvt_prod.Goal_LU_TBL on idGoal_LU_TBL_fk=idGoal_LU_TBL
-			left join bvt_prod.Media_LU_TBL on idMedia_LU_TBL_fk=idMedia_LU_TBL
-			left join bvt_prod.Offer_LU_TBL on idOffer_LU_TBL_fk=idOffer_LU_TBL
-			left join bvt_prod.Program_LU_TBL on idProgram_LU_TBL_fk=idProgram_LU_TBL
-			left join bvt_prod.Tactic_LU_TBL on idTactic_LU_TBL_fk=idTactic_LU_TBL) as touchdef
+bvt_prod.Touch_Definition_VW as touchdef
 		on FPR.idProgram_Touch_Definitions_TBL_FK=idProgram_Touch_Definitions_TBL
 
 	
+
+
+
+
+
+
+GO
 
 

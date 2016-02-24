@@ -19,6 +19,7 @@ CREATE VIEW [bvt_prod].[VALB_Best_View_VW]
 		coalesce(forecast_cv.[Creative_Name], actual_volume.[Creative_Name],actual_results.[Creative_Name]) as [Creative_Name],
 		coalesce(forecast_cv.[Goal], actual_volume.[Goal],actual_results.[Goal]) as [Goal],
 		coalesce(forecast_cv.[Offer], actual_volume.[Offer],actual_results.[Offer]) as [Offer],
+		coalesce(forecast_cv.[Channel], actual_volume.[Channel], actual_results.[Channel]) as [Channel],
 		coalesce(forecast_cv.[KPI_Type], actual_volume.[KPI_Type],actual_results.[KPI_Type]) as [KPI_Type],
 		coalesce(forecast_cv.[Product_Code], actual_volume.[Product_Code],actual_results.[Product_Code]) as [Product_Code]
 		,isnull(Forecast,0) as Forecast
@@ -43,6 +44,7 @@ CREATE VIEW [bvt_prod].[VALB_Best_View_VW]
       ,coalesce(forecast.[Creative_Name], cv.[Creative_Name]) as [Creative_Name]
       ,coalesce(forecast.[Goal], cv.[Goal]) as [Goal]
       ,coalesce(forecast.[Offer], cv.[Offer]) as [Offer]
+      ,coalesce(forecast.[Channel], cv.[Channel]) as [Channel]
       ,coalesce(forecast.[KPI_Type], cv.[KPI_Type]) as [KPI_Type]
       ,coalesce(forecast.[Product_Code], cv.[Product_Code]) as [Product_Code]
 	  ,coalesce(forecast.media_year, cv.media_year) as media_year
@@ -68,6 +70,7 @@ CREATE VIEW [bvt_prod].[VALB_Best_View_VW]
       ,[Creative_Name]
       ,[Goal]
       ,[Offer]
+      ,[Channel]
       ,[KPI_Type]
       ,[Product_Code]
 	  ,SUM(Forecast) as forecast
@@ -85,6 +88,7 @@ CREATE VIEW [bvt_prod].[VALB_Best_View_VW]
       ,[Creative_Name]
       ,[Goal]
       ,[Offer]
+      ,[Channel]
       ,[KPI_Type]
       ,[Product_Code]
       , Media_Year
@@ -95,14 +99,14 @@ CREATE VIEW [bvt_prod].[VALB_Best_View_VW]
 		full join 
 			(select [id_Flight_Plan_Records_FK], [idProgram_Touch_Definitions_TBL_FK], [Campaign_Name], [InHome_Date], 
 			[Media_Year], [Media_Month], [Media_Week], [KPI_TYPE], [Product_Code], sum([Forecast]) as forecast, 
-			[Touch_Name], [Program_Name], [Tactic], [Media], [Audience], [Creative_Name], [Goal], [Offer], [Campaign_Type]
+			[Touch_Name], [Program_Name], [Tactic], [Media], [Audience], [Creative_Name], [Goal], [Offer], [Channel], [Campaign_Type]
 			from [bvt_processed].[Commitment_Views] 
 				-----Bring in touch definition labels 
 				left join [bvt_prod].[Touch_Definition_VW] on [Commitment_Views].[idProgram_Touch_Definitions_TBL_FK]=[Touch_Definition_VW].[idProgram_Touch_Definitions_TBL]
 			where CV_Submission in ('VALB 2016 Submission 20160210')
 			GROUP BY [id_Flight_Plan_Records_FK], [idProgram_Touch_Definitions_TBL_FK], [Campaign_Name], [InHome_Date], 
 			[Media_Year], [Media_Month], [Media_Week], [KPI_TYPE], [Product_Code],
-			[Touch_Name], [Program_Name], [Tactic], [Media], [Audience], [Creative_Name], [Goal], [Offer], [Campaign_Type] ) as CV
+			[Touch_Name], [Program_Name], [Tactic], [Media], [Audience], [Creative_Name], [Goal], [Offer], [Campaign_Type], [Channel] ) as CV
 		 on forecast.[idFlight_Plan_Records]=cv.[id_Flight_Plan_Records_FK] 
 			and forecast.media_year=cv.Media_Year
 			and forecast.media_week=cv.Media_Week
@@ -121,6 +125,7 @@ CREATE VIEW [bvt_prod].[VALB_Best_View_VW]
       ,coalesce(forecast.[Creative_Name], cv.[Creative_Name]) 
       ,coalesce(forecast.[Goal], cv.[Goal]) 
       ,coalesce(forecast.[Offer], cv.[Offer])
+      ,coalesce(forecast.[Channel], cv.[Channel])
       ,coalesce(forecast.[KPI_Type], cv.[KPI_Type])
       ,coalesce(forecast.[Product_Code], cv.[Product_Code])
 	  ,coalesce(forecast.media_year, cv.media_year)
@@ -132,7 +137,7 @@ CREATE VIEW [bvt_prod].[VALB_Best_View_VW]
 		full outer join 
 			(select idFlight_Plan_Records_FK, [Campaign_Name], iso_week_year as Media_Year, mediamonth as Media_Month, iso_week as Media_Week, 
 			inhome_date, [Touch_Name], [Program_Name], [Tactic], [Media], 
-			[Campaign_Type], [Audience], [Creative_Name], [Goal], [Offer],
+			[Campaign_Type], [Audience], [Creative_Name], [Goal], [Offer], [Channel],
 			KPI_TYPE, Product_Code, Actual
 
 			from 
@@ -177,7 +182,7 @@ CREATE VIEW [bvt_prod].[VALB_Best_View_VW]
 		full outer join 
 		(select idFlight_Plan_Records_FK, Media_Year, Media_Week,  MediaMonth as Media_Month,
 			inhome_date, [Touch_Name], [Program_Name], [Tactic], [Media], [Campaign_Name],
-			[Campaign_Type], [Audience], [Creative_Name], [Goal], [Offer],
+			[Campaign_Type], [Audience], [Creative_Name], [Goal], [Offer], [Channel],
 			KPI_TYPE, Product_Code, Actual
 		from
 		(select idFlight_Plan_Records_FK, Report_Year as Media_Year, Report_Week as Media_Week
