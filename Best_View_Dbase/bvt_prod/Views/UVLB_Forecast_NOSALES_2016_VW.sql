@@ -1,5 +1,14 @@
-﻿DROP VIEW [bvt_prod].[UVLB_Forecast_NOSALES_2016_VW]
+USE [UVAQ]
 GO
+
+/****** Object:  View [bvt_prod].[UVLB_Forecast_NOSALES_2016_VW]    Script Date: 01/25/2016 09:34:55 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
 
 CREATE VIEW [bvt_prod].[UVLB_Forecast_NOSALES_2016_VW]
 as
@@ -23,6 +32,7 @@ select FPR.idFlight_Plan_Records
 	, Creative_Name
 	, Goal
 	, Offer
+	, Channel
 
 ----Metrics
 	, Metric_Category
@@ -94,9 +104,14 @@ GROUP BY FPR.idFlight_Plan_Records
 	, Creative_Name
 	, Goal
 	, Offer
+	, Channel
 
 ----Metrics
 	, Metric_Category
 	, KPI_Type
 	, Product_Code
 	, idkpi_types_FK
+
+GO
+
+
