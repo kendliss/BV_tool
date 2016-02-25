@@ -1,9 +1,16 @@
-DROP PROC [bvt_staging].[UVLB_ParentID_FlightRecord_Link_PR]
+USE [UVAQ_STAGING]
+GO
 
+/****** Object:  StoredProcedure [bvt_staging].[UVLB_ParentID_FlightRecord_Link_PR]    Script Date: 02/12/2016 09:20:10 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
 GO
 
 
-CREATE PROC [bvt_staging].[UVLB_ParentID_FlightRecord_Link_PR]
+
+ALTER PROC [bvt_staging].[UVLB_ParentID_FlightRecord_Link_PR]
 
 AS
 BEGIN
@@ -24,19 +31,18 @@ IF Object_ID('bvt_staging.UVLB_pID_FlightPlan_Dups') IS NOT NULL
 TRUNCATE TABLE bvt_staging.UVLB_pID_FlightPlan_Dups
 
 
-
-
 INSERT INTO UVAQ.bvt_processed.UVLB_ActiveCampaigns
-SELECT DISTINCT a.ParentID, a.Campaign_Name, [In_Home_Date], a.Media_Code, a.Vendor,  a.eCRW_Project_Name, GETDATE()
+SELECT DISTINCT a.ParentID, a.Campaign_Name, a.Start_Date as [In_Home_Date], a.Media_Code, a.Vendor,  a.eCRW_Project_Name, GETDATE(), a.Cell_Description
 
-	FROM JAVDB.IREPORT.dbo.IR_Campaign_Data_Latest_MAIN_2012 AS a JOIN JAVDB.IREPORT_2015.dbo.WB_00_Reporting_Hierarchy AS b
+	FROM JAVDB.IREPORT_2015.dbo.WB_01_Campaign_List AS a JOIN JAVDB.IREPORT_2015.dbo.WB_00_Reporting_Hierarchy AS b
       ON a.tactic_id=b.id
     LEFT JOIN JAVDB.IREPORT_2015.dbo.WB_01_Campaign_List d
 	ON a.ParentID = d.ParentID
      WHERE b.Scorecard_Top_Tab = 'Direct Marketing'
 AND  b.Scorecard_LOB_Tab = 'U-verse'
 AND  b.Scorecard_tab = 'Uverse'
-AND b.scorecard_program_channel NOT LIKE '%Prospect%'
+AND (b.scorecard_program_channel NOT LIKE '%Prospect%'
+	OR (b.Scorecard_Program_Channel LIKE '%Prospect%' AND (a.eCRW_project_Name LIKE '%Giga%' OR a.eCRW_Project_Name LIKE '%_OOF_%') and a.Start_Date >= '12/28/15'))
 
 AND (a.[Start_Date]<= '27-DEC-2016' AND a.End_Date_Traditional>='28-DEC-2014') 
 	AND a.Media_Code <> 'DR'
@@ -93,22 +99,18 @@ WHEN Media_Code = 'DM' AND (Campaign_Name LIKE '%Click Responder%' OR eCRW_Proje
 WHEN Media_Code = 'DM' AND (Campaign_Name LIKE '%RESPONDER%' OR eCRW_Project_Name LIKE '%responder%') THEN 113
 WHEN Media_Code = 'DM' AND (Campaign_Name LIKE '%DATA%' OR eCRW_Project_Name LIKE '%databust%') THEN 98
 WHEN Media_Code = 'DM' AND (Campaign_Name LIKE '%Eligibility%' OR campaign_name LIKE '%oec%' OR eCRW_Project_Name LIKE '%online%' OR eCRW_Project_Name LIKE '%oec%' OR eCRW_Project_Name LIKE '%EligibilityConfirmed%') THEN 94
-WHEN Media_Code = 'DM' AND (Campaign_Name LIKE '%SMART%' OR Campaign_Name LIKE '%SP%' OR eCRW_Project_Name LIKE '%smart%') AND Campaign_Name NOT LIKE '%Prospect%' AND Campaign_Name NOT LIKE '%USPS%' AND Campaign_Name NOT LIKE '%HISP%' AND Campaign_Name NOT LIKE '%SP TAG%' AND Campaign_Name NOT LIKE '%Spanish%' AND eCRW_Project_Name NOT LIKE '%HISP%' THEN 106
+WHEN Media_Code = 'DM' AND (Campaign_Name LIKE '%SMART%' OR Campaign_Name LIKE '%SP%' OR eCRW_Project_Name LIKE '%smart%') AND Campaign_Name NOT LIKE '%Prospect%' AND Campaign_Name NOT LIKE '%USPS%' AND Campaign_Name NOT LIKE '%HISP%' AND Campaign_Name NOT LIKE '%SP TAG%' AND Campaign_Name NOT LIKE '%Spanish%' AND eCRW_Project_Name NOT LIKE '%HISP%' and eCRW_Project_Name NOT LIKE '%GIG%' THEN 106 --Trigger Purchased Smartphone WLS DM
 WHEN Media_Code = 'DM' AND (Campaign_Name LIKE '%TRIG%' OR Campaign_Name LIKE '%GO LOCAL EMERGENCY%') AND (Campaign_Name LIKE '%Gig%' OR eCRW_Project_Name LIKE '%giga%') THEN 99
 WHEN Media_Code = 'DM' AND (Campaign_Name LIKE '%CANCEL BEFORE%'OR Campaign_Name LIKE '%CANCEL B4%' OR campaign_name LIKE '%xcell B4%' OR Campaign_Name LIKE '%BUYERS REMORSE%' OR Campaign_Name LIKE '%INSTALLATION ISSUES%' OR eCRW_Project_Name LIKE '%Cancelbefore%') THEN 91
 WHEN Media_Code = 'DM' AND Campaign_Name LIKE '%New%IRU%' AND Campaign_Name NOT LIKE '%New Green%' THEN 104
 
 
---Broadband mirgration DM
-WHEN Media_Code = 'DM' AND Campaign_Name LIKE '%DSL%Mig%' THEN 49
 
 --Core Direct Mail
 WHEN Media_Code = 'DM' AND Campaign_Name LIKE '%Phone Card%'  THEN 68
---WHEN Media_Code = 'DM' AND Campaign_Name LIKE '%TWC%'  THEN 67
+--WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%HISP%CROSS%' THEN 192 --LOOK AT!!! Most go into a different touch!
 
-WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%HISP%CROSS%' THEN 192 --LOOK AT!!! Most go into a different touch!
-
-
+/*
 WHEN Media_Code = 'DM' AND (eCRW_Project_Name NOT LIKE '%GIG%' OR (eCRW_Project_Name LIKE '%Gig%' AND Vendor = 'Aspen')) AND (Campaign_Name LIKE '%EARLY%' OR Campaign_name LIKE '% EM %') AND Campaign_Name NOT LIKE '%BILINGUAL%' AND Campaign_Name NOT LIKE '%HISP%' AND Campaign_Name NOT LIKE '%SPANISH%' AND Campaign_Name NOT LIKE '%SP Tag%' AND (Campaign_Name LIKE '%fresh%' OR Campaign_Name LIKE '% FR %') THEN 47
 WHEN Media_Code = 'DM' AND (eCRW_Project_Name NOT LIKE '%GIG%' OR (eCRW_Project_Name LIKE '%Gig%' AND Vendor = 'Aspen')) AND (Campaign_Name LIKE '%EARLY%' OR Campaign_name LIKE '% EM %') AND Campaign_Name NOT LIKE '%BILINGUAL%' AND Campaign_Name NOT LIKE '%HISP%' AND Campaign_Name NOT LIKE '%SPANISH%' AND Campaign_Name NOT LIKE '%SP Tag%' AND Campaign_Name NOT LIKE '%WLN w/%' AND Campaign_Name NOT LIKE '%WLS+%' AND Campaign_Name NOT LIKE '%WLS +%' AND Campaign_Name NOT LIKE '%non wls%' AND Campaign_Name NOT LIKE '%WLSO%' AND Campaign_Name NOT LIKE '%NWLS%' AND Campaign_Name LIKE '%WLS%'  THEN 44
 WHEN Media_Code = 'DM' AND (eCRW_Project_Name NOT LIKE '%GIG%' OR (eCRW_Project_Name LIKE '%Gig%' AND Vendor = 'Aspen')) AND (Campaign_Name LIKE '%EARLY%' OR Campaign_name LIKE '% EM %')AND Campaign_Name NOT LIKE '%BILINGUAL%' AND Campaign_Name NOT LIKE '%HISP%' AND Campaign_Name NOT LIKE '%SPANISH%' AND Campaign_Name NOT LIKE '%SP Tag%' THEN 46
@@ -125,24 +127,33 @@ WHEN Media_Code = 'DM' AND (eCRW_Project_Name NOT LIKE '%GIG%' OR (eCRW_Project_
 WHEN Media_Code = 'DM' AND (eCRW_Project_Name NOT LIKE '%GIG%' OR (eCRW_Project_Name LIKE '%Gig%' AND Vendor = 'Aspen')) AND (Campaign_Name LIKE '%MID%' OR Campaign_Name LIKE '% MM %' OR Campaign_Name LIKE '%INC%') AND Campaign_Name NOT LIKE '%BILINGUAL%' AND Campaign_Name NOT LIKE '%HISP%' AND Campaign_Name NOT LIKE '%SPANISH%' AND Campaign_Name NOT LIKE '%SP Tag%' AND Campaign_Name NOT LIKE '%WLN w/%' AND Campaign_Name NOT LIKE '%WLS+%' AND Campaign_Name NOT LIKE '%WLS +%' AND Campaign_Name NOT LIKE '%non wls%' AND Campaign_Name NOT LIKE '%WLSO%' AND Campaign_Name NOT LIKE '%NWLS%' AND Campaign_Name LIKE '%WLS%' THEN 61
 WHEN Media_Code = 'DM' AND (eCRW_Project_Name NOT LIKE '%GIG%' OR (eCRW_Project_Name LIKE '%Gig%' AND Vendor = 'Aspen')) AND (Campaign_Name LIKE '%MID%' OR Campaign_Name LIKE '% MM %' OR Campaign_Name LIKE '%INC%') AND Campaign_Name NOT LIKE '%BILINGUAL%' AND Campaign_Name NOT LIKE '%HISP%' AND Campaign_Name NOT LIKE '%SPANISH%' AND Campaign_Name NOT LIKE '%SP Tag%' THEN 63
 WHEN Media_Code = 'DM' AND (eCRW_Project_Name NOT LIKE '%GIG%' OR (eCRW_Project_Name LIKE '%Gig%' AND Vendor = 'Aspen')) AND (Campaign_Name LIKE '%MID%' OR Campaign_Name LIKE '% MM %' OR Campaign_Name LIKE '%INC%') AND (Campaign_Name LIKE '%SPANISH TAG%' OR Campaign_Name LIKE '%SP TAG%') THEN 65
-
-WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%GIG%' AND eCRW_Project_Name NOT LIKE '%LAUNCH%'  AND Campaign_Name NOT LIKE '%LNCH%' AND (Campaign_Name LIKE '%TVUP%' OR Campaign_Name LIKE '%TV UP%') THEN 52 --moved with WRLN+ for now 514
-WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%GIG%' AND eCRW_Project_Name NOT LIKE '%LAUNCH%'  AND Campaign_Name NOT LIKE '%LNCH%' AND Campaign_Name NOT LIKE '%NWLS%' AND Campaign_Name NOT LIKE '%WLN w/%' AND Campaign_Name NOT LIKE '%WLS+%' AND Campaign_Name NOT LIKE '%WLS +%' AND Campaign_Name NOT LIKE '%non wls%' AND Campaign_Name NOT LIKE '%WLSO%'AND Campaign_Name LIKE '%WLS%' THEN 50
-WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%GIG%' AND eCRW_Project_Name NOT LIKE '%LAUNCH%'  AND Campaign_Name NOT LIKE '%LNCH%' THEN 52
-
-WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%GIG%' AND (eCRW_Project_Name LIKE '%LAUNCH%' OR Campaign_Name LIKE '%LNCH%') AND (Campaign_Name LIKE '%TOUCH 1%' OR Campaign_Name LIKE '%T1%') AND Campaign_Name NOT LIKE '%OCT1%' AND (Campaign_Name LIKE '%TVUP%' OR Campaign_Name LIKE '%TV UP%') THEN 40--moved with WRLN+ for now 518
-WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%GIG%' AND (eCRW_Project_Name LIKE '%LAUNCH%' OR Campaign_Name LIKE '%LNCH%') AND (Campaign_Name LIKE '%TOUCH 1%' OR Campaign_Name LIKE '%T1%') AND Campaign_Name NOT LIKE '%OCT1%' AND Campaign_Name NOT LIKE '%NWLS%' AND Campaign_Name NOT LIKE '%WLN w/%' AND Campaign_Name NOT LIKE '%WLS+%' AND Campaign_Name NOT LIKE '%WLS +%' AND Campaign_Name NOT LIKE '%non wls%' AND Campaign_Name NOT LIKE '%WLSO%'  AND Campaign_Name NOT LIKE '%NWLS%' AND Campaign_Name LIKE '%WLS%' THEN 38
-WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%GIG%' AND (eCRW_Project_Name LIKE '%LAUNCH%' OR Campaign_Name LIKE '%LNCH%') AND (Campaign_Name LIKE '%TOUCH 1%' OR Campaign_Name LIKE '%T1%') AND Campaign_Name NOT LIKE '%OCT1%' THEN 40
-
-WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%GIG%' AND (eCRW_Project_Name LIKE '%LAUNCH%' OR Campaign_Name LIKE '%LNCH%') AND (Campaign_Name LIKE '%TOUCH 2%' OR Campaign_Name LIKE '%T2%' OR Campaign_Name LIKE '%T3%' OR Campaign_Name LIKE '%T4%') AND (Campaign_Name LIKE '%TVUP%' OR Campaign_Name LIKE '%TV UP%') THEN 43 --moved with WRLN+ for now  520
-WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%GIG%' AND (eCRW_Project_Name LIKE '%LAUNCH%' OR Campaign_Name LIKE '%LNCH%') AND (Campaign_Name LIKE '%TOUCH 2%' OR Campaign_Name LIKE '%T2%' OR Campaign_Name LIKE '%T3%' OR Campaign_Name LIKE '%T4%') AND Campaign_Name NOT LIKE '%NWLS%' AND Campaign_Name NOT LIKE '%WLN w/%' AND Campaign_Name NOT LIKE '%WLS+%' AND Campaign_Name NOT LIKE '%WLS +%' AND Campaign_Name NOT LIKE '%non wls%' AND Campaign_Name NOT LIKE '%WLSO%' AND Campaign_Name NOT LIKE '%NWLS%' AND Campaign_Name LIKE '%WLS%' THEN 41
-WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%GIG%' AND (eCRW_Project_Name LIKE '%LAUNCH%' OR Campaign_Name LIKE '%LNCH%') AND (Campaign_Name LIKE '%TOUCH 2%' OR Campaign_Name LIKE '%T2%' OR Campaign_Name LIKE '%T3%' OR Campaign_Name LIKE '%T4%') THEN 43
-
-WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%GIG%' AND (eCRW_Project_Name LIKE '%LAUNCH%' OR Campaign_Name LIKE '%LNCH%') AND (Campaign_Name LIKE '%TVUP%' OR Campaign_Name LIKE '%TV UP%') THEN 40 --moved with WRL+ for now 518
-WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%GIG%' AND (eCRW_Project_Name LIKE '%LAUNCH%' OR Campaign_Name LIKE '%LNCH%') AND Campaign_Name NOT LIKE '%NWLS%' AND Campaign_Name NOT LIKE '%WLN w/%' AND Campaign_Name NOT LIKE '%WLS+%' AND Campaign_Name NOT LIKE '%WLS +%' AND Campaign_Name NOT LIKE '%non wls%' AND Campaign_Name NOT LIKE '%WLSO%' AND Campaign_Name NOT LIKE '%NWLS%' AND Campaign_Name LIKE '%WLS%' THEN 38
-WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%GIG%' AND (eCRW_Project_Name LIKE '%LAUNCH%' OR Campaign_Name LIKE '%LNCH%') THEN 40
+*/
+--Updated Core DM
+WHEN Media_Code = 'DM' AND (eCRW_Project_Name LIKE '%Early%' OR eCRW_Project_Name LIKE '%Mid%' OR eCRW_Project_Name LIKE '%Late%') AND eCRW_Project_Name LIKE '%BAU%' AND Cell_Description LIKE '%DTV%' THEN 732 --Core DTV DM
+WHEN Media_Code = 'DM' AND (eCRW_Project_Name LIKE '%Early%' OR eCRW_Project_Name LIKE '%Mid%' OR eCRW_Project_Name LIKE '%Late%') AND eCRW_Project_Name LIKE '%BAU%' AND Cell_Description LIKE '%Wireless Only%' THEN 735 --Core WLS DM
+WHEN Media_Code = 'DM' AND (eCRW_Project_Name LIKE '%Early%' OR eCRW_Project_Name LIKE '%Mid%' OR eCRW_Project_Name LIKE '%Late%') AND eCRW_Project_Name LIKE '%BAU%' THEN 734 --Core WLN DM
 
 
+WHEN Media_Code = 'DM' AND (eCRW_Project_Name LIKE '%Early%' OR eCRW_Project_Name LIKE '%Mid%' OR eCRW_Project_Name LIKE '%Late%') AND eCRW_Project_Name LIKE '%DSL%' THEN 731 --Core BBMig DM
+
+WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%GIG%' AND eCRW_Project_Name LIKE '%ONGO%' AND Campaign_Name LIKE '%DTV%' THEN 641 --Gigapower Core DTV DM
+WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%GIG%' AND eCRW_Project_Name LIKE '%ONGO%' AND Campaign_Name LIKE '%PRO%' THEN 1018 --Gigapower Core Prospect DM
+WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%GIG%' AND eCRW_Project_Name LIKE '%ONGO%' THEN 52 --Gigapower Core WLN DM
+
+WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%GIG%' AND (eCRW_Project_Name LIKE '%LAUNCH%' OR Campaign_Name LIKE '%LNCH%') AND (Campaign_Name LIKE '%TOUCH 1%' OR Campaign_Name LIKE '%T1%') AND Campaign_Name NOT LIKE '%OCT1%' AND Campaign_Name LIKE '%DTV%' THEN 642 --Gigapower Touch 1 DTV DM
+WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%GIG%' AND (eCRW_Project_Name LIKE '%LAUNCH%' OR Campaign_Name LIKE '%LNCH%') AND (Campaign_Name LIKE '%TOUCH 1%' OR Campaign_Name LIKE '%T1%') AND Campaign_Name NOT LIKE '%OCT1%' AND Campaign_Name LIKE '%PRO%' THEN 1019 --Gigapower Touch 1 Prospect DM
+WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%GIG%' AND (eCRW_Project_Name LIKE '%LAUNCH%' OR Campaign_Name LIKE '%LNCH%') AND (Campaign_Name LIKE '%TOUCH 1%' OR Campaign_Name LIKE '%T1%') AND Campaign_Name NOT LIKE '%OCT1%' THEN 40 --Gigapower Touch 1 WRLN DM
+
+
+WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%GIG%' AND (eCRW_Project_Name LIKE '%LAUNCH%' OR Campaign_Name LIKE '%LNCH%') AND (Campaign_Name LIKE '%TOUCH 2%' OR Campaign_Name LIKE '%T2%' OR Campaign_Name LIKE '%T3%' OR Campaign_Name LIKE '%T4%') THEN 43 --Gigapower Touch 2 WRLN DM
+
+WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%GIG%' AND (eCRW_Project_Name LIKE '%LAUNCH%' OR Campaign_Name LIKE '%LNCH%') AND Campaign_Name LIKE '%DTV%' THEN 642 --Gigapower Touch 1 DTV DM
+WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%GIG%' AND (eCRW_Project_Name LIKE '%LAUNCH%' OR Campaign_Name LIKE '%LNCH%') AND Campaign_Name LIKE '%PRO%' THEN 1019 --Gigapower Touch 1 Prospect DM
+WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%GIG%' AND (eCRW_Project_Name LIKE '%LAUNCH%' OR Campaign_Name LIKE '%LNCH%') THEN 40 --Gigapower Touch 1 WRLN DM
+
+
+
+WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%IPTVSubsHSIA%' THEN 996 --Core IPTV DM (HSIA Cross Sell from CLM)
 --new green dm hispanic
 WHEN Media_Code = 'DM' AND (Campaign_Name LIKE '%T1%' OR Campaign_Name LIKE '%TOUCH 1%') AND (Campaign_Name LIKE '%BILINGUAL%' OR Campaign_Name LIKE '%HISPANIC%' OR Vendor='Dieste') THEN 71
 WHEN Media_Code = 'DM' AND (Campaign_Name LIKE '%BILINGUAL%' OR Campaign_Name LIKE '%HISPANIC%' OR Campaign_Name LIKE '%SPANISH%' OR Vendor='Dieste') AND campaign_name NOT LIKE '%spanish%' AND campaign_name NOT LIKE '%bilingual bucket test%' AND campaign_name NOT LIKE '%phone card%' AND Campaign_Name NOT LIKE '%HISPANIC%LT%'THEN 69
@@ -150,7 +161,7 @@ WHEN Media_Code = 'DM' AND Campaign_Name LIKE '%HISPANIC%LT%' THEN 71
 
 
 --DTV cross sell DM
-WHEN Media_Code = 'DM' AND (Campaign_Name LIKE '%DTV%' OR Campaign_Name LIKE '%CROSS%') THEN 73
+WHEN Media_Code = 'DM' AND (Campaign_Name LIKE '%DTV%' AND Campaign_Name LIKE '%CROSS%') THEN 73
 
 WHEN Media_code = 'DM' AND eCRW_Project_Name LIKE '%FCC%' THEN 191
 WHEN Media_code = 'EM' AND eCRW_Project_Name LIKE '%FCC%' THEN 202
@@ -173,9 +184,6 @@ WHEN Media_Code = 'DM' AND (Campaign_Name LIKE '%New Green%' OR Campaign_Name LI
 WHEN Media_Code = 'DM' AND (Campaign_Name LIKE '%New Green%' OR Campaign_Name LIKE '%employee%') THEN 79
 
 
---engagement email
-
-WHEN Media_Code = 'EM' AND Campaign_Name NOT LIKE '%re-eng%' AND Campaign_Name LIKE '%ENG%' AND(Campaign_Name LIKE '%EARLY%' OR Campaign_Name LIKE '%Mid%' OR Campaign_Name LIKE '%Late%' OR eCRW_Project_Name LIKE '%PostLaunchWeek1and2%' OR eCRW_Project_Name LIKE '%PostLaunchWeek3and4%' OR eCRW_Project_Name LIKE '%PostWeek5%' OR eCRW_Project_Name LIKE '%CoreEarly%') AND Campaign_Name NOT LIKE '%TRIG%' THEN 128
 
 --OOF Email
 WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%OOF%' and (eCRW_Project_Name LIKE '%Redeploy%' OR eCRW_Project_Name LIKE '%Reblast%' OR eCRW_Project_Name LIKE '%RBT%') THEN 938 --OOF Engagement
@@ -213,6 +221,11 @@ WHEN Media_code = 'EM' AND eCRW_Project_Name NOT LIKE '%GIG%' AND eCRW_Project_N
 WHEN Media_Code = 'EM' AND eCRW_Project_Name NOT LIKE '%GIG%' AND eCRW_Project_Name NOT LIKE '%Pregreen%' AND (Campaign_Name LIKE '%touch 2%' OR Campaign_Name LIKE '%t2%' OR Campaign_Name LIKE '%touch 3%' OR Campaign_Name LIKE '%t3%')AND Campaign_Name NOT LIKE '%BLAST%' AND Campaign_Name NOT LIKE '% RB%' AND Campaign_Name NOT LIKE '%ENG%' AND Campaign_Name NOT LIKE '%TV UPSELL%' AND Campaign_Name NOT LIKE '%TV UP%' AND Campaign_Name NOT LIKE '%winback%' THEN 120
 WHEN Media_Code = 'EM' AND eCRW_Project_Name NOT LIKE '%GIG%' AND eCRW_Project_Name NOT LIKE '%Pregreen%' AND (Campaign_Name LIKE '%touch 2%' OR Campaign_Name LIKE '%t2%' OR Campaign_Name LIKE '%touch 3%' OR Campaign_Name LIKE '%t3%')AND (Campaign_Name LIKE '%BLAST%' OR Campaign_Name LIKE '% RB%' OR Campaign_Name lIKE '%ENG%') and Campaign_Name NOT LIKE '%winback%' AND campaign_name NOT LIKE '%tv upsell%' THEN 121
 
+
+/*--engagement email
+
+WHEN Media_Code = 'EM' AND Campaign_Name NOT LIKE '%re-eng%' AND Campaign_Name LIKE '%ENG%' AND(Campaign_Name LIKE '%EARLY%' OR Campaign_Name LIKE '%Mid%' OR Campaign_Name LIKE '%Late%' OR eCRW_Project_Name LIKE '%PostLaunchWeek1and2%' OR eCRW_Project_Name LIKE '%PostLaunchWeek3and4%' OR eCRW_Project_Name LIKE '%PostWeek5%' OR eCRW_Project_Name LIKE '%CoreEarly%') AND Campaign_Name NOT LIKE '%TRIG%' THEN 128
+
 --core email
 WHEN Media_Code = 'EM' AND eCRW_Project_Name NOT LIKE '%GIG%' AND (Campaign_Name LIKE '%EARLY%' OR eCRW_Project_Name LIKE '%PostLaunchWeek1and2%' OR eCRW_Project_Name LIKE '%Early%') AND Campaign_Name NOT LIKE '%BLAST%' AND Campaign_Name NOT LIKE '% RB%' AND Campaign_Name NOT LIKE '%REDEPLOY%' THEN 124
 WHEN Media_Code = 'EM' AND eCRW_Project_Name NOT LIKE '%GIG%' AND (Campaign_Name LIKE '%EARLY%' OR eCRW_Project_Name LIKE '%PostLaunchWeek1and2%' OR eCRW_Project_Name LIKE '%Early%') AND (Campaign_Name  LIKE '%BLAST%' OR Campaign_Name  LIKE '%REDEPLOY%' OR Campaign_Name  LIKE '% RB%') THEN 126
@@ -230,11 +243,35 @@ WHEN Media_Code = 'EM' AND eCRW_Project_Name NOT LIKE '%GIG%' AND Campaign_Name 
 WHEN Media_Code = 'EM' AND eCRW_Project_Name NOT LIKE '%GIG%' AND Campaign_Name LIKE '%black fri%' AND Campaign_Name NOT LIKE '%BLAST%' AND Campaign_Name NOT LIKE '%deploy%'  THEN 130
 WHEN Media_Code = 'EM' AND eCRW_Project_Name NOT LIKE '%GIG%' AND Campaign_Name LIKE '%black fri%' AND (Campaign_Name  LIKE '%BLAST%' OR Campaign_Name LIKE '%deploy%')  THEN 132
 WHEN Media_Code = 'EM' AND eCRW_Project_Name NOT LIKE '%GIG%' AND Campaign_Name LIKE '%GIG%' AND Campaign_Name NOT LIKE '%TRIGGER%' and Campaign_Name NOT LIKE '%TV Upsell%'THEN 130
+*/
+--Core Email per new naming structure
+WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Core%Early%' AND Campaign_Name LIKE '%Has DSL%' AND Campaign_Name NOT LIKE '%Engagement%' THEN 538 --Core Early BBMig EM
+WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Core%Early%' AND Campaign_Name LIKE '%Has DTV%' AND Campaign_Name NOT LIKE '%Engagement%' THEN 656 --Core Early DTV EM
+WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Core%Early%' AND Campaign_Name NOT LIKE '%Engagement%' THEN 124 --Core Early WRLN EM
 
+WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Core%Early%' AND Campaign_Name LIKE '%Has DSL%' AND Campaign_Name LIKE '%Engagement%' THEN 726 --Core Engagement BBMig EM
+WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Core%Early%' AND Campaign_Name LIKE '%Has DTV%' AND Campaign_Name LIKE '%Engagement%' THEN 658 --Core Engagement DTV EM
+WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Core%Early%' AND Campaign_Name LIKE '%Engagement%' THEN 128 --Core Engagement WRLN EM
+
+WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Core%Mid%' AND Campaign_Name LIKE '%Has DSL%' AND Campaign_Name NOT LIKE '%Engagement%' THEN 540 --Core Mid BBMig EM
+WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Core%Mid%' AND Campaign_Name LIKE '%Has DTV%' AND Campaign_Name NOT LIKE '%Engagement%' THEN 662 --Core Mid DTV EM
+WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Core%Mid%' AND Campaign_Name NOT LIKE '%Engagement%' THEN 130 --Core Mid WRLN EM
+
+WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Core%Mid%' AND Campaign_Name LIKE '%Has DSL%' AND Campaign_Name LIKE '%Engagement%' THEN 726 --Core Engagement BBMig EM
+WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Core%Mid%' AND Campaign_Name LIKE '%Has DTV%' AND Campaign_Name LIKE '%Engagement%' THEN 658 --Core Engagement DTV EM
+WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Core%Mid%' AND Campaign_Name LIKE '%Engagement%' THEN 128 --Core Engagement WRLN EM
+
+WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Core%Late%' AND Campaign_Name LIKE '%Has DSL%' AND Campaign_Name NOT LIKE '%Engagement%' THEN 540 --Core Late BBMig EM
+WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Core%Late%' AND Campaign_Name LIKE '%Has DTV%' AND Campaign_Name NOT LIKE '%Engagement%' THEN 662 --Core Late DTV EM
+WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Core%Late%' AND Campaign_Name NOT LIKE '%Engagement%' THEN 130 --Core Late WRLN EM
+
+WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Core%Late%' AND Campaign_Name LIKE '%Has DSL%' AND Campaign_Name LIKE '%Engagement%' THEN 728 --Core Engagement BBMig EM
+WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Core%Late%' AND Campaign_Name LIKE '%Has DTV%' AND Campaign_Name LIKE '%Engagement%' THEN 729 --Core Engagement DTV EM
+WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Core%Late%' AND Campaign_Name LIKE '%Engagement%' THEN 727 --Core Engagement WRLN EM
 
 --Gigapower Core Email
-WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%GIG%' AND eCRW_Project_Name NOT LIKE '%LAUNCH%' AND Campaign_Name NOT LIKE '%Launch%' AND Campaign_Name NOT LIKE '%LNCH%' AND Campaign_Name NOT LIKE '%BLAST%' AND Campaign_Name NOT LIKE '% RB%' AND Campaign_Name NOT LIKE '%REDEPLOY%' THEN  503
-WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%GIG%' AND eCRW_Project_Name NOT LIKE '%LAUNCH%' AND Campaign_Name NOT LIKE '%Launch%' AND Campaign_Name NOT LIKE '%LNCH%'  AND (Campaign_Name LIKE '%BLAST%' OR Campaign_Name LIKE '% RB%' OR Campaign_Name LIKE '%REDEPLOY%') THEN 504
+WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%GIG%' AND eCRW_Project_Name LIKE '%ONGO%' AND Campaign_Name NOT LIKE '%BLAST%' AND Campaign_Name NOT LIKE '% RB%' AND Campaign_Name NOT LIKE '%REDEPLOY%' THEN  503
+WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%GIG%' AND eCRW_Project_Name LIKE '%ONGO%'  AND (Campaign_Name LIKE '%BLAST%' OR Campaign_Name LIKE '% RB%' OR Campaign_Name LIKE '%REDEPLOY%') THEN 504
 WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%GIG%' AND (eCRW_Project_Name LIKE '%LAUNCH%' OR Campaign_Name LIKE '%Launch%' OR Campaign_Name LIKE '%LNCH%') AND (Campaign_Name LIKE '%Touch1%' OR Campaign_Name LIKE '%T1%') AND Campaign_Name NOT LIKE '%BLAST%' AND Campaign_Name NOT LIKE '% RB%' AND Campaign_Name NOT LIKE '%REDEPLOY%' THEN  196
 WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%GIG%' AND (eCRW_Project_Name LIKE '%LAUNCH%' OR Campaign_Name LIKE '%Launch%' OR Campaign_Name LIKE '%LNCH%') AND (Campaign_Name LIKE '%Touch1%' OR Campaign_Name LIKE '%T1%') AND (Campaign_Name LIKE '%BLAST%' OR Campaign_Name LIKE '% RB%' OR Campaign_Name LIKE '%REDEPLOY%') THEN 197
 WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%GIG%' AND (eCRW_Project_Name LIKE '%LAUNCH%' OR Campaign_Name LIKE '%Launch%' OR Campaign_Name LIKE '%LNCH%') AND (Campaign_Name LIKE '%Touch2%' OR Campaign_Name LIKE '%T2%' OR Campaign_Name LIKE '%T3%' OR Campaign_Name LIKE '%T4%') AND Campaign_Name NOT LIKE '%BLAST%' AND Campaign_Name NOT LIKE '% RB%' AND Campaign_Name NOT LIKE '%REDEPLOY%' THEN  199
@@ -292,7 +329,7 @@ ORDER BY a.idProgram_Touch_Definitions
 --Clean = flight plan has exact in home date match.
 
 INSERT INTO bvt_staging.UVLB_pID_FlightPlan_Clean
-SELECT Distinct a.ParentID, a.idProgram_Touch_Definitions, a.idFlight_Plan_Records, b.Media_Code, b.eCRW_Project_Name, b.Campaign_Name, b.In_Home_Date, b.Vendor,
+SELECT Distinct a.ParentID, a.idProgram_Touch_Definitions, a.idFlight_Plan_Records, b.Media_Code, b.eCRW_Project_Name, b.Campaign_Name, b.Cell_Description, b.In_Home_Date, b.Vendor,
  d.Campaign_Name as [FlightCampaignName], d.InHome_Date as [FlightInHomeDate], d.Touch_Name as [FlightTouchName], d.Program_Name as [FlightProgramName], d.Tactic as [FlightTactic], d.Media as [FlightMedia]
  , d.Campaign_Type as [FlightCampaignType], d.Audience as [FlightAudience], d.Creative_Name as [FlightCreativeName], d.Offer as [FlightOffer]
 FROM #ParentID_ID_Link2 a
@@ -313,7 +350,7 @@ LEFT JOIN (SELECT DISTINCT
 		FROM UVAQ.bvt_prod.UVLB_Best_View_Forecast_VW_FOR_LINK
 		where KPI_Type = 'Volume' And Forecast <> 0) d
 ON a.idFlight_Plan_Records = d.idFlight_Plan_Records
-Where b.In_home_date = d.InHome_Date
+Where b.In_Home_Date = d.InHome_Date
 AND a.ParentID not in (Select ParentID from #ParentID_ID_Link2 group by parentid having COUNT(ParentID) >1)
 AND b.AssignDate =Convert(date, getdate())
 ORDER BY a.idProgram_Touch_Definitions
@@ -321,7 +358,7 @@ ORDER BY a.idProgram_Touch_Definitions
 
 --Flight plan has record within +/- 5 days of eCRW in home date but does not match exactly.
 INSERT INTO bvt_staging.UVLB_pID_FlightPlan_Other
-SELECT Distinct a.ParentID, a.idProgram_Touch_Definitions, a.idFlight_Plan_Records, b.Media_Code, b.eCRW_Project_Name, b.Campaign_Name, b.In_Home_Date, b.Vendor,
+SELECT Distinct a.ParentID, a.idProgram_Touch_Definitions, a.idFlight_Plan_Records, b.Media_Code, b.eCRW_Project_Name, b.Campaign_Name, b.Cell_Description, b.In_Home_Date, b.Vendor,
  d.Campaign_Name as [FlightCampaignName], d.InHome_Date as [FlightInHomeDate], d.Touch_Name as [FlightTouchName], d.Program_Name as [FlightProgramName], d.Tactic as [FlightTactic], d.Media as [FlightMedia]
  , d.Campaign_Type as [FlightCampaignType], d.Audience as [FlightAudience], d.Creative_Name as [FlightCreativeName], d.Offer as [FlightOffer]
 FROM #ParentID_ID_Link2 a
@@ -342,7 +379,7 @@ LEFT JOIN (SELECT DISTINCT
 		FROM UVAQ.bvt_prod.UVLB_Best_View_Forecast_VW_FOR_LINK
 		where KPI_Type = 'Volume' And Forecast <> 0) d
 ON a.idFlight_Plan_Records = d.idFlight_Plan_Records
-Where b.In_home_date <> d.InHome_Date and d.InHome_Date is not null
+Where b.In_Home_Date <> d.InHome_Date and d.InHome_Date is not null
 AND a.ParentID not in (Select ParentID from #ParentID_ID_Link2 group by parentid having COUNT(ParentID) >1)
 AND b.AssignDate = Convert(date, getdate())
 ORDER BY a.idProgram_Touch_Definitions
@@ -351,7 +388,7 @@ ORDER BY a.idProgram_Touch_Definitions
 --eCRW information does not have matching flight plan within +/- 5 days.
 
 INSERT INTO bvt_staging.UVLB_pID_FlightPlan_NoMatch
-SELECT Distinct a.ParentID, a.idProgram_Touch_Definitions, a.idFlight_Plan_Records, b.Media_Code, b.eCRW_Project_Name, b.Campaign_Name, b.In_Home_Date, b.Vendor,
+SELECT Distinct a.ParentID, a.idProgram_Touch_Definitions, a.idFlight_Plan_Records, b.Media_Code, b.eCRW_Project_Name, b.Campaign_Name, b.Cell_Description, b.In_Home_Date, b.Vendor,
  d.Campaign_Name as [FlightCampaignName], d.InHome_Date as [FlightInHomeDate], Coalesce(d.Touch_Name, e.Touch_Name) as [FlightTouchName], d.Program_Name as [FlightProgramName], d.Tactic as [FlightTactic], Coalesce(d.Media, e.Media) as [FlightMedia]
  , d.Campaign_Type as [FlightCampaignType], d.Audience as [FlightAudience], d.Creative_Name as [FlightCreativeName], d.Offer as [FlightOffer]
 FROM #ParentID_ID_Link2 a
@@ -378,13 +415,13 @@ JOIN (select a.idProgram_Touch_Definitions_TBL, a.Touch_Name, b.Media from UVAQ.
 on a.idProgram_Touch_Definitions = e.idProgram_Touch_Definitions_TBL
 Where d.InHome_Date is null
 AND b.AssignDate = Convert(date, getdate())
-ORDER BY In_home_date, a.idProgram_Touch_Definitions
+ORDER BY In_Home_Date, a.idProgram_Touch_Definitions
 
 
 
 --There are multiple matches within +/- days. Should not occur going forward often. 
 INSERT INTO bvt_staging.UVLB_pID_FlightPlan_Dups
-SELECT Distinct a.ParentID, a.idProgram_Touch_Definitions, a.idFlight_Plan_Records, b.Media_Code, b.eCRW_Project_Name, b.Campaign_Name, b.In_Home_Date, b.Vendor,
+SELECT Distinct a.ParentID, a.idProgram_Touch_Definitions, a.idFlight_Plan_Records, b.Media_Code, b.eCRW_Project_Name, b.Campaign_Name, b.Cell_Description, b.In_Home_Date, b.Vendor,
  d.Campaign_Name as [FlightCampaignName], d.InHome_Date as [FlightInHomeDate], d.Touch_Name as [FlightTouchName], d.Program_Name as [FlightProgramName], d.Tactic as [FlightTactic], d.Media as [FlightMedia]
  , d.Campaign_Type as [FlightCampaignType], d.Audience as [FlightAudience], d.Creative_Name as [FlightCreativeName], d.Offer as [FlightOffer]
 FROM #ParentID_ID_Link2 a
@@ -411,6 +448,7 @@ ORDER BY a.idProgram_Touch_Definitions
 
 
 END
+
 
 
 

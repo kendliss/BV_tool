@@ -273,6 +273,7 @@ WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Wire%Trig%' THEN 784 --Wirel
 WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%TV%Thank%' THEN 785 --IPTV Thank you EM
 WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Uverse.com%' THEN 786 --Uverse.com EM
 WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%5%month%' THEN 788 --5 Month Tenure EM
+WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Make%It%Personal%' THEN 900 --Make It Personal EM
 
 
 

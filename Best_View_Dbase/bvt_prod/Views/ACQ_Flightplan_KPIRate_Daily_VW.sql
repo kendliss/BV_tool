@@ -1,15 +1,14 @@
-﻿drop VIEW  [bvt_prod].[UVLB_Flightplan_KPIRate_Daily_VW]
+﻿drop VIEW  [bvt_prod].[ACQ_Flightplan_KPIRate_Daily_VW]
 go
 
-CREATE view [bvt_prod].[UVLB_Flightplan_KPIRate_Daily_VW]
+CREATE view [bvt_prod].[ACQ_Flightplan_KPIRate_Daily_VW]
 as
 ----Join Seasonality Adjustments
 select idFlight_Plan_Records
 	, responsebyday.idProgram_Touch_Definitions_TBL_FK
 	, idkpi_types_FK
 	, Day_of_Week
-	, case when ResponseByDay.idTarget_Rate_Reasons_LU_TBL_FK is null then KPI_Daily*Seasonality_Adj
-		else KPI_Daily*Seasonality_Adj*Rate_Adjustment_Factor end as KPI_Daily
+	, KPI_Daily
 	, Forecast_DayDate
 
 from
@@ -53,27 +52,25 @@ from
 		end as KPI_Rate
 	, InHome_Date
 	, idTarget_Rate_Reasons_LU_TBL_FK
-from [bvt_prod].[UVLB_Flight_Plan_VW] as A
+from [bvt_prod].[ACQ_Flight_Plan_VW] as A
 	
-	left join (SELECT * FROM [bvt_prod].[KPI_Rate_Start_End_FUN]('UVLB')) as B on A.idProgram_Touch_Definitions_TBL_FK=B.idProgram_Touch_Definitions_TBL_FK
+	left join (SELECT * FROM [bvt_prod].[KPI_Rate_Start_End_FUN]('ACQ')) as B on A.idProgram_Touch_Definitions_TBL_FK=B.idProgram_Touch_Definitions_TBL_FK
 	AND InHome_Date between Rate_Start_Date and b.END_DATE) as KPI_Join
 ---End Join KPI and Flight Plan	
 
-	left join (SELECT * FROM [bvt_prod].[Response_Daily_Start_End_FUN]('UVLB')) as B 
+	left join (SELECT * FROM [bvt_prod].[Response_Daily_Start_End_FUN]('ACQ')) as B 
 		on KPI_Join.idProgram_Touch_Definitions_TBL_FK=b.idProgram_Touch_Definitions_TBL_FK and KPI_Join.idkpi_types_FK=b.idkpi_type_FK
 		and InHome_Date between daily_Start_Date and b.END_DATE) as Daily_Join
 	
 ---End Join Daily Percentages
 
-	left join (SELECT * FROM [bvt_prod].[Response_Curve_Start_End_FUN]('UVLB')) as C
+	left join (SELECT * FROM [bvt_prod].[Response_Curve_Start_End_FUN]('ACQ')) as C
 		on Daily_Join.idProgram_Touch_Definitions_TBL_FK=c.idProgram_Touch_Definitions_TBL_FK and Daily_Join.idkpi_types_FK=c.idkpi_type_FK
 		and inhome_date between Curve_Start_Date and c.END_DATE
 	left join  dim.Media_Calendar_Daily 
 		on Daily_Join.InHome_Date=Media_Calendar_Daily.Date) as ResponseByDay
 ----------End  Weekly Response Curve and Media Calendar		
-	left join bvt_prod.Seasonality_Adjustements as E
-		on ResponseByDay.idProgram_Touch_Definitions_TBL_FK=E.idProgram_Touch_Definitions_TBL_FK and iso_week_year=Media_Year and mediamonth=Media_Month AND ISO_Week=Media_Week
-	left join (SELECT * FROM [bvt_prod].[Target_adjustment_start_end_FUN]('UVLB')) as Target_adjustment_start_end
+	left join (SELECT * FROM [bvt_prod].[Target_adjustment_start_end_FUN]('ACQ')) as Target_adjustment_start_end
 		on ResponseByDay.idTarget_Rate_Reasons_LU_TBL_FK=Target_adjustment_start_end.idTarget_Rate_Reasons_LU_TBL_FK 
 		and ResponseByDay.idProgram_Touch_Definitions_TBL_FK=Target_adjustment_start_end.idProgram_Touch_Definitions_TBL_FK
 		and responsebyday.inhome_date between Adj_Start_Date and end_date
