@@ -153,9 +153,14 @@ CREATE VIEW [bvt_prod].[UCLM_Best_View_VW]
 			, sum(Actuals.Actual) as Actual
 
 			from 
-				(select idFlight_Plan_Records_FK, Start_Date, CTD_Quantity, CTD_Budget 
-				from bvt_prod.UCLM_Actuals_VW 
-				group by idFlight_Plan_Records_FK, Start_Date, CTD_Quantity, CTD_Budget) as actual_query
+				(select idFlight_Plan_Records_FK, Start_Date, sum(CTD_Quantity) as CTD_Quantity, sum(CTD_Budget) as CTD_Budget
+					from 
+					(
+					select idFlight_Plan_Records_FK, parentid, Start_Date, CTD_Quantity, CTD_Budget 
+						from bvt_prod.UCLM_Actuals_VW 
+					group by idFlight_Plan_Records_FK, parentid, Start_Date, CTD_Quantity, CTD_Budget
+					) A
+				group by idFlight_Plan_Records_FK, Start_Date) as actual_query
 
 				UNPIVOT (Actual for kpiproduct in 
 					([CTD_Quantity], [CTD_Budget])) as Actuals
