@@ -62,9 +62,9 @@ CASE
 
 --Bill Media -- Bill Inserts
 WHEN Media_Code = 'BI' AND(Campaign_Name LIKE '%WLS%' OR Campaign_Name LIKE '%Wireless%') AND Campaign_Name NOT LIKE '%E-Bill%' AND Campaign_Name NOT LIKE '%EBill%' AND Campaign_Name NOT LIKE '%TV%' THEN 187
-WHEN Media_Code = 'BI' AND Campaign_Name NOT LIKE '%WLS%' AND Campaign_Name NOT LIKE '%Wireless%' AND Campaign_Name Not LIke '%E-Bill%' AND Campaign_Name NOT LIKE '%EBill%' AND Campaign_Name NOT LIKE '%TV%' THEN 188
+WHEN Media_Code = 'BI' AND eCRW_Project_Name LIKE '%UNAT_UVBillIns2015%' THEN 188 --Wireline Bill Insert
 WHEN Media_Code = 'BI' AND (Campaign_Name LIKE '%EBill%' OR Campaign_Name like '%E-Bill%') AND Campaign_Name NOT LIKE '%TV%' THEN 185
-WHEN Media_Code = 'BI' AND Campaign_Name LIKE '%TV%' AND Campaign_Name NOT LIKE '%EBill%' AND Campaign_Name NOT LIKE '%E-Bill%' THEN 189 
+WHEN Media_Code = 'BI' AND eCRW_Project_Name LIKE '%BI_DTV_CROSS_SELL%' THEN 189 --TV Cross Sell Bill Insert
 WHEN Media_Code = 'BI' AND Campaign_Name LIKE '%TV%' AND (Campaign_Name LIKE '%EBill%' OR Campaign_Name LIKE '%E-Bill%') THEN 186 
 
 
@@ -280,20 +280,23 @@ WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%GIG%' AND (eCRW_Project_Name
 WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%GIG%' AND (eCRW_Project_Name LIKE '%LAUNCH%' OR Campaign_Name LIKE '%Launch%' OR Campaign_Name LIKE '%LNCH%') AND (Campaign_Name LIKE '%BLAST%' OR Campaign_Name LIKE '% RB%' OR Campaign_Name LIKE '%REDEPLOY%') THEN 197
 
 
-WHEN Media_Code = 'FYI' AND Campaign_Name LIKE '%FPC%' AND Campaign_Name NOT LIKE '%Migr%' THEN 182
 WHEN Media_Code = 'FYI' AND Campaign_Name LIKE '%ONSERT%' AND Campaign_Name  LIKE '%SP%'  THEN 177
 WHEN Media_Code = 'FYI' AND Campaign_Name LIKE '%ONSERT%' AND Campaign_Name  LIKE '%TV%'  THEN 178
 WHEN Media_Code = 'FYI' AND Campaign_Name LIKE '%ONSERT%' AND (Campaign_Name  LIKE '%wireless%' OR Campaign_Name  LIKE '%WRLS%')  THEN 179
-WHEN Media_Code = 'FYI' AND Campaign_Name NOT LIKE '%WIRELESS%' AND Campaign_Name NOT LIKE '%HISPANIC%' AND Campaign_Name NOT LIKE '%SPANISH%' AND Campaign_Name NOT LIKE '%SP%' and Campaign_Name NOT LIKE '%TV%Upsell%' THEN 181
+WHEN Media_Code = 'FYI' AND eCRW_Project_Name LIKE '%UNAT_BillMsg%' AND Campaign_Name LIKE '%DTV Eligible%' THEN 181
+WHEN Media_Code = 'FYI' AND eCRW_Project_Name LIKE '%UNAT_BillMsg%' AND Campaign_Name LIKE '%DTV Subs%' THEN 691
 WHEN Media_Code = 'FYI' AND Campaign_Name NOT LIKE '%WIRELESS%' AND (Campaign_Name LIKE '%HISPANIC%' OR Campaign_Name LIKE '%SPANISH%' OR Campaign_Name LIKE '%SP%') AND Campaign_Name NOT LIKE '%TV%Upsell%' THEN 174
 WHEN Media_Code = 'FYI' AND Campaign_Name LIKE '%WIRELESS%' AND (Campaign_Name LIKE '%HISPANIC%' OR Campaign_Name LIKE '%SPANISH%' OR Campaign_Name LIKE '%SP%') AND Campaign_Name NOT LIKE '%TV%Upsell%' THEN 175
 WHEN Media_Code = 'FYI' AND (Campaign_Name LIKE '%HISPANIC%' OR Campaign_Name LIKE '%SPANISH%' OR Campaign_Name LIKE '%SP%') AND Campaign_Name LIKE '%TV%Upsell%' THEN 508
 WHEN Media_Code = 'FYI' AND Campaign_Name LIKE '%WIRELESS%' THEN 180
 WHEN Media_Code = 'FYI' AND Campaign_Name LIKE '%TV Upsell%' THEN 184
 
-WHEN Media_code = 'FPC' AND eCRW_Project_Name LIKE '%FPC%' AND Campaign_Name NOT LIKE '%Migr%' AND Campaign_Name NOT LIKE '%Cross-Sell%' THEN 182 
-WHEN Media_code = 'FPC' and eCRW_Project_name LIKE '%FPC%' AND Campaign_Name NOT LIKE '%Mirg%' AND Campaign_Name LIKE '%Cross-Sell%' THEN 183
-WHEN Media_code = 'FPC' AND eCRW_Project_Name LIKE '%FPC%' AND Campaign_Name LIKE '%Wireline%' AND Campaign_Name LIKE '%migr%' THEN 182 -- moved for time being from 510
+WHEN Media_Code = 'FPC' AND eCRW_Project_Name LIKE '%NancyFPCAllIPTVGreen%' AND Campaign_Name LIKE '%Non DSL DTV cross sell HSIA Cross Sell%' THEN 689 --DTV FPC
+WHEN Media_Code = 'FPC' AND eCRW_Project_Name LIKE '%NancyFPCAllIPTVGreen%' AND Campaign_Name LIKE '%Non DSL DTV cross sell DTV Cross Sell%' THEN 182 --Wireline FPC
+WHEN Media_Code = 'FPC' AND eCRW_Project_Name LIKE '%NancyFPCDSLCust%' AND Campaign_Name LIKE '%DSL Subscriber cross sell DTV Cross Sell%' THEN 801 --Wireline Migrator BBMig FPC
+WHEN Media_Code = 'FPC' AND eCRW_Project_Name LIKE '%NancyFPCDSLCust%' AND Campaign_Name LIKE '%DSL Subscriber cross sell HSIA Cross Sell%' THEN 799 --Wireline Migrator DTV FPC
+WHEN Media_Code = 'FPC' AND eCRW_Project_Name LIKE '%DTVCrossSellUVBill%' THEN 183 --TV Cross Sell FPC
+
 
 WHEN Media_Code = 'LP' THEN 506
 
