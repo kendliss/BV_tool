@@ -551,6 +551,21 @@
     <Build Include="bvt_prod\Views\UCLM_Best_View_VW.sql" />
     <Build Include="bvt_prod\Views\UCLM_Actuals_VW.sql" />
     <Build Include="bvt_prod\Views\UCLM_Best_View_VW_test.sql" />
+    <Build Include="bvt_prod\Views\CLM_Revenue_Forecast_VW.sql" />
+    <Build Include="bvt_prod\Views\CLM_Revenue_Actuals_VW.sql" />
+    <Build Include="bvt_prod\Views\CLM_Revenue_Forecast_Weekly_VW.sql" />
+    <Build Include="bvt_prod\Views\CLM_Revenue_Best_View_Pivot_VW.sql" />
+    <Build Include="bvt_prod\Views\CLM_Revenue_Best_View_VW.sql" />
+    <Build Include="bvt_prod\Views\CLM_Revenue_Drag_Forecast_VW.sql" />
+    <Build Include="bvt_prod\Views\CLM_Revenue_Financial_Budget_Forecast_VW.sql" />
+    <Build Include="bvt_prod\Views\CLM_Revenue_Flight_Plan_VW.sql" />
+    <Build Include="bvt_prod\Views\CLM_Revenue_Flightplan_KPIRate_Daily_VW.sql" />
+    <Build Include="bvt_prod\Views\CLM_Revenue_Flightplan_SalesRate_Daily_VW.sql" />
+    <Build Include="bvt_prod\Views\CLM_Revenue_Flightplan_Volume_Forecast_VW.sql" />
+    <Build Include="bvt_prod\Views\CLM_Revenue_FlightplanKPIForecast.sql" />
+    <Build Include="bvt_prod\Views\CLM_Revenue_FlightplanSalesForecast.sql" />
+    <Build Include="bvt_prod\Views\UCLM_Drag_Sales_Forecast_VW.sql" />
+    <Build Include="bvt_prod\Views\CLM_Revenue_Drag_Sales_Forecast_VW.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="Best_View_Dbase.refactorlog" />
