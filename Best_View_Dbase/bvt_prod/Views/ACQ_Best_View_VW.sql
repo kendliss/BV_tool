@@ -10,7 +10,8 @@ CREATE VIEW [bvt_prod].[ACQ_Best_View_VW]
 		coalesce(forecast_cv.[Media_Year],actual_volume.[Media_Year],actual_results.[Media_Year]) as [Media_Year],
 		coalesce(forecast_cv.[Media_Week],actual_volume.[Media_Week],actual_results.[Media_Week]) as [Media_Week],
 		coalesce(forecast_cv.[Media_Month],actual_volume.[Media_Month],actual_results.Media_Month) as [Media_Month],
-		coalesce(forecast_cv.[Touch_Name],actual_volume.[Touch_Name],actual_results.[Touch_Name]) as [Touch_Name], 
+		coalesce(forecast_cv.[Touch_Name],actual_volume.[Touch_Name],actual_results.[Touch_Name]) as [Touch_Name],
+		LEFT(coalesce(forecast_cv.[Touch_Name],actual_volume.[Touch_Name],actual_results.[Touch_Name]),4) as [SubGroup],
 		coalesce(forecast_cv.[Program_Name],actual_volume.[Program_Name],actual_results.[Program_Name]) as [Program_Name], 
 		coalesce(forecast_cv.[Tactic],actual_volume.[Tactic],actual_results.[Tactic]) as [Tactic], 
 		coalesce(forecast_cv.[Media], actual_volume.[Media],actual_results.[Media]) as [Media],
@@ -103,7 +104,7 @@ CREATE VIEW [bvt_prod].[ACQ_Best_View_VW]
 			from [bvt_processed].[Commitment_Views] 
 				-----Bring in touch definition labels 
 				left join [bvt_prod].[Touch_Definition_VW] on [Commitment_Views].[idProgram_Touch_Definitions_TBL_FK]=[Touch_Definition_VW].[idProgram_Touch_Definitions_TBL]
-			where CV_Submission in ('')
+			where CV_Submission in ('ACQ 2016 Commitment View')
 			GROUP BY [id_Flight_Plan_Records_FK], [idProgram_Touch_Definitions_TBL_FK], [Campaign_Name], [InHome_Date], 
 			[Media_Year], [Media_Month], [Media_Week], [KPI_TYPE], [Product_Code],
 			[Touch_Name], [Program_Name], [Tactic], [Media], [Audience], [Creative_Name], [Goal], [Offer], [Campaign_Type], [Channel] ) as CV
