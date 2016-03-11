@@ -1,4 +1,4 @@
-﻿create VIEW [bvt_prod].[CLM_Revenue_Financial_Budget_Forecast_VW]
+﻿ALTER VIEW [bvt_prod].[CLM_Revenue_Financial_Budget_Forecast_VW]
 as
 
  select 
@@ -44,7 +44,8 @@ as
 			, idCPP_Category_FK
 			, month(DATEADD(month,bill_timing,Flight_Plan_Records.InHome_Date)) as Bill_Month
 			, year(DATEADD(month,bill_timing,Flight_Plan_Records.InHome_Date)) as Bill_Year
-			, CPP*Volume as Budget
+			, case when idCPP_Category_FK=16 then CPP
+				else CPP*Volume end as Budget
 
 		from bvt_prod.CLM_Revenue_Flight_Plan_VW as flight_plan_records
 			LEFT join (select * from bvt_prod.CPP_Start_End_FUN('UCLM Revenue')) cpp
