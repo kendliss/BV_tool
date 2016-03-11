@@ -1,4 +1,4 @@
-﻿CREATE VIEW [bvt_prod].[CLM_Revenue_Drag_Sales_Forecast_VW]
+﻿alter VIEW [bvt_prod].[CLM_Revenue_Drag_Sales_Forecast_VW]
 	AS
 
 SELECT Calendar.[Date],
@@ -14,7 +14,7 @@ JOIN [bvt_prod].[CLM_Revenue_Drag_Forecast_VW] AS DragCalls
 
 JOIN [bvt_prod].[Drag_Conversion_Start_End_VW] DragRates
 	ON Calendar.Date between DragRates.conv_rate_start_Date and dragRates.End_Date
-	and DragRates.idProgram_Touch_Definitions_TBL_FK = 800
+	and DragRates.idProgram_Touch_Definitions_TBL_FK = 1170
 
 JOIN bvt_prod.Product_LU_TBL p
 	ON p.idProduct_LU_TBL = DragRates.idProduct_LU_TBL_FK
