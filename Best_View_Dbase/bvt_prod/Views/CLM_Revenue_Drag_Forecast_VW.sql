@@ -1,4 +1,4 @@
-﻿CREATE VIEW [bvt_prod].[CLM_Revenue_Drag_Forecast_VW]
+﻿ALTER VIEW [bvt_prod].[CLM_Revenue_Drag_Forecast_VW]
 AS 
 	--calculate daily calls based on method
 	SELECT 
@@ -8,23 +8,23 @@ AS
 		Media_Year,
 		Media_Week,
 		case when [idDrag_Method_LU_TBL_FK]=1 then [Metric]*[Day_Percent]/7 
-			when [idDrag_Method_LU_TBL_FK]=2 then [Metric]*[FV_Calls]
+		--	when [idDrag_Method_LU_TBL_FK]=2 then [Metric]*[FV_Calls]
 			else 0
 			end as Drag_Calls
 
-		  FROM (SELECT [Date], MediaMonth, MediaMonth_year as media_year, iso_week as Media_week, [Day_Percent], FV_Calls 
+		  FROM (SELECT [Date], MediaMonth, MediaMonth_year as media_year, iso_week as Media_week, [Day_Percent]--, FV_Calls 
 					from dim.media_calendar_daily as calendar
 				
-				left join (select [Day_of_Week],[Day_Percent],[Daily_Start_Date],[END_DATE]  from [bvt_prod].[Response_Daily_Start_End_FUN]('CLM Revenue')
-							where [idProgram_Touch_Definitions_TBL_FK]=800 and [idkpi_type_FK]=1) as response_daily
+				left join (select [Day_of_Week],[Day_Percent],[Daily_Start_Date],[END_DATE]  from [bvt_prod].[Response_Daily_Start_End_FUN]('UCLM Revenue')
+							where [idProgram_Touch_Definitions_TBL_FK]=1170 and [idkpi_type_FK]=1) as response_daily
 				on datepart(weekday,calendar.date)=[Day_of_Week] and [date] between [Daily_Start_Date] and [END_DATE]
-				
+		/*		
 				left join (select [Forecast_DayDate], sum(forecast) as FV_Calls 
 								from [bvt_prod].[CLM_Revenue_Forecast_VW] 
 								where [Product_Code]='Call'
 								and Touch_Name <> 'DRAG'
 								group by Forecast_DayDate) as FV
-				on [Date]=Forecast_DayDate
+				on [Date]=Forecast_DayDate*/
 				where date>='2014-12-28') as Daily
 				
 				

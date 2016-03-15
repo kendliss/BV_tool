@@ -88,7 +88,7 @@ from bvt_prod.CLM_Revenue_Drag_Forecast_VW
 JOIN (Select idFlight_Plan_Records, Case when DATEPART(d,InHome_Date) = 1 and DATEPART(M,InHome_Date) = 1 then DATEPART(YYYY, Inhome_Date)
 	Else DATEPART(YYYY, Inhome_date)+1 END as MediaYear
 	from bvt_prod.CLM_Revenue_Flight_Plan_VW a
-	where idProgram_Touch_Definitions_TBL_FK = 800) medyear
+	where idProgram_Touch_Definitions_TBL_FK = 1170) medyear
 on CLM_Revenue_Drag_Forecast_VW.Media_Year = medyear.MediaYear)
 
 union all
@@ -102,7 +102,7 @@ from bvt_prod.CLM_Revenue_Drag_Sales_Forecast_VW
 JOIN (Select idFlight_Plan_Records, Case when DATEPART(d,InHome_Date) = 1 and DATEPART(M,InHome_Date) = 1 then DATEPART(YYYY, Inhome_Date)
 	Else DATEPART(YYYY, Inhome_date)+1 END as MediaYear
 	from bvt_prod.CLM_Revenue_Flight_Plan_VW a
-	where idProgram_Touch_Definitions_TBL_FK = 800) medyear
+	where idProgram_Touch_Definitions_TBL_FK = 1170) medyear
 on CLM_Revenue_Drag_Sales_Forecast_VW.Media_Year = medyear.MediaYear)
 
 ) as metricsa) as metrics

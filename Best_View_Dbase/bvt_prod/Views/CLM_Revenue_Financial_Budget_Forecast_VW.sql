@@ -1,4 +1,4 @@
-﻿CREATE VIEW [bvt_prod].[CLM_Revenue_Financial_Budget_Forecast_VW]
+﻿create VIEW [bvt_prod].[CLM_Revenue_Financial_Budget_Forecast_VW]
 as
 
  select 
