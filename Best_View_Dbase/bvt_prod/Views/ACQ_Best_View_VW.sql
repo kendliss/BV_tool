@@ -26,7 +26,12 @@ CREATE VIEW [bvt_prod].[ACQ_Best_View_VW]
 		,isnull(Forecast,0) as Forecast
 		,isnull(Commitment,0) as Commitment
 		,isnull(coalesce(actual_volume.Actual,actual_results.Actual),0) as Actual
-		,case when forecast_cv.Media_Week>(case when DATEPART(weekday,getdate()) <= 5 then DATEPART(wk,getdate())-2 else DATEPART(wk,getdate())-1	end) then isnull(Forecast,0)
+		,case when forecast_cv.Media_Week>(case when DATEPART(weekday,getdate()) <= 5 then DATEPART(wk,getdate())-2 else DATEPART(wk,getdate())-1	end) then Forecast
+			--Short term work around for missing volume in scorecard
+			when forecast_cv.[KPI_Type]='Volume' then Forecast
+			--work around to prevent double counting forecast and actual volumes due to mismatched drop date timing
+			when actual_volume.KPI_type='Volume'  and forecast_cv.KPI_Type is null then 0
+				---Remove when volume problem fixed
 			else coalesce(actual_volume.Actual,actual_results.Actual)
 			end as Best_View
 		

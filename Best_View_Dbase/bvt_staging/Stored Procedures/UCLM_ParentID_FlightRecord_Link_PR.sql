@@ -11,6 +11,8 @@ GO
 
 
 /*removed gigapower to put in seperate program. KL 10/2/15
+Added the tables for CLM_Revenue. Left in same query to since they cannot be easily split in eCRW. KL 3/10/16
+Added GP back in since the other two programs are functioning as one. This allows the process to only be ran for all of UCLM once a week. KL 3/10/16
 
 */
 
@@ -35,28 +37,24 @@ TRUNCATE TABLE bvt_staging.UCLM_pID_FlightPlan_Dups
 
 
 INSERT INTO UVAQ.bvt_processed.UCLM_ActiveCampaigns
-SELECT DISTINCT a.ParentID, a.Campaign_Name, a.start_date as [In_Home_Date], a.Media_Code,  a.eCRW_Project_Name, GETDATE()
-
-	FROM JAVDB.IREPORT_2015.dbo.WB_01_Campaign_List AS a JOIN JAVDB.IREPORT_2015.dbo.WB_00_Reporting_Hierarchy AS b
+SELECT DISTINCT a.ParentID, a.Campaign_Name, a.start_date AS [In_Home_Date], a.Media_Code,  a.eCRW_Project_Name, GETDATE()
+FROM JAVDB.IREPORT_2015.dbo.WB_01_Campaign_List AS a 
+JOIN JAVDB.IREPORT_2015.dbo.WB_00_Reporting_Hierarchy AS b
       ON a.tactic_id=b.id
-     WHERE b.Scorecard_Top_Tab = 'Direct Marketing'
-AND  b.Scorecard_LOB_Tab = 'U-verse'
-AND  b.Scorecard_tab = 'U-verse CLM'
-
-
-AND (a.[Start_Date]<= '27-DEC-2016' AND a.End_Date_Traditional>='28-DEC-2014') 
+WHERE b.Scorecard_Top_Tab = 'Direct Marketing'
+	AND  b.Scorecard_LOB_Tab = 'U-verse'
+	AND  b.Scorecard_tab = 'U-verse CLM'
+	AND a.End_Date_Traditional>='28-DEC-2014'
 	AND a.Media_Code <> 'DR'
 	AND a.ParentID > 1334
-	AND a.parentID  NOT IN (SELECT parentID from UVAQ.bvt_processed.UCLM_ActiveCampaigns)
+	AND a.parentID  NOT IN (SELECT parentID FROM UVAQ.bvt_processed.UCLM_ActiveCampaigns)
 	AND a.campaign_name NOT LIKE '%Commitment View%'
 	AND a.campaign_name NOT LIKE '%best View Objectives%'
 	AND a.Start_Date >= '10/1/14'
-	AND ((a.Media_COde IN ('DM','EM','FPC') AND a.eCRW_Project_Name NOT LIKE '%Giga%')
-		OR a.Media_Code in ('BI','FYI','Device/Tablet'))
 
 
 
-Select ParentID,
+SELECT ParentID,
 CASE 
 
 --Bill Media -- Bill Inserts
@@ -121,6 +119,8 @@ WHEN Media_Code = 'FPC' AND eCRW_Project_Name LIKE '%HSIA%Only%' AND eCRW_Projec
 WHEN Media_Code = 'FPC' AND eCRW_Project_Name LIKE '%DTV%' THEN 736 --DTV Cross Sell FPC
 WHEN Media_Code = 'FPC' AND eCRW_Project_Name LIKE '%HSIA%Upsell%' THEN 738 --HSIA Cross Sell FPC
 WHEN Media_Code = 'FPC' AND eCRW_Project_Name LIKE '%Disney%Story%' THEN 798 -- Disney Story Central FPC
+
+WHEN Media_Code = 'FPC' AND eCRW_Project_Name LIKE '%Gigapower%' THEN 247 --Gigapower FPC
 
 
 --FYI
@@ -219,6 +219,10 @@ WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%HSIA%Only%' AND eCRW_Project
 WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%EPIX%' THEN 902 --Free EPiX Upgrade Announcement DM
 
 
+WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%Giga%Announcement_1%' THEN 367 --Announcement 1 Self Mailer DM
+WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%Giga%Announcement_2%' THEN 368 --Announcement 2 Self Mailer DM
+WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%GigaPower%' AND eCRW_Project_Name NOT LIKE '%Low%'THEN 373 --Gigapower Monthly Self Mailer HP DM
+WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%GigaPower%' AND eCRW_Project_Name LIKE '%Low%'THEN 598 --Gigapower Monthly Self Mailer HP DM
 
 
 
@@ -275,11 +279,17 @@ WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Uverse.com%' THEN 786 --Uver
 WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%5%month%' THEN 788 --5 Month Tenure EM
 WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Make%It%Personal%' THEN 900 --Make It Personal EM
 
+WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Giga%Announcement_1%' THEN 386 --Announcement 1 EM
+WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Giga%Announcement_2%' THEN 387 --Announcement 2 EM
+WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%GigaPower%' AND eCRW_Project_Name NOT LIKE '%LOW%' THEN 396 --Gigapower Monthly HP EM
+WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%GigaPower%' AND eCRW_Project_Name LIKE '%LOW%' THEN 597 --Gigapower Monthly lP EM
 
 
 --Device/App
 WHEN Media_Code = 'Device/Tablet' AND eCRW_Project_Name LIKE '%UGuide%' THEN 592 --UGuide App
 
+--SMS
+WHEN Media_Code = 'SMS' AND eCRW_Project_Name LIKE '%Movie%' THEN 574 --Movie Time SMS
 
 ELSE 0 END AS idProgram_Touch_Definitions,
 
@@ -300,7 +310,21 @@ LEFT JOIN (SELECT Distinct
       ,idProgram_Touch_Definitions_TBL_FK 
       ,[InHome_Date]
 		FROM UVAQ.bvt_prod.UCLM_Best_View_Forecast_VW_FOR_LINK
-		where KPI_Type = 'Volume' --And Forecast <> 0
+		where KPI_Type = 'Volume' 
+	UNION
+		SELECT Distinct 
+       [idFlight_Plan_Records]
+      ,idProgram_Touch_Definitions_TBL_FK 
+      ,[InHome_Date]
+		FROM UVAQ.bvt_prod.CLM_Revenue_Best_View_Forecast_VW_FOR_LINK
+		where KPI_Type = 'Volume'
+	UNION 
+		SELECT Distinct 
+       [idFlight_Plan_Records]
+      ,idProgram_Touch_Definitions_TBL_FK 
+      ,[InHome_Date]
+		FROM UVAQ.bvt_prod.UCLM_GP_Best_View_Forecast_VW_FOR_LINK
+		where KPI_Type = 'Volume'  
 		) c
 ON (a.idprogram_Touch_Definitions = c.idProgram_Touch_Definitions_TBL_FK  AND
 (c.InHome_Date BETWEEN Dateadd(D, -5,b.In_Home_Date) AND  Dateadd(D, 5, b.In_Home_Date)))
@@ -331,7 +355,39 @@ LEFT JOIN (SELECT DISTINCT
       ,[Creative_Name]
       ,[Offer]
 		FROM UVAQ.bvt_prod.UCLM_Best_View_Forecast_VW_FOR_LINK
-		where KPI_Type = 'Volume'--And Forecast <> 0
+		where KPI_Type = 'Volume'
+	UNION 
+		SELECT DISTINCT 
+       [idFlight_Plan_Records]
+      ,idProgram_Touch_Definitions_TBL_FK 
+      ,[Campaign_Name]
+      ,[InHome_Date]
+      ,[Touch_Name]
+      ,[Program_Name]
+      ,[Tactic]
+      ,[Media]
+      ,[Campaign_Type]
+      ,[Audience]
+      ,[Creative_Name]
+      ,[Offer]
+		FROM UVAQ.bvt_prod.CLM_Revenue_Best_View_Forecast_VW_FOR_LINK
+		where KPI_Type = 'Volume'
+	UNION
+		SELECT DISTINCT 
+       [idFlight_Plan_Records]
+      ,idProgram_Touch_Definitions_TBL_FK 
+      ,[Campaign_Name]
+      ,[InHome_Date]
+      ,[Touch_Name]
+      ,[Program_Name]
+      ,[Tactic]
+      ,[Media]
+      ,[Campaign_Type]
+      ,[Audience]
+      ,[Creative_Name]
+      ,[Offer]
+		FROM UVAQ.bvt_prod.UCLM_GP_Best_View_Forecast_VW_FOR_LINK
+		where KPI_Type = 'Volume'
 		) d
 ON a.idFlight_Plan_Records = d.idFlight_Plan_Records
 Where b.In_Home_Date = d.InHome_Date
@@ -361,7 +417,39 @@ LEFT JOIN (SELECT DISTINCT
       ,[Creative_Name]
       ,[Offer]
 		FROM UVAQ.bvt_prod.UCLM_Best_View_Forecast_VW_FOR_LINK
-		where KPI_Type = 'Volume'-- And Forecast <> 0
+		where KPI_Type = 'Volume'
+	UNION 
+		SELECT DISTINCT 
+       [idFlight_Plan_Records]
+      ,idProgram_Touch_Definitions_TBL_FK 
+      ,[Campaign_Name]
+      ,[InHome_Date]
+      ,[Touch_Name]
+      ,[Program_Name]
+      ,[Tactic]
+      ,[Media]
+      ,[Campaign_Type]
+      ,[Audience]
+      ,[Creative_Name]
+      ,[Offer]
+		FROM UVAQ.bvt_prod.CLM_Revenue_Best_View_Forecast_VW_FOR_LINK
+		where KPI_Type = 'Volume'
+	UNION
+		SELECT DISTINCT 
+       [idFlight_Plan_Records]
+      ,idProgram_Touch_Definitions_TBL_FK 
+      ,[Campaign_Name]
+      ,[InHome_Date]
+      ,[Touch_Name]
+      ,[Program_Name]
+      ,[Tactic]
+      ,[Media]
+      ,[Campaign_Type]
+      ,[Audience]
+      ,[Creative_Name]
+      ,[Offer]
+		FROM UVAQ.bvt_prod.UCLM_GP_Best_View_Forecast_VW_FOR_LINK
+		where KPI_Type = 'Volume'
 		) d
 ON a.idFlight_Plan_Records = d.idFlight_Plan_Records
 Where b.In_Home_Date <> d.InHome_Date and d.InHome_Date is not null
@@ -391,7 +479,39 @@ LEFT JOIN (SELECT DISTINCT
       ,[Creative_Name]
       ,[Offer]
 		FROM UVAQ.bvt_prod.UCLM_Best_View_Forecast_VW_FOR_LINK
-		where KPI_Type = 'Volume' --And Forecast <> 0
+		where KPI_Type = 'Volume'
+	UNION
+		SELECT DISTINCT 
+       [idFlight_Plan_Records]
+      ,idProgram_Touch_Definitions_TBL_FK 
+      ,[Campaign_Name]
+      ,[InHome_Date]
+      ,[Touch_Name]
+      ,[Program_Name]
+      ,[Tactic]
+      ,[Media]
+      ,[Campaign_Type]
+      ,[Audience]
+      ,[Creative_Name]
+      ,[Offer]
+		FROM UVAQ.bvt_prod.CLM_Revenue_Best_View_Forecast_VW_FOR_LINK
+		where KPI_Type = 'Volume'
+	UNION
+		SELECT DISTINCT 
+       [idFlight_Plan_Records]
+      ,idProgram_Touch_Definitions_TBL_FK 
+      ,[Campaign_Name]
+      ,[InHome_Date]
+      ,[Touch_Name]
+      ,[Program_Name]
+      ,[Tactic]
+      ,[Media]
+      ,[Campaign_Type]
+      ,[Audience]
+      ,[Creative_Name]
+      ,[Offer]
+		FROM UVAQ.bvt_prod.UCLM_GP_Best_View_Forecast_VW_FOR_LINK
+		where KPI_Type = 'Volume'
 		) d
 ON a.idFlight_Plan_Records = d.idFlight_Plan_Records
 JOIN (select a.idProgram_Touch_Definitions_TBL, a.Touch_Name, b.Media from UVAQ.bvt_prod.Program_Touch_Definitions_TBL a
@@ -426,7 +546,39 @@ LEFT JOIN (SELECT DISTINCT
       ,[Creative_Name]
       ,[Offer]
 		FROM UVAQ.bvt_prod.UCLM_Best_View_Forecast_VW_FOR_LINK
-		where KPI_Type = 'Volume' --And Forecast <> 0
+		where KPI_Type = 'Volume'
+	UNION
+		SELECT DISTINCT 
+       [idFlight_Plan_Records]
+      ,idProgram_Touch_Definitions_TBL_FK 
+      ,[Campaign_Name]
+      ,[InHome_Date]
+      ,[Touch_Name]
+      ,[Program_Name]
+      ,[Tactic]
+      ,[Media]
+      ,[Campaign_Type]
+      ,[Audience]
+      ,[Creative_Name]
+      ,[Offer]
+		FROM UVAQ.bvt_prod.CLM_Revenue_Best_View_Forecast_VW_FOR_LINK
+		where KPI_Type = 'Volume'
+	UNION
+		SELECT DISTINCT 
+       [idFlight_Plan_Records]
+      ,idProgram_Touch_Definitions_TBL_FK 
+      ,[Campaign_Name]
+      ,[InHome_Date]
+      ,[Touch_Name]
+      ,[Program_Name]
+      ,[Tactic]
+      ,[Media]
+      ,[Campaign_Type]
+      ,[Audience]
+      ,[Creative_Name]
+      ,[Offer]
+		FROM UVAQ.bvt_prod.UCLM_GP_Best_View_Forecast_VW_FOR_LINK
+		where KPI_Type = 'Volume'
 		) d
 ON a.idFlight_Plan_Records = d.idFlight_Plan_Records
 Where a.ParentID in (Select ParentID from #ParentID_ID_Link2 group by parentid having COUNT(ParentID) >1)

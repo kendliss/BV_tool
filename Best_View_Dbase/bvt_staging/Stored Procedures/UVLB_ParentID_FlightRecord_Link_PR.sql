@@ -129,8 +129,8 @@ WHEN Media_Code = 'DM' AND (eCRW_Project_Name NOT LIKE '%GIG%' OR (eCRW_Project_
 WHEN Media_Code = 'DM' AND (eCRW_Project_Name NOT LIKE '%GIG%' OR (eCRW_Project_Name LIKE '%Gig%' AND Vendor = 'Aspen')) AND (Campaign_Name LIKE '%MID%' OR Campaign_Name LIKE '% MM %' OR Campaign_Name LIKE '%INC%') AND (Campaign_Name LIKE '%SPANISH TAG%' OR Campaign_Name LIKE '%SP TAG%') THEN 65
 */
 --Updated Core DM
-WHEN Media_Code = 'DM' AND (eCRW_Project_Name LIKE '%Early%' OR eCRW_Project_Name LIKE '%Mid%' OR eCRW_Project_Name LIKE '%Late%') AND eCRW_Project_Name LIKE '%BAU%' AND Cell_Description LIKE '%DTV%' THEN 732 --Core DTV DM
-WHEN Media_Code = 'DM' AND (eCRW_Project_Name LIKE '%Early%' OR eCRW_Project_Name LIKE '%Mid%' OR eCRW_Project_Name LIKE '%Late%') AND eCRW_Project_Name LIKE '%BAU%' AND Cell_Description LIKE '%Wireless Only%' THEN 735 --Core WLS DM
+WHEN Media_Code = 'DM' AND (eCRW_Project_Name LIKE '%Early%' OR eCRW_Project_Name LIKE '%Mid%' OR eCRW_Project_Name LIKE '%Late%') AND eCRW_Project_Name LIKE '%BAU%' AND Cell_Description LIKE '%DTV%' AND Cell_Description NOT LIKE '%DTV El%' THEN 732 --Core DTV DM
+WHEN Media_Code = 'DM' AND (eCRW_Project_Name LIKE '%Early%' OR eCRW_Project_Name LIKE '%Mid%' OR eCRW_Project_Name LIKE '%Late%') AND eCRW_Project_Name LIKE '%BAU%' AND Cell_Description LIKE '%Wireless Only%' THEN 1048 --735 --Core WLS DM Temp moved to DTV Call Center Touch
 WHEN Media_Code = 'DM' AND (eCRW_Project_Name LIKE '%Early%' OR eCRW_Project_Name LIKE '%Mid%' OR eCRW_Project_Name LIKE '%Late%') AND eCRW_Project_Name LIKE '%BAU%' THEN 734 --Core WLN DM
 
 
@@ -203,6 +203,7 @@ WHEN Media_Code = 'EM' AND (campaign_name LIKE '%recontact%' OR eCRW_Project_Nam
 WHEN Media_Code = 'EM' AND (Campaign_Name LIKE '%WINBACK%'  OR eCRW_Project_Name LIKE '%WINBACK%') AND (Campaign_Name NOT LIKE '%reblast%' AND Campaign_Name NOT LIKE '%rbt%') THEN 164 
 WHEN Media_Code = 'EM' AND Campaign_Name LIKE '%TRIG%' AND Campaign_Name LIKE '%giga%' THEN 122
 WHEN Media_Code = 'EM' AND (Campaign_Name LIKE '%COMP%Resp%' OR eCRW_Project_Name LIKE '%Comp%Resp%') AND (Campaign_Name NOT LIKE '%reblast%' and Campaign_Name NOT LIKE '%rbt%') THEN 151
+WHEN Media_Code = 'EM' AND (Campaign_Name LIKE '%Cancel before%' OR Campaign_Name LIKE '%Cancel B4%' OR eCRW_Project_Name LIKE '%cancelbefore%') AND (Campaign_Name NOT LIKE '%reblast%' and Campaign_Name NOT LIKE '%rbt%')  THEN 147
 
 WHEN Media_Code = 'EM' AND (Campaign_Name LIKE '%eligibility%' OR eCRW_Project_Name LIKE '%eligibility%') AND (Campaign_Name LIKE '%reblast%' OR Campaign_Name LIKE '%rbt%' OR Campaign_Name LIKE '%Re-Blast%') THEN 150
 WHEN Media_Code = 'EM' AND (Campaign_Name LIKE '%RESPONDER%' OR eCRW_Project_Name LIKE '%responder%') AND (Campaign_Name LIKE '%reblast%' OR Campaign_Name LIKE '%rbt%' OR Campaign_Name LIKE '%Re-Blast%') AND Campaign_Name NOT LIKE '%NON%Respond%'THEN 163 
@@ -211,8 +212,8 @@ WHEN Media_Code = 'EM' AND (campaign_name like '%recontact%' OR eCRW_Project_Nam
 WHEN Media_Code = 'EM' AND (Campaign_Name LIKE '%WINBACK%' OR eCRW_Project_Name LIKE '%winback%') AND (Campaign_Name LIKE '%reblast%' OR Campaign_Name LIKE '%rbt%' OR Campaign_Name LIKE '%Re-Blast%') THEN 165
 WHEN Media_Code = 'EM' AND (Campaign_Name LIKE '%CONNECT%' OR eCRW_Project_Name LIKE '%connect%') AND (Campaign_Name LIKE '%reblast%' OR Campaign_Name LIKE '%rbt%' OR Campaign_Name LIKE '%Re-Blast%') THEN 157
 WHEN MEdia_Code = 'EM' AND (Campaign_Name LIKE '%COMP%Resp%'  OR eCRW_Project_Name LIKE '%Comp%Resp%') AND (Campaign_Name LIKE '%reblast%' OR Campaign_Name LIKE '%rbt%') THEN 152
+WHEN Media_Code = 'EM' AND (Campaign_Name LIKE '%Cancel before%' OR Campaign_Name LIKE '%Cancel B4%' OR eCRW_Project_Name LIKE '%cancelbefore%') AND (Campaign_Name LIKE '%reblast%' OR Campaign_Name LIKE '%rbt%') THEN 148
 
-WHEN Media_Code = 'EM' AND (Campaign_Name LIKE '%Cancel before%' OR Campaign_Name LIKE '%Cancel B4%' OR eCRW_Project_Name LIKE '%cancelbefore%')  THEN 147
 WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Engage%' THEN 155
 
 --new green email 
@@ -270,14 +271,14 @@ WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Core%Late%' AND Campaign_Nam
 WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Core%Late%' AND Campaign_Name LIKE '%Engagement%' THEN 727 --Core Engagement WRLN EM
 
 --Gigapower Core Email
-WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%GIG%' AND eCRW_Project_Name LIKE '%ONGO%' AND Campaign_Name NOT LIKE '%BLAST%' AND Campaign_Name NOT LIKE '% RB%' AND Campaign_Name NOT LIKE '%REDEPLOY%' THEN  503
-WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%GIG%' AND eCRW_Project_Name LIKE '%ONGO%'  AND (Campaign_Name LIKE '%BLAST%' OR Campaign_Name LIKE '% RB%' OR Campaign_Name LIKE '%REDEPLOY%') THEN 504
-WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%GIG%' AND (eCRW_Project_Name LIKE '%LAUNCH%' OR Campaign_Name LIKE '%Launch%' OR Campaign_Name LIKE '%LNCH%') AND (Campaign_Name LIKE '%Touch1%' OR Campaign_Name LIKE '%T1%') AND Campaign_Name NOT LIKE '%BLAST%' AND Campaign_Name NOT LIKE '% RB%' AND Campaign_Name NOT LIKE '%REDEPLOY%' THEN  196
-WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%GIG%' AND (eCRW_Project_Name LIKE '%LAUNCH%' OR Campaign_Name LIKE '%Launch%' OR Campaign_Name LIKE '%LNCH%') AND (Campaign_Name LIKE '%Touch1%' OR Campaign_Name LIKE '%T1%') AND (Campaign_Name LIKE '%BLAST%' OR Campaign_Name LIKE '% RB%' OR Campaign_Name LIKE '%REDEPLOY%') THEN 197
-WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%GIG%' AND (eCRW_Project_Name LIKE '%LAUNCH%' OR Campaign_Name LIKE '%Launch%' OR Campaign_Name LIKE '%LNCH%') AND (Campaign_Name LIKE '%Touch2%' OR Campaign_Name LIKE '%T2%' OR Campaign_Name LIKE '%T3%' OR Campaign_Name LIKE '%T4%') AND Campaign_Name NOT LIKE '%BLAST%' AND Campaign_Name NOT LIKE '% RB%' AND Campaign_Name NOT LIKE '%REDEPLOY%' THEN  199
-WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%GIG%' AND (eCRW_Project_Name LIKE '%LAUNCH%' OR Campaign_Name LIKE '%Launch%' OR Campaign_Name LIKE '%LNCH%') AND (Campaign_Name LIKE '%Touch2%' OR Campaign_Name LIKE '%T2%' OR Campaign_Name LIKE '%T3%' OR Campaign_Name LIKE '%T4%') AND (Campaign_Name LIKE '%BLAST%' OR Campaign_Name LIKE '% RB%' OR Campaign_Name LIKE '%REDEPLOY%') THEN 201
-WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%GIG%' AND (eCRW_Project_Name LIKE '%LAUNCH%' OR Campaign_Name LIKE '%Launch%' OR Campaign_Name LIKE '%LNCH%') AND Campaign_Name NOT LIKE '%BLAST%' AND Campaign_Name NOT LIKE '% RB%' AND Campaign_Name NOT LIKE '%REDEPLOY%' THEN  196
-WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%GIG%' AND (eCRW_Project_Name LIKE '%LAUNCH%' OR Campaign_Name LIKE '%Launch%' OR Campaign_Name LIKE '%LNCH%') AND (Campaign_Name LIKE '%BLAST%' OR Campaign_Name LIKE '% RB%' OR Campaign_Name LIKE '%REDEPLOY%') THEN 197
+WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%GIG%' AND eCRW_Project_Name LIKE '%ONGO%' AND Campaign_Name NOT LIKE '%BLAST%' AND Campaign_Name NOT LIKE '% RB%' AND Campaign_Name NOT LIKE '%REDEPLOY%' AND Campaign_Name NOT LIKE '%RBT%' THEN  503
+WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%GIG%' AND eCRW_Project_Name LIKE '%ONGO%'  AND (Campaign_Name LIKE '%BLAST%' OR Campaign_Name LIKE '% RB%' OR Campaign_Name LIKE '%REDEPLOY%' OR Campaign_Name LIKE '%RBT%') THEN 504
+WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%GIG%' AND (eCRW_Project_Name LIKE '%LAUNCH%' OR Campaign_Name LIKE '%Launch%' OR Campaign_Name LIKE '%LNCH%') AND (Campaign_Name LIKE '%Touch1%' OR Campaign_Name LIKE '%T1%') AND Campaign_Name NOT LIKE '%BLAST%' AND Campaign_Name NOT LIKE '% RB%' AND Campaign_Name NOT LIKE '%REDEPLOY%' AND Campaign_Name NOT LIKE '%RBT%' THEN  196
+WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%GIG%' AND (eCRW_Project_Name LIKE '%LAUNCH%' OR Campaign_Name LIKE '%Launch%' OR Campaign_Name LIKE '%LNCH%') AND (Campaign_Name LIKE '%Touch1%' OR Campaign_Name LIKE '%T1%') AND (Campaign_Name LIKE '%BLAST%' OR Campaign_Name LIKE '% RB%' OR Campaign_Name LIKE '%REDEPLOY%' OR Campaign_Name LIKE '%RBT%') THEN 197
+WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%GIG%' AND (eCRW_Project_Name LIKE '%LAUNCH%' OR Campaign_Name LIKE '%Launch%' OR Campaign_Name LIKE '%LNCH%') AND (Campaign_Name LIKE '%Touch2%' OR Campaign_Name LIKE '%T2%' OR Campaign_Name LIKE '%T3%' OR Campaign_Name LIKE '%T4%') AND Campaign_Name NOT LIKE '%BLAST%' AND Campaign_Name NOT LIKE '% RB%' AND Campaign_Name NOT LIKE '%REDEPLOY%' AND Campaign_Name NOT LIKE '%RBT%' THEN  199
+WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%GIG%' AND (eCRW_Project_Name LIKE '%LAUNCH%' OR Campaign_Name LIKE '%Launch%' OR Campaign_Name LIKE '%LNCH%') AND (Campaign_Name LIKE '%Touch2%' OR Campaign_Name LIKE '%T2%' OR Campaign_Name LIKE '%T3%' OR Campaign_Name LIKE '%T4%') AND (Campaign_Name LIKE '%BLAST%' OR Campaign_Name LIKE '% RB%' OR Campaign_Name LIKE '%REDEPLOY%' OR Campaign_Name LIKE '%RBT%') THEN 201
+WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%GIG%' AND (eCRW_Project_Name LIKE '%LAUNCH%' OR Campaign_Name LIKE '%Launch%' OR Campaign_Name LIKE '%LNCH%') AND Campaign_Name NOT LIKE '%BLAST%' AND Campaign_Name NOT LIKE '% RB%' AND Campaign_Name NOT LIKE '%REDEPLOY%' AND Campaign_Name NOT LIKE '%RBT%' THEN  196
+WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%GIG%' AND (eCRW_Project_Name LIKE '%LAUNCH%' OR Campaign_Name LIKE '%Launch%' OR Campaign_Name LIKE '%LNCH%') AND (Campaign_Name LIKE '%BLAST%' OR Campaign_Name LIKE '% RB%' OR Campaign_Name LIKE '%REDEPLOY%' OR Campaign_Name LIKE '%RBT%') THEN 197
 
 
 WHEN Media_Code = 'FYI' AND Campaign_Name LIKE '%ONSERT%' AND Campaign_Name  LIKE '%SP%'  THEN 177

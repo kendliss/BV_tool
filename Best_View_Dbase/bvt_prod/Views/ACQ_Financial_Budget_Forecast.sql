@@ -17,6 +17,7 @@ as select
 	, Creative_Name
 	, Goal
 	, Offer
+	, owner_type_matrix_id_FK
 	
 	, case when Budget_Type_LU_TBL_idBudget_Type_LU_TBL=2 then Bill_Month
 		when CPP_Start_End.[idCPP_Category_FK]=5 then month(DATEADD(month,bill_timing,Flight_Plan_Records.InHome_Date)) 

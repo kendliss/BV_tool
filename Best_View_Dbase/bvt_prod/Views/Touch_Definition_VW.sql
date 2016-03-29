@@ -9,8 +9,8 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 
-CREATE VIEW [bvt_prod].[Touch_Definition_VW]
-	AS SELECT idProgram_Touch_Definitions_TBL, Touch_Name, Program_Name, Tactic, Media, Audience, Creative_Name, Goal, Offer, Campaign_Type, Channel 
+ALTER VIEW [bvt_prod].[Touch_Definition_VW]
+	AS SELECT idProgram_Touch_Definitions_TBL, Touch_Name, Program_Name, Tactic, Media, Audience, Creative_Name, Goal, Offer, Campaign_Type, Channel, owner_type_matrix_id_FK
 						from bvt_prod.Program_Touch_Definitions_TBL
 					left join bvt_prod.Audience_LU_TBL on idAudience_LU_TBL_FK=idAudience_LU_TBL
 					left join bvt_prod.Campaign_Type_LU_TBL on idCampaign_Type_LU_TBL_FK=idCampaign_Type_LU_TBL
