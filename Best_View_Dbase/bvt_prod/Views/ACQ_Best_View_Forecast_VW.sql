@@ -68,7 +68,23 @@ union
 	, 'Volume' as Product_Code
 	, dropdate as Forecast_DayDate
 	, Volume as Forecast
-from bvt_prod.ACQ_Flightplan_Volume_Forecast_VW)) as metricsa) as metrics
+from bvt_prod.ACQ_Flightplan_Volume_Forecast_VW)
+
+union all
+
+(select idFlight_Plan_Records
+	, 'Response' as KPI_Type
+	, 'Call' as Product_Code
+	, Date as Forecast_DayDate
+	, Drag_Calls as Forecast
+from bvt_prod.ACQ_Drag_Forecast_VW 
+JOIN (Select idFlight_Plan_Records, Case when DATEPART(d,InHome_Date) = 1 and DATEPART(M,InHome_Date) = 1 then DATEPART(YYYY, Inhome_Date)
+	Else DATEPART(YYYY, Inhome_date)+1 END as MediaYear
+	from bvt_prod.ACQ_Flight_Plan_VW a
+	where idProgram_Touch_Definitions_TBL_FK = 1257) medyear
+on ACQ_Drag_Forecast_VW.Media_Year = medyear.MediaYear
+)
+) as metricsa) as metrics
 	on fpr.idFlight_Plan_Records=metrics.idFlight_Plan_Records
 -----------------------------------------------------------------	
 --Media Calendar Information-------------------------------------
