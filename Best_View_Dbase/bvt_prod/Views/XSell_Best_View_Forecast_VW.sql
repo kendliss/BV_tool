@@ -1,8 +1,8 @@
-﻿DROP VIEW [bvt_prod].[ACQ_Best_View_Forecast_VW]
+﻿DROP VIEW [bvt_prod].[XSell_Best_View_Forecast_VW]
 GO
 
 
-CREATE view [bvt_prod].[ACQ_Best_View_Forecast_VW]
+CREATE view [bvt_prod].[XSell_Best_View_Forecast_VW]
 as
 select FPR.idFlight_Plan_Records
 	, FPR.Campaign_Name
@@ -24,7 +24,6 @@ select FPR.idFlight_Plan_Records
 	, Goal
 	, Offer
 	, Channel
-	, Owner_type_matrix_id_FK
 
 ----Metrics
 	, KPI_Type
@@ -32,7 +31,7 @@ select FPR.idFlight_Plan_Records
 	, Forecast_DayDate
 	, Forecast
 
-from bvt_prod.ACQ_Flight_Plan_VW as FPR
+from bvt_prod.XSell_Flight_Plan_VW as FPR
 
 left join
 -------------Bring in the Metrics----------------------------------------------------------------------
@@ -46,9 +45,9 @@ left join
 	, Product_Code
 	, Forecast_DayDate
 	, Sales_Forecast as Forecast
-from bvt_prod.ACQ_FlightplanSalesForecast
+from bvt_prod.XSell_FlightplanSalesForecast
  left join bvt_prod.Product_LU_TBL
-		on ACQ_FlightplanSalesForecast.idProduct_LU_TBL_FK=Product_LU_TBL.idProduct_LU_TBL)
+		on XSell_FlightplanSalesForecast.idProduct_LU_TBL_FK=Product_LU_TBL.idProduct_LU_TBL)
 
 union 
 
@@ -57,9 +56,9 @@ union
 	, KPI_Type as Product_Code
 	, Forecast_DayDate
 	, KPI_Forecast as Forecast
-from bvt_prod.ACQ_FlightplanKPIForecast
+from bvt_prod.XSell_FlightplanKPIForecast
  left join bvt_prod.KPI_Types
-		on ACQ_FlightplanKPIForecast.idkpi_types_FK=KPI_Types.idKPI_Types)
+		on XSell_FlightplanKPIForecast.idkpi_types_FK=KPI_Types.idKPI_Types)
 		
 union
 
@@ -68,23 +67,7 @@ union
 	, 'Volume' as Product_Code
 	, dropdate as Forecast_DayDate
 	, Volume as Forecast
-from bvt_prod.ACQ_Flightplan_Volume_Forecast_VW)
-
-union all
-
-(select idFlight_Plan_Records
-	, 'Response' as KPI_Type
-	, 'Call' as Product_Code
-	, Date as Forecast_DayDate
-	, Drag_Calls as Forecast
-from bvt_prod.ACQ_Drag_Forecast_VW 
-JOIN (Select idFlight_Plan_Records, Case when DATEPART(d,InHome_Date) = 1 and DATEPART(M,InHome_Date) = 1 then DATEPART(YYYY, Inhome_Date)
-	Else DATEPART(YYYY, Inhome_date)+1 END as MediaYear
-	from bvt_prod.ACQ_Flight_Plan_VW a
-	where idProgram_Touch_Definitions_TBL_FK = 1257) medyear
-on ACQ_Drag_Forecast_VW.Media_Year = medyear.MediaYear
-)
-) as metricsa) as metrics
+from bvt_prod.XSell_Flightplan_Volume_Forecast_VW)) as metricsa) as metrics
 	on fpr.idFlight_Plan_Records=metrics.idFlight_Plan_Records
 -----------------------------------------------------------------	
 --Media Calendar Information-------------------------------------

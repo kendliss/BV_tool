@@ -27,7 +27,8 @@ select Project_ID, Parentid, idFlight_Plan_Records_FK, [Report_Year], [Report_We
 		, [ITP_Dir_Sales_ON_CING_N], [ITP_Dir_Sales_ON_CING_VOICE_N], [ITP_Dir_Sales_ON_CING_FAMILY_N], [ITP_Dir_Sales_ON_CING_DATA_N], [ITP_Dir_Sales_ON_DISH_N]
 		, [ITP_Dir_Sales_ON_LD_N], [ITP_Dir_Sales_ON_DSL_REG_N], [ITP_Dir_Sales_ON_DSL_DRY_N], [ITP_Dir_Sales_ON_DSL_IP_N], [ITP_Dir_Sales_ON_UVRS_HSIA_N], [ITP_Dir_Sales_ON_UVRS_TV_N]
 		, [ITP_Dir_Sales_ON_UVRS_BOLT_N], [ITP_Dir_Sales_ON_LOCAL_ACCL_N], [ITP_Dir_Sales_ON_UVRS_VOIP_N], [ITP_Dir_Sales_ON_DLIFE_N], [ITP_Dir_Sales_ON_CING_WHP_N]
-		, [ITP_Dir_Sales_ON_Migrations], [ITP_Dir_Sales_TS_TOTAL], [ITP_Dir_Sales_TS_Strat], [ITP_Dir_Sales_ON_TOTAL], [ITP_Dir_Sales_ON_Strat]
+		, [ITP_Dir_Sales_ON_Migrations], [ITP_Dir_Sales_TS_TOTAL], [ITP_Dir_Sales_TS_Strat], [ITP_Dir_Sales_ON_TOTAL], [ITP_Dir_Sales_ON_Strat], [LTV_ITP_DIRECTED]
+		, [LTV_ITP_TOTAL], [LTV_ITP_TS_TOTAL], [LTV_ITP_ON_TOTAL]
 
 from javdb.ireport.[dbo].[IR_Campaign_Data_Weekly_MAIN_2012]
 		inner join 
