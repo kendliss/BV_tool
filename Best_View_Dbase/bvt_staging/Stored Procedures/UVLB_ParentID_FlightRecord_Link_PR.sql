@@ -36,14 +36,13 @@ SELECT DISTINCT a.ParentID, a.Campaign_Name, a.Start_Date as [In_Home_Date], a.M
 
 	FROM JAVDB.IREPORT_2015.dbo.WB_01_Campaign_List AS a JOIN JAVDB.IREPORT_2015.dbo.WB_00_Reporting_Hierarchy AS b
       ON a.tactic_id=b.id
-    LEFT JOIN JAVDB.IREPORT_2015.dbo.WB_01_Campaign_List d
-	ON a.ParentID = d.ParentID
      WHERE b.Scorecard_Top_Tab = 'Direct Marketing'
 AND  b.Scorecard_LOB_Tab = 'U-verse'
-AND  b.Scorecard_tab = 'Uverse'
-AND (b.scorecard_program_channel NOT LIKE '%Prospect%'
-	OR (b.Scorecard_Program_Channel LIKE '%Prospect%' AND (a.eCRW_project_Name LIKE '%Giga%' OR a.eCRW_Project_Name LIKE '%_OOF_%') and a.Start_Date >= '12/28/15'))
-
+AND  b.Scorecard_tab in( 'Uverse', 'U-verse CLM')
+AND ((b.Scorecard_tab = 'Uverse' and b.scorecard_program_channel NOT LIKE '%Prospect%')
+	OR (b.Scorecard_Program_Channel LIKE '%Prospect%' AND (a.eCRW_project_Name LIKE '%Giga%' OR a.eCRW_Project_Name LIKE '%_OOF_%') and a.Start_Date >= '12/28/15')
+	OR (a.business_unit_Name LIKE 'U-verse CLM' AND a.eCRW_Project_Name LIKE '%Gig%' and a.Start_Date >= CASE WHEN a.Media_Code IN ('DM','EM') THEN '12/28/15' ELSE '5/1/16' END)
+	OR (a.business_unit_Name LIKE 'U-verse CLM' AND a.eCRW_Project_Name LIKE '%HSIA%Sell%' and a.Start_Date >= '12/28/15'))
 AND (a.[Start_Date]<= '27-DEC-2016' AND a.End_Date_Traditional>='28-DEC-2014') 
 	AND a.Media_Code <> 'DR'
 	AND a.ParentID > 1334
@@ -136,19 +135,23 @@ WHEN Media_Code = 'DM' AND (eCRW_Project_Name LIKE '%Early%' OR eCRW_Project_Nam
 
 WHEN Media_Code = 'DM' AND (eCRW_Project_Name LIKE '%Early%' OR eCRW_Project_Name LIKE '%Mid%' OR eCRW_Project_Name LIKE '%Late%') AND eCRW_Project_Name LIKE '%DSL%' THEN 731 --Core BBMig DM
 
-WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%GIG%' AND eCRW_Project_Name LIKE '%ONGO%' AND Campaign_Name LIKE '%DTV%' THEN 641 --Gigapower Core DTV DM
-WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%GIG%' AND eCRW_Project_Name LIKE '%ONGO%' AND Campaign_Name LIKE '%PRO%' THEN 1018 --Gigapower Core Prospect DM
+WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%UCLM%' AND eCRW_Project_Name LIKE '%GIG%' AND eCRW_Project_Name LIKE '%Monthly%' THEN 1258 --Gigapower Monthly HP CLM DM
+WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%UCLM%' AND eCRW_Project_Name LIKE '%GIG%' AND eCRW_Project_Name LIKE '%Announcement 1%' THEN 1259 --Gigapower Announcement 1 CLM DM
+WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%UCLM%' AND eCRW_Project_Name LIKE '%GIG%' AND eCRW_Project_Name LIKE '%Announcement 2%' THEN 1260 --Gigapower Announcement 2 CLM DM 
+WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%GIG%' AND eCRW_Project_Name LIKE '%ONGO%' AND eCRW_project_name NOT LIKE '%PRO%' AND Campaign_Name LIKE '%DTV%' AND Campaign_Name NOT LIKE '%NON%DTV%' THEN 641 --Gigapower Core DTV DM
+WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%GIG%' AND eCRW_Project_Name LIKE '%ONGO%' AND eCRW_Project_Name LIKE '%PRO%' THEN 1018 --Gigapower Core Prospect DM
 WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%GIG%' AND eCRW_Project_Name LIKE '%ONGO%' THEN 52 --Gigapower Core WLN DM
 
-WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%GIG%' AND (eCRW_Project_Name LIKE '%LAUNCH%' OR Campaign_Name LIKE '%LNCH%') AND (Campaign_Name LIKE '%TOUCH 1%' OR Campaign_Name LIKE '%T1%') AND Campaign_Name NOT LIKE '%OCT1%' AND Campaign_Name LIKE '%DTV%' THEN 642 --Gigapower Touch 1 DTV DM
-WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%GIG%' AND (eCRW_Project_Name LIKE '%LAUNCH%' OR Campaign_Name LIKE '%LNCH%') AND (Campaign_Name LIKE '%TOUCH 1%' OR Campaign_Name LIKE '%T1%') AND Campaign_Name NOT LIKE '%OCT1%' AND Campaign_Name LIKE '%PRO%' THEN 1019 --Gigapower Touch 1 Prospect DM
+
+WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%GIG%' AND (eCRW_Project_Name LIKE '%LAUNCH%' OR Campaign_Name LIKE '%LNCH%') AND (Campaign_Name LIKE '%TOUCH 1%' OR Campaign_Name LIKE '%T1%') AND Campaign_Name NOT LIKE '%OCT1%' AND eCRW_project_name NOT LIKE '%PRO%' AND Campaign_Name LIKE '%DTV%' AND Campaign_Name NOT LIKE '%NON%DTV%' THEN 642 --Gigapower Touch 1 DTV DM
+WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%GIG%' AND (eCRW_Project_Name LIKE '%LAUNCH%' OR Campaign_Name LIKE '%LNCH%') AND (Campaign_Name LIKE '%TOUCH 1%' OR Campaign_Name LIKE '%T1%') AND Campaign_Name NOT LIKE '%OCT1%' AND eCRW_Project_Name LIKE '%PRO%' THEN 1019 --Gigapower Touch 1 Prospect DM
 WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%GIG%' AND (eCRW_Project_Name LIKE '%LAUNCH%' OR Campaign_Name LIKE '%LNCH%') AND (Campaign_Name LIKE '%TOUCH 1%' OR Campaign_Name LIKE '%T1%') AND Campaign_Name NOT LIKE '%OCT1%' THEN 40 --Gigapower Touch 1 WRLN DM
 
 
 WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%GIG%' AND (eCRW_Project_Name LIKE '%LAUNCH%' OR Campaign_Name LIKE '%LNCH%') AND (Campaign_Name LIKE '%TOUCH 2%' OR Campaign_Name LIKE '%T2%' OR Campaign_Name LIKE '%T3%' OR Campaign_Name LIKE '%T4%') THEN 43 --Gigapower Touch 2 WRLN DM
 
-WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%GIG%' AND (eCRW_Project_Name LIKE '%LAUNCH%' OR Campaign_Name LIKE '%LNCH%') AND Campaign_Name LIKE '%DTV%' THEN 642 --Gigapower Touch 1 DTV DM
-WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%GIG%' AND (eCRW_Project_Name LIKE '%LAUNCH%' OR Campaign_Name LIKE '%LNCH%') AND Campaign_Name LIKE '%PRO%' THEN 1019 --Gigapower Touch 1 Prospect DM
+WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%GIG%' AND (eCRW_Project_Name LIKE '%LAUNCH%' OR Campaign_Name LIKE '%LNCH%') AND eCRW_project_name NOT LIKE '%PRO%' AND Campaign_Name LIKE '%DTV%' AND Campaign_Name NOT LIKE '%NON%DTV%' THEN 642 --Gigapower Touch 1 DTV DM
+WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%GIG%' AND (eCRW_Project_Name LIKE '%LAUNCH%' OR Campaign_Name LIKE '%LNCH%') AND eCRW_Project_Name LIKE '%PRO%' THEN 1019 --Gigapower Touch 1 Prospect DM
 WHEN Media_Code = 'DM' AND eCRW_Project_Name LIKE '%GIG%' AND (eCRW_Project_Name LIKE '%LAUNCH%' OR Campaign_Name LIKE '%LNCH%') THEN 40 --Gigapower Touch 1 WRLN DM
 
 
@@ -246,6 +249,7 @@ WHEN Media_Code = 'EM' AND eCRW_Project_Name NOT LIKE '%GIG%' AND Campaign_Name 
 WHEN Media_Code = 'EM' AND eCRW_Project_Name NOT LIKE '%GIG%' AND Campaign_Name LIKE '%GIG%' AND Campaign_Name NOT LIKE '%TRIGGER%' and Campaign_Name NOT LIKE '%TV Upsell%'THEN 130
 */
 --Core Email per new naming structure
+
 WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Core%Early%' AND Campaign_Name LIKE '%Has DSL%' AND Campaign_Name NOT LIKE '%Engagement%' THEN 538 --Core Early BBMig EM
 WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Core%Early%' AND Campaign_Name LIKE '%Has DTV%' AND Campaign_Name NOT LIKE '%Engagement%' THEN 656 --Core Early DTV EM
 WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Core%Early%' AND Campaign_Name NOT LIKE '%Engagement%' THEN 124 --Core Early WRLN EM
@@ -271,6 +275,9 @@ WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Core%Late%' AND Campaign_Nam
 WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%Core%Late%' AND Campaign_Name LIKE '%Engagement%' THEN 727 --Core Engagement WRLN EM
 
 --Gigapower Core Email
+WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%UCLM%' AND eCRW_Project_Name LIKE '%GIG%' AND eCRW_Project_Name LIKE '%Monthly%' THEN 1262 --Gigapower Monthly HP CLM EM
+WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%UCLM%' AND eCRW_Project_Name LIKE '%GIG%' AND eCRW_Project_Name LIKE '%Announcement 1%' THEN 1264 --Gigapower Announcement 1 CLM EM
+WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%UCLM%' AND eCRW_Project_Name LIKE '%GIG%' AND eCRW_Project_Name LIKE '%Announcement 2%' THEN 1265 --Gigapower Announcement 2 CLM EM
 WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%GIG%' AND eCRW_Project_Name LIKE '%ONGO%' AND Campaign_Name NOT LIKE '%BLAST%' AND Campaign_Name NOT LIKE '% RB%' AND Campaign_Name NOT LIKE '%REDEPLOY%' AND Campaign_Name NOT LIKE '%RBT%' THEN  503
 WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%GIG%' AND eCRW_Project_Name LIKE '%ONGO%'  AND (Campaign_Name LIKE '%BLAST%' OR Campaign_Name LIKE '% RB%' OR Campaign_Name LIKE '%REDEPLOY%' OR Campaign_Name LIKE '%RBT%') THEN 504
 WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%GIG%' AND (eCRW_Project_Name LIKE '%LAUNCH%' OR Campaign_Name LIKE '%Launch%' OR Campaign_Name LIKE '%LNCH%') AND (Campaign_Name LIKE '%Touch1%' OR Campaign_Name LIKE '%T1%') AND Campaign_Name NOT LIKE '%BLAST%' AND Campaign_Name NOT LIKE '% RB%' AND Campaign_Name NOT LIKE '%REDEPLOY%' AND Campaign_Name NOT LIKE '%RBT%' THEN  196
@@ -284,6 +291,7 @@ WHEN Media_Code = 'EM' AND eCRW_Project_Name LIKE '%GIG%' AND (eCRW_Project_Name
 WHEN Media_Code = 'FYI' AND Campaign_Name LIKE '%ONSERT%' AND Campaign_Name  LIKE '%SP%'  THEN 177
 WHEN Media_Code = 'FYI' AND Campaign_Name LIKE '%ONSERT%' AND Campaign_Name  LIKE '%TV%'  THEN 178
 WHEN Media_Code = 'FYI' AND Campaign_Name LIKE '%ONSERT%' AND (Campaign_Name  LIKE '%wireless%' OR Campaign_Name  LIKE '%WRLS%')  THEN 179
+WHEN Media_Code = 'FYI' AND Campaign_Name LIKE '%ONSERT%' AND eCRW_Project_Name LIKE '%HSIA%Sell%' THEN 1279 --HSIA Cross Sell Bill Onsert
 WHEN Media_Code = 'FYI' AND eCRW_Project_Name LIKE '%UNAT_BillMsg%' AND Campaign_Name LIKE '%DTV Eligible%' THEN 181
 WHEN Media_Code = 'FYI' AND eCRW_Project_Name LIKE '%UNAT_BillMsg%' AND Campaign_Name LIKE '%DTV Subs%' THEN 691
 WHEN Media_Code = 'FYI' AND Campaign_Name NOT LIKE '%WIRELESS%' AND (Campaign_Name LIKE '%HISPANIC%' OR Campaign_Name LIKE '%SPANISH%' OR Campaign_Name LIKE '%SP%') AND Campaign_Name NOT LIKE '%TV%Upsell%' THEN 174
@@ -291,12 +299,14 @@ WHEN Media_Code = 'FYI' AND Campaign_Name LIKE '%WIRELESS%' AND (Campaign_Name L
 WHEN Media_Code = 'FYI' AND (Campaign_Name LIKE '%HISPANIC%' OR Campaign_Name LIKE '%SPANISH%' OR Campaign_Name LIKE '%SP%') AND Campaign_Name LIKE '%TV%Upsell%' THEN 508
 WHEN Media_Code = 'FYI' AND Campaign_Name LIKE '%WIRELESS%' THEN 180
 WHEN Media_Code = 'FYI' AND Campaign_Name LIKE '%TV Upsell%' THEN 184
+WHEN Media_Code = 'FYI' AND eCRW_Project_Name LIKE '%HSIA%Sell%' THEN 1278 --HSIA Cross Sell Bill Message
 
 WHEN Media_Code = 'FPC' AND eCRW_Project_Name LIKE '%NancyFPCAllIPTVGreen%' AND Campaign_Name LIKE '%Non DSL DTV cross sell HSIA Cross Sell%' THEN 689 --DTV FPC
 WHEN Media_Code = 'FPC' AND eCRW_Project_Name LIKE '%NancyFPCAllIPTVGreen%' AND Campaign_Name LIKE '%Non DSL DTV cross sell DTV Cross Sell%' THEN 182 --Wireline FPC
 WHEN Media_Code = 'FPC' AND eCRW_Project_Name LIKE '%NancyFPCDSLCust%' AND Campaign_Name LIKE '%DSL Subscriber cross sell DTV Cross Sell%' THEN 801 --Wireline Migrator BBMig FPC
 WHEN Media_Code = 'FPC' AND eCRW_Project_Name LIKE '%NancyFPCDSLCust%' AND Campaign_Name LIKE '%DSL Subscriber cross sell HSIA Cross Sell%' THEN 799 --Wireline Migrator DTV FPC
 WHEN Media_Code = 'FPC' AND eCRW_Project_Name LIKE '%DTVCrossSellUVBill%' THEN 183 --TV Cross Sell FPC
+WHEN Media_Code = 'FPC' AND eCRW_Project_Name LIKE '%HSIA%Sell%' THEN 1248 --HSIA Cross Sell FPC
 
 
 WHEN Media_Code = 'LP' THEN 506
