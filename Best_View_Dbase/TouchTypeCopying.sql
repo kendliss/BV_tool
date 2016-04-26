@@ -8,10 +8,10 @@ If anything is not copied exactly, you can comment that out and either bulk load
 --  Commit Tran
 
 Declare @A Int 
-SET @A =  44 --touch that is being cloned
+SET @A =  1005 --touch that is being cloned
 
 Declare @B Int 
-Set @B = 735 --new touch
+Set @B = 1249 --new touch
 
 
 declare @C float
@@ -26,21 +26,21 @@ BEGIN TRAN
 --Response Rates
 Insert INTO bvt_prod.KPI_Rates
 select  @B as idProgram_Touch_definitions_TBL_FK,
-a.idKPI_Types_FK, (KPI_Rate*@C) as KPI_Rate, @D as Rate_Start_Date 
+a.idKPI_Types_FK, (KPI_Rate*@C) as KPI_Rate, a.Rate_Start_Date 
 from bvt_prod.KPI_Rates a
-JOIN (Select idProgram_Touch_Definitions_TBL_FK, MAX(Rate_Start_Date) as startdate, idkpi_types_FK
+JOIN (Select idProgram_Touch_Definitions_TBL_FK, Rate_Start_Date, idkpi_types_FK
 		from bvt_prod.KPI_Rates
-		group by idProgram_Touch_Definitions_TBL_FK, idkpi_types_FK) b
+		where rate_start_Date >= '12/18/15') b
 on a.idProgram_Touch_Definitions_TBL_FK = b.idProgram_Touch_Definitions_TBL_FK and 
-a.Rate_Start_Date = b.startdate and a.idkpi_types_FK = b.idkpi_types_FK
+a.Rate_Start_Date = b.Rate_Start_Date and a.idkpi_types_FK = b.idkpi_types_FK
 where a.idProgram_Touch_Definitions_TBL_FK = @a
 
 
 
 --Response Curve
 
-INSERT INTO bvt_prod.Response_Curve
-select @B as idProgram_Touch_Definitions_TBL_FK, a.Week_ID, @D as Curve_Start_Date,
+Insert INTO bvt_prod.Response_Curve
+select @B as idProgram_Touch_Definitions_TBL_FK, a.Week_ID, Curve_Start_Date,
 a.idkpi_type_FK, a.week_percent  
 from bvt_prod.Response_Curve a
 JOIN (Select idProgram_Touch_Definitions_TBL_FK, MAX(Curve_Start_Date) as startdate, idkpi_type_FK
@@ -56,14 +56,15 @@ order by idkpi_type_FK, Week_ID
 --sales rates
 
 Insert into bvt_prod.Sales_Rates
-select idProduct_LU_TBL_FK, @B as idProgram_Touch_Definitions_TBL_FK, 
+select a.idProduct_LU_TBL_FK, @B as idProgram_Touch_Definitions_TBL_FK, 
 a.Sales_Rate_Start_Date, (Sales_Rate*@C) as Sales_Rate, a.idkpi_type_FK
 from bvt_prod.Sales_Rates a
-JOIN (Select idProgram_Touch_Definitions_TBL_FK, MAX(Sales_Rate_Start_Date) as startdate, idkpi_type_FK
+JOIN (Select idProgram_Touch_Definitions_TBL_FK, Sales_Rate_Start_Date, idkpi_type_FK, idProduct_LU_TBL_FK
 		from bvt_prod.Sales_Rates
-		group by idProgram_Touch_Definitions_TBL_FK, idkpi_type_FK) b
+		where Sales_Rate_Start_Date >= '12/18/15') b
 on a.idProgram_Touch_Definitions_TBL_FK = b.idProgram_Touch_Definitions_TBL_FK and 
-a.Sales_Rate_Start_Date = b.startdate and a.idkpi_type_FK = b.idkpi_type_FK
+a.Sales_Rate_Start_Date = b.Sales_Rate_Start_Date and a.idkpi_type_FK = b.idkpi_type_FK
+and a.idProduct_LU_TBL_FK = b.idProduct_LU_TBL_FK
 where a.idProgram_Touch_Definitions_TBL_FK =@A
 order by idkpi_type_FK, idProduct_LU_TBL_FK
 
@@ -84,7 +85,7 @@ where a.idProgram_Touch_Definitions_TBL_FK =@A
 order by idkpi_type_FK, Week_ID
 
 --Daily Curves
-INSERT INTO bvt_prod.Response_Daily
+Insert INTO bvt_prod.Response_Daily
 select @B as idProgram_Touch_Definitions_TBL_FK, a.Day_of_week, @D as Daily_Start_Date,
 a.idkpi_type_FK, a.Day_percent  
 from bvt_prod.Response_Daily a
@@ -99,7 +100,7 @@ order by idkpi_type_FK, Day_of_Week
 
 --CPP
 
-INSERT INTO bvt_prod.CPP
+Insert INTO bvt_prod.CPP
 select a.idCPP_Category_FK, @B as idProgram_Touch_Definitions_TBL_FK, a.CPP, a.Minimum_Volume, a.Maximum_Volume,
 @D as CPP_Start_Date, a.Bill_Timing  
 from bvt_prod.CPP a
@@ -114,14 +115,14 @@ order by idCPP_Category_FK
 
 -- Seasonality
 
-INSERT INTO bvt_prod.Seasonality_Adjustements 
+Insert INTO bvt_prod.Seasonality_Adjustements 
 select  @B as idProgram_Touch_Definitions_TBL_FK, Media_Year, Media_Month, Media_Week, Seasonality_Adj  
 from bvt_prod.Seasonality_Adjustements 
 where idProgram_Touch_Definitions_TBL_FK =@A 
 
 
 --Target and Rate
-INSERT INTO bvt_prod.Target_Rate_Adjustments
+Insert INTO bvt_prod.Target_Rate_Adjustments
 select a.idTarget_Rate_Reasons_LU_TBL_FK, @B as idProgram_Touch_Definitions_TBL_FK, a.Rate_Adjustment_Factor,
 a.Adj_Start_Date, a.Volume_Adjustment
 from bvt_prod.Target_Rate_Adjustments a
@@ -135,7 +136,7 @@ where a.idProgram_Touch_Definitions_TBL_FK =@A
 
 --Drop Date
 
-INSERT INTO bvt_prod.Drop_Date_Calc_Rules
+Insert INTO bvt_prod.Drop_Date_Calc_Rules
 select  @B as idProgram_Touch_Definitions_TBL_FK, Days_Before_Inhome, drop_start_date
 from bvt_prod.Drop_Date_Calc_Rules a
 JOIN (Select idProgram_Touch_Definitions_TBL_FK, MAX(Drop_Start_Date) as startdate

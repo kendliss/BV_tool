@@ -1,7 +1,7 @@
-﻿drop view [bvt_prod].[ACQ_Financial_Budget_Forecast]
+﻿drop view [bvt_prod].[XSell_Financial_Budget_Forecast]
 GO
 
-create view [bvt_prod].[ACQ_Financial_Budget_Forecast]
+create view [bvt_prod].[XSell_Financial_Budget_Forecast]
 as select 
 	flight_plan_records.idFlight_Plan_Records
 	, flight_plan_records.Campaign_Name
@@ -17,7 +17,6 @@ as select
 	, Creative_Name
 	, Goal
 	, Offer
-	, owner_type_matrix_id_FK
 	
 	, case when Budget_Type_LU_TBL_idBudget_Type_LU_TBL=2 then Bill_Month
 		when CPP_Start_End.[idCPP_Category_FK]=5 then month(DATEADD(month,bill_timing,Flight_Plan_Records.InHome_Date)) 
@@ -33,13 +32,13 @@ as select
 		else CPP*Volume end as budget
 	, mediaweek
 	
-	from [bvt_prod].[ACQ_Flight_Plan_VW] as flight_plan_records
+	from [bvt_prod].[XSell_Flight_Plan_VW] as flight_plan_records
 		left join bvt_prod.Flight_Plan_Record_Budgets
 			on flight_plan_records.idFlight_Plan_Records=idFlight_Plan_Records_FK
-		LEFT join (SELECT * FROM [bvt_prod].[CPP_Start_End_FUN]('ACQ')) AS CPP_Start_End
+		LEFT join (SELECT * FROM [bvt_prod].[CPP_Start_End_FUN]('X-Sell')) AS CPP_Start_End
 			on flight_plan_records.idProgram_Touch_Definitions_TBL_FK=CPP_Start_End.idProgram_Touch_Definitions_TBL_FK
 			and flight_plan_records.InHome_Date between CPP_Start_End.CPP_Start_Date and CPP_Start_End.END_DATE
-		LEFT join bvt_prod.ACQ_Flightplan_Volume_Forecast_VW as FPV
+		LEFT join bvt_prod.XSell_Flightplan_Volume_Forecast_VW as FPV
 			on flight_plan_records.idFlight_Plan_Records=FPV.idFlight_Plan_Records
 		
 		right join (select min(iso_week) as mediaweek, MediaMonth, MediaMonth_year from dim.Media_Calendar_Daily group by MediaMonth, MediaMonth_year) as A

@@ -1,4 +1,4 @@
-﻿CREATE VIEW [bvt_prod].[CLM_Revenue_Best_View_VW]
+﻿ALTER VIEW [bvt_prod].[CLM_Revenue_Best_View_VW]
 AS 
 	select 
 		coalesce(forecast_cv.[idFlight_Plan_Records_FK],actual_volume.[idFlight_Plan_Records_FK],actual_results.[idFlight_Plan_Records_FK]) as [idFlight_Plan_Records_FK],
@@ -96,7 +96,7 @@ AS
 			from [bvt_processed].[Commitment_Views] 
 				-----Bring in touch definition labels 
 				left join [bvt_prod].[Touch_Definition_VW] on [Commitment_Views].[idProgram_Touch_Definitions_TBL_FK]=[Touch_Definition_VW].[idProgram_Touch_Definitions_TBL]
-			where CV_Submission in ( 'UCLM Commitment View 2015','UCLM 2016 Submission 20151218')
+			where CV_Submission in ('UCLM Rev 2016 Submission 20160331')
 			GROUP BY [id_Flight_Plan_Records_FK], [idProgram_Touch_Definitions_TBL_FK], [Campaign_Name], [InHome_Date], 
 			[Media_Year], [Media_Month], [Media_Week], [KPI_TYPE], [Product_Code],
 			[Touch_Name], [Program_Name], [Tactic], [Media], [Audience], [Creative_Name], [Goal], [Offer], [Campaign_Type] ) as CV
@@ -152,7 +152,7 @@ AS
 					from 
 					(
 					select idFlight_Plan_Records_FK, parentid, Start_Date, CTD_Quantity, CTD_Budget 
-						from bvt_prod.UCLM_Actuals_VW 
+						from bvt_prod.CLM_Revenue_Actuals_VW 
 					group by idFlight_Plan_Records_FK, parentid, Start_Date, CTD_Quantity, CTD_Budget
 					) A
 				group by idFlight_Plan_Records_FK, Start_Date) as actual_query
@@ -260,7 +260,7 @@ GROUP BY idFlight_Plan_Records_FK, Report_Year, Report_Week
 	when kpiproduct like '%WHP%' then 'WRLS Home'
 	end 
 	) as actuals 
-	inner join [bvt_prod].[UCLM_Flight_Plan_VW] on idFlight_Plan_Records_FK=[idFlight_Plan_Records]
+	inner join [bvt_prod].[CLM_Revenue_Flight_Plan_VW] on idFlight_Plan_Records_FK=[idFlight_Plan_Records]
 	inner join [bvt_prod].[Touch_Definition_VW] on [idProgram_Touch_Definitions_TBL]=[idProgram_Touch_Definitions_TBL_FK]
 	inner join (Select distinct ISO_week, ISO_Week_Year, MediaMonth from DIM.Media_Calendar_Daily) d
 on Media_week = d.ISO_Week and Media_Year = d.ISO_Week_Year) as actual_results
