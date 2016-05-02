@@ -601,6 +601,17 @@
     <Build Include="bvt_prod\Views\VALB_Flightplan_Volume_Forecast_VW.sql" />
     <Build Include="bvt_prod\Views\VALB_FlightplanKPIForecast.sql" />
     <Build Include="bvt_prod\Views\VALB_FlightplanSalesForecast.sql" />
+    <Build Include="bvt_prod\Views\BM_Flight_Plan_VW.sql" />
+    <Build Include="bvt_prod\Views\BM_Flightplan_KPIRate_Daily_VW.sql" />
+    <Build Include="bvt_prod\Views\BM_Flightplan_SalesRate_Daily_VW.sql" />
+    <Build Include="bvt_prod\Views\BM_Flightplan_Volume_Forecast_VW.sql" />
+    <Build Include="bvt_prod\Views\BM_FlightplanKPIForecast.sql" />
+    <Build Include="bvt_prod\Views\BM_FlightplanSalesForecast.sql" />
+    <Build Include="bvt_prod\Views\BM_Forecast_VW.sql" />
+    <Build Include="bvt_prod\Views\BM_Actuals_VW.sql" />
+    <Build Include="bvt_prod\Views\BM_Financial_Budget_Forecast.sql" />
+    <Build Include="bvt_prod\Views\BM_Best_View_VW.sql" />
+    <Build Include="bvt_prod\Views\BM_Best_View_Pivot_VW.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="Best_View_Dbase.refactorlog" />
