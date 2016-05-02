@@ -566,7 +566,6 @@
     <Build Include="bvt_prod\Views\CLM_Revenue_FlightplanSalesForecast.sql" />
     <Build Include="bvt_prod\Views\UCLM_Drag_Sales_Forecast_VW.sql" />
     <Build Include="bvt_prod\Views\CLM_Revenue_Drag_Sales_Forecast_VW.sql" />
-    <Build Include="bvt_prod\Daily_Response_Curve_Parentid_VW.sql" />
     <Build Include="bvt_prod\Views\ACQ_Actuals_VW.sql" />
     <Build Include="bvt_prod\Views\ACQ_Best_View_Forecast_VW.sql" />
     <Build Include="bvt_prod\Views\ACQ_Best_View_Pivot_VW.sql" />
@@ -612,6 +611,7 @@
     <Build Include="bvt_prod\Views\BM_Financial_Budget_Forecast.sql" />
     <Build Include="bvt_prod\Views\BM_Best_View_VW.sql" />
     <Build Include="bvt_prod\Views\BM_Best_View_Pivot_VW.sql" />
+    <Build Include="bvt_prod\Views\Daily_Response_Curve_Parentid_VW.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="Best_View_Dbase.refactorlog" />
