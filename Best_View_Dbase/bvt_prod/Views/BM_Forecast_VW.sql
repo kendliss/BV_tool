@@ -1,4 +1,4 @@
-﻿CREATE VIEW [bvt_prod].[BM_Forecast_VW]
+﻿alter VIEW [bvt_prod].[BM_Forecast_VW]
 as
 select FPR.idFlight_Plan_Records
 	, FPR.Campaign_Name
@@ -20,6 +20,7 @@ select FPR.idFlight_Plan_Records
 	, Goal
 	, Offer
 	, Channel
+	, owner_type_matrix_id_FK
 
 ----Metrics
 	, KPI_Type
