@@ -45,19 +45,22 @@ from UVAQ.bvt_processed.Movers_ActiveCampaigns
 
 
 INSERT INTO UVAQ.bvt_processed.Movers_ActiveCampaigns
-SELECT distinct [eCRW_Project_Name], [Project_Id], a.[ParentID], [Campaign_Name], [Media_Code], [Start_Date], [In_Home_Date], CONVERT(date,GETDATE())
+SELECT distinct [eCRW_Project_Name], [Project_Id], a.[ParentID], [Campaign_Name], a.[Media_Code], [Start_Date], [In_Home_Date], CONVERT(date,GETDATE())
 
-      FROM javdb.IREPORT_2015.dbo.WB_01_Campaign_List_WB a
+      FROM javdb.IREPORT_2015.dbo.WB_01_Campaign_list_WB_2016 a
+      JOIN JAVDB.IREPORT_2015.dbo.WB_00_Reporting_Hierarchy_2016 c
+      on a.tactic_id = c.id
       LEFT JOIN #MoversParentIDs b
       on a.parentID = b.parentID
-      where  
-      program='Movers' 
+      where c.scorecard_lob_Tab in ( 'Bill Media/Movers', 'Acquisition')
+      AND scorecard_type_major = 'Movers'
 	  AND [End_Date_Traditional] > '2014-12-28'
       AND Campaign_Name NOT LIKE '%best view objectives%'
       AND Campaign_Name NOT LIKE '%commitment view objectives%'
       AND eCRW_Project_Name NOT LIKE '%YP%'
       AND Campaign_Name NOT LIKE '%remaining data%'
 	  AND b.parentID IS NULL
+
 
 
 
@@ -73,6 +76,9 @@ CASE
 WHEN Media_Code = 'MoveATT' THEN 33 --MoveATT
 
 --Shared Mail
+WHEN Media_Code = 'Shared Mail' AND eCRW_Project_Name LIKE '%Bridgetree%' AND Campaign_Name LIKE '%Seller%Address%' THEN 1284 --Bridgetree Realogy - Seller at New Address
+WHEN Media_Code = 'Shared Mail' AND eCRW_Project_Name LIKE '%Bridgetree%' AND Campaign_Name LIKE '%Buyer%Address%' THEN 1285 --Bridgetree Realogy - Buyer at New Address
+WHEN Media_Code = 'Shared Mail' AND eCRW_Project_Name LIKE '%Bridgetree%' AND Campaign_Name LIKE '%Seller%Contract%' THEN 1282 --Bridgetree Realogy - Seller Under Contract
 WHEN Media_Code = 'Shared Mail' THEN 491 --U-verse Welcome Home Post Move Shared Mail
 
 --USPS

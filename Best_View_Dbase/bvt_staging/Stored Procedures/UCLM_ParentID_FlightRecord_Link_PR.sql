@@ -41,18 +41,12 @@ SELECT DISTINCT a.ParentID, a.Campaign_Name, a.start_date AS [In_Home_Date], a.M
 FROM JAVDB.IREPORT_2015.dbo.WB_01_Campaign_List AS a 
 JOIN JAVDB.IREPORT_2015.dbo.WB_00_Reporting_Hierarchy AS b
       ON a.tactic_id=b.id
-WHERE b.Scorecard_Top_Tab = 'Direct Marketing'
-	AND  b.Scorecard_LOB_Tab = 'U-verse'
-	AND  b.Scorecard_tab = 'U-verse CLM'
-	AND a.End_Date_Traditional>='28-DEC-2014'
+WHERE b.Scorecard_lob_Tab in ('Revenue Enhancement','Retention')
+	AND a.End_Date_Traditional>='28-DEC-2015'
 	AND a.Media_Code <> 'DR'
-	AND a.ParentID > 1334
 	AND a.parentID  NOT IN (SELECT parentID FROM UVAQ.bvt_processed.UCLM_ActiveCampaigns)
 	AND a.campaign_name NOT LIKE '%Commitment View%'
 	AND a.campaign_name NOT LIKE '%best View Objectives%'
-	AND a.Start_Date >= '10/1/14'
-	AND a.eCRW_Project_Name NOT LIKE '%GIG%'
-
 
 
 SELECT ParentID,
