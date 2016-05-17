@@ -62,13 +62,6 @@ SELECT distinct [eCRW_Project_Name], [Project_Id], a.[ParentID], [Campaign_Name]
 	  AND b.parentID IS NULL
 
 
-
-
-
-
-
-
-
 Select ParentID,
 CASE 
 
@@ -84,7 +77,7 @@ WHEN Media_Code = 'Shared Mail' THEN 491 --U-verse Welcome Home Post Move Shared
 --USPS
 WHEN Media_Code = 'USPS' AND eCRW_Project_Name LIKE '%Movers Guide Shared Market%' THEN 762 --Livebase DTV Pre Move Movers Guide
 WHEN Media_Code = 'USPS' AND eCRW_Project_Name LIKE '%Movers Guide ATT Market%' THEN 763 --Livebase UVTV Pre Move Movers Guide
-WHEN Media_Code = 'USPS' AND eCRW_Project_Name LIKE '%Mover Advantage Shared Market%' THEN 764 --Livebase DTV Pre Move Movers Guide Online
+WHEN Media_Code = 'USPS' AND eCRW_Project_Name LIKE '%Mover Advantage Shared%' THEN 764 --Livebase DTV Pre Move Movers Guide Online
 WHEN Media_Code = 'USPS' AND eCRW_Project_Name LIKE '%Mover Advantage ATT Market%' THEN 765 --Livebase UVTV Pre Move Movers Guide Online
 WHEN Media_Code = 'USPS' AND eCRW_Project_Name LIKE '%MVL Shared Market%' AND In_Home_Date <= '3/31/16' THEN 766 --Livebase DTV Pre Move Mover Validation Letter DTV CC
 WHEN Media_Code = 'USPS' AND eCRW_Project_Name LIKE '%MVL Shared Market%' AND In_Home_Date >= '4/1/16' THEN 989 --Livebase DTV Pre Move Mover Validation Letter

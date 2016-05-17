@@ -13,7 +13,7 @@ ALTER VIEW [bvt_prod].[Touch_Definition_VW]
 	AS SELECT idProgram_Touch_Definitions_TBL
 	, Touch_Name, Program_Name, Tactic, Media, Audience
 	, Creative_Name, Goal, Offer, Campaign_Type, Channel
-	, owner_type_matrix_id_FK 
+	, owner_type_matrix_id_FK, Scorecard_group, Scorecard_program_Channel
 						from bvt_prod.Program_Touch_Definitions_TBL
 					left join bvt_prod.Audience_LU_TBL on idAudience_LU_TBL_FK=idAudience_LU_TBL
 					left join bvt_prod.Campaign_Type_LU_TBL on idCampaign_Type_LU_TBL_FK=idCampaign_Type_LU_TBL
@@ -24,6 +24,7 @@ ALTER VIEW [bvt_prod].[Touch_Definition_VW]
 			left join bvt_prod.Program_LU_TBL on idProgram_LU_TBL_fk=idProgram_LU_TBL
 			left join bvt_prod.Tactic_LU_TBL on idTactic_LU_TBL_fk=idTactic_LU_TBL
 			left join bvt_prod.Channel_LU_TBL on idChanel_LU_TBL_FK=idChanel_LU_TBL
+			left Join bvt_processed.Scorecard_Hierarchy on owner_type_matrix_id_FK =  owner_type_matrix_id
 
 GO
 

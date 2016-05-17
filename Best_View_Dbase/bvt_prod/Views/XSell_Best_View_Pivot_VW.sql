@@ -5,7 +5,7 @@ CREATE VIEW [bvt_prod].[XSell_Best_View_Pivot_VW]
 	AS 
 	Select
 	[idFlight_Plan_Records_FK], [Campaign_Name], [InHome_Date], [Media_Year], [Media_Week], [Media_Month], [Touch_Name], [Program_Name], [Tactic], [Media], 
-	[Campaign_Type], [Audience], [Creative_Name], [Goal], [Offer], [Channel],
+	[Campaign_Type], [Audience], [Creative_Name], [Goal], [Offer], [Channel],Scorecard_Group, Scorecard_Program_Channel,
 sum(isnull([Call_CV], 0)) as [Call_CV], 
 sum(isnull([Online_CV], 0)) as [Online_CV], 
 sum(isnull([Online_sales_Access Line_CV], 0)) as [Online_sales_Access Line_CV], 
@@ -117,7 +117,7 @@ sum(isnull([Telesales_Access Line_AV], 0))+ sum(isnull([Telesales_DSL_AV], 0))+ 
 	FROM
 		(SELECT  
 	[idFlight_Plan_Records_FK], [Campaign_Name], [InHome_Date], [Media_Year], [Media_Week], [Media_Month], [Touch_Name], [Program_Name], [Tactic], [Media], 
-	[Campaign_Type], [Audience], [Creative_Name], [Goal], [Offer], [Channel], [Forecast], [Commitment], [Actual], [Best_View]
+	[Campaign_Type], [Audience], [Creative_Name], [Goal], [Offer], [Channel],Scorecard_Group, Scorecard_Program_Channel, [Forecast], [Commitment], [Actual], [Best_View]
 	,Case when kpi_type in ('Response','Volume','Budget') then Product_Code+'_CV'
 		Else [KPI_Type]+'_'+[Product_Code]+'_CV' end as CV_metric 
 	,Case when kpi_type in ('Response','Volume','Budget') then Product_Code+'_FV'
@@ -236,4 +236,4 @@ sum(isnull([Telesales_Access Line_AV], 0))+ sum(isnull([Telesales_DSL_AV], 0))+ 
 [Volume_BV])) as P4
 
 group by [idFlight_Plan_Records_FK], [Campaign_Name], [InHome_Date], [Media_Year], [Media_Week], [Media_Month], [Touch_Name], [Program_Name], [Tactic], [Media], 
-	[Campaign_Type], [Audience], [Creative_Name], [Goal], [Offer], [Channel]
+	[Campaign_Type], [Audience], [Creative_Name], [Goal], [Offer], [Channel], Scorecard_Group, Scorecard_Program_Channel
