@@ -33,7 +33,7 @@ TRUNCATE TABLE bvt_staging.BM_pID_FlightPlan_Dups
 
 INSERT INTO UVAQ.bvt_processed.BM_ActiveCampaigns
 SELECT DISTINCT a.ParentID, eCRW_Project_Name, Campaign_Name, Cell_Description, eCRW_Classification_Name, a.Media_Code,
-	Start_Date, a.Cell_DTV_Flag, Vendor, GETDATE() AS AssignDate, b.Scorecard_Program_Channel
+	Start_Date, a.Cell_DTV_Flag, Vendor, GETDATE() AS AssignDate, b.Scorecard_Program_Channel, a.CallStrat_ID
 
 	FROM JAVDB.IREPORT_2015.dbo.WB_01_Campaign_list_WB_2016 AS a 
 	JOIN JAVDB.IREPORT_2015.dbo.WB_00_Reporting_Hierarchy_2016 AS b
@@ -67,21 +67,26 @@ WHEN Media_Code = 'BAM' AND Cell_DTV_Flag LIKE '%Non_DTV%' THEN 810
 --WHEN Media_Code = 'Remit' THEN 629
 
 --Bill Media -- FYI
-WHEN Media_Code = 'FYI' AND eCRW_Classification_Name LIKE  '%Bundles Legacy%' THEN 465
-WHEN Media_Code = 'FYI' AND eCRW_Classification_Name LIKE  '%Broadband IPDSL%' THEN 466
-WHEN Media_Code = 'FYI' AND eCRW_Classification_Name LIKE  '%Broadband Legacy%' THEN 467
-WHEN Media_Code = 'FYI' AND eCRW_Classification_Name LIKE  '%Opportunity Legacy%' THEN 468
-WHEN Media_Code = 'FYI' AND eCRW_Project_Name LIKE '%Migration%' THEN 470 -- FYI - Migration
-WHEN Media_Code = 'FYI' AND eCRW_Classification_Name LIKE  '%Welcome Legacy%' THEN 471
-WHEN Media_Code = 'FYI' AND eCRW_Classification_Name LIKE  '%Bundles IPDSL%' AND (eCRW_Project_Name LIKE '%UVSWelcome%' OR eCRW_Project_Name LIKE '%UvsWelcome%') THEN 627
+--WHEN Media_Code = 'FYI' AND eCRW_Classification_Name LIKE  '%Bundles Legacy%' THEN 465
+--WHEN Media_Code = 'FYI' AND eCRW_Classification_Name LIKE  '%Broadband IPDSL%' THEN 466
+--WHEN Media_Code = 'FYI' AND eCRW_Classification_Name LIKE  '%Broadband Legacy%' THEN 467
+--WHEN Media_Code = 'FYI' AND eCRW_Classification_Name LIKE  '%Opportunity Legacy%' THEN 468
+WHEN Media_Code = 'FYI' AND eCRW_Project_Name LIKE '%Migration%' AND Campaign_Name LIKE '%Bundles%' THEN 465 -- FYI - Bundles Monthly
+WHEN Media_Code = 'FYI' AND eCRW_Project_Name LIKE '%Migration%' AND Campaign_Name LIKE '%Live Base%' THEN 468 -- FYI - Opportunity
+WHEN Media_Code = 'FYI' AND eCRW_Project_Name LIKE '%Migration%' AND Campaign_Name LIKE '%IPDSL%' THEN 466 -- FYI - Broadband IP
+WHEN Media_Code = 'FYI' AND eCRW_Project_Name LIKE '%Migration%' AND Campaign_Name LIKE '%DSL%' THEN 467 -- FYI - Broadband Legacy
+WHEN Media_Code = 'FYI' AND eCRW_Project_Name LIKE '%Migration%' AND Campaign_Name LIKE '%Migration%' THEN 470 -- FYI - Migration
+WHEN Media_Code = 'FYI' AND eCRW_Project_Name LIKE '%Migration%' AND Campaign_Name LIKE '%Welcome%' THEN 471 -- FYI - Welcome
+--WHEN Media_Code = 'FYI' AND eCRW_Classification_Name LIKE  '%Welcome Legacy%' THEN 471
+--WHEN Media_Code = 'FYI' AND eCRW_Classification_Name LIKE  '%Bundles IPDSL%' AND (eCRW_Project_Name LIKE '%UVSWelcome%' OR eCRW_Project_Name LIKE '%UvsWelcome%') THEN 627
 
 --Bill Media -- Onsert
-WHEN Media_Code = 'Onsert' AND eCRW_Project_Name LIKE '%Welcome%' THEN 610
-WHEN Media_Code = 'Onsert' AND eCRW_Project_Name LIKE '%Upgrade%' THEN 607
-WHEN Media_Code = 'Onsert' AND eCRW_Project_Name LIKE '%Voice%' THEN 608
+WHEN Media_Code = 'Onsert' AND eCRW_Project_Name LIKE '%Welcome%' THEN 610 -- Onserts - Welcome
+WHEN Media_Code = 'Onsert' AND eCRW_Project_Name LIKE '%Upgrade%' THEN 607 -- Onserts - Speed Upgrade
+WHEN Media_Code = 'Onsert' AND eCRW_Project_Name LIKE '%Voice%' THEN 608 -- Onserts - UVV
 
 --Bill Media -- FPC
-WHEN Media_Code = 'FPC' AND eCRW_Classification_Name LIKE  '%DIRECTV%' THEN 992
+WHEN Media_Code = 'FPC' AND eCRW_Project_Name LIKE  '%DTV%' THEN 992 --FPC - DTV
 
 WHEN Media_Code = 'FPC' AND eCRW_Project_Name LIKE '%FPC_T21_IPDSL%' AND Campaign_Name LIKE '%TDM%' AND Campaign_Name NOT LIKE '%TDM+WLS%' AND Cell_DTV_Flag LIKE '%DTV%' AND Cell_DTV_Flag NOT LIKE '%NON_DTV%' THEN 462 -- FPC IP - DTV - TDM
 WHEN Media_Code = 'FPC' AND eCRW_Project_Name LIKE '%FPC_T21_IPDSL%' AND Campaign_Name LIKE '%TDM+WLS%' AND Cell_DTV_Flag LIKE '%DTV%' AND Cell_DTV_Flag NOT LIKE '%NON_DTV%'  THEN 872 -- FPC IP - DTV - TDM+WLS
@@ -111,6 +116,8 @@ WHEN Media_Code = 'FPC' AND eCRW_Classification_Name LIKE  '%UVV%' AND Cell_DTV_
 WHEN Media_Code = 'FPC' AND eCRW_Classification_Name LIKE  '%UVV%' AND Cell_DTV_Flag LIKE '%Non_DTV%' THEN 898
 
 WHEN Media_Code = 'FPC' AND eCRW_Project_Name LIKE '%Migration%' THEN 464 -- FPC - Migration
+WHEN Media_Code = 'FPC' AND eCRW_Project_Name LIKE '%Gigapower%' THEN 1266 -- Gigapower FPC
+WHEN Media_Code = 'FPC' AND eCRW_Project_Name LIKE '%HSIA%Sell%' THEN 1248 --HSIA Cross Sell FPC
 
 
 --Bill Media -- Bill Inserts
@@ -186,7 +193,7 @@ ORDER BY a.idProgram_Touch_Definitions
 
 INSERT INTO bvt_staging.BM_pID_FlightPlan_Clean
 SELECT Distinct a.ParentID, a.idProgram_Touch_Definitions, a.idFlight_Plan_Records, b.Media_Code, b.eCRW_Project_Name, b.Campaign_Name, b.Cell_Description, b.Start_Date, b.Vendor,
- Scorecard_Program_Channel ,d.Campaign_Name as [FlightCampaignName], d.InHome_Date as [FlightInHomeDate], d.Touch_Name as [FlightTouchName], d.Program_Name as [FlightProgramName], d.Tactic as [FlightTactic], d.Media as [FlightMedia]
+ Scorecard_Program_Channel, CallStrat_ID ,d.Campaign_Name as [FlightCampaignName], d.InHome_Date as [FlightInHomeDate], d.Touch_Name as [FlightTouchName], d.Program_Name as [FlightProgramName], d.Tactic as [FlightTactic], d.Media as [FlightMedia]
  , d.Campaign_Type as [FlightCampaignType], d.Audience as [FlightAudience], d.Creative_Name as [FlightCreativeName], d.Offer as [FlightOffer]
 FROM #ParentID_ID_Link2 a
 JOIN UVAQ.bvt_processed.BM_ActiveCampaigns b ON a.parentID = b.ParentID
@@ -232,7 +239,7 @@ ORDER BY a.idProgram_Touch_Definitions
 --Flight plan has record within +/- 5 days of eCRW in home date but does not match exactly.
 INSERT INTO bvt_staging.BM_pID_FlightPlan_Other
 SELECT Distinct a.ParentID, a.idProgram_Touch_Definitions, a.idFlight_Plan_Records, b.Media_Code, b.eCRW_Project_Name, b.Campaign_Name, b.Cell_Description, b.Start_Date, b.Vendor,
- Scorecard_Program_Channel ,d.Campaign_Name as [FlightCampaignName], d.InHome_Date as [FlightInHomeDate], d.Touch_Name as [FlightTouchName], d.Program_Name as [FlightProgramName], d.Tactic as [FlightTactic], d.Media as [FlightMedia]
+ Scorecard_Program_Channel, CallStrat_ID ,d.Campaign_Name as [FlightCampaignName], d.InHome_Date as [FlightInHomeDate], d.Touch_Name as [FlightTouchName], d.Program_Name as [FlightProgramName], d.Tactic as [FlightTactic], d.Media as [FlightMedia]
  , d.Campaign_Type as [FlightCampaignType], d.Audience as [FlightAudience], d.Creative_Name as [FlightCreativeName], d.Offer as [FlightOffer]
 FROM #ParentID_ID_Link2 a
 JOIN UVAQ.bvt_processed.BM_ActiveCampaigns b ON a.parentID = b.ParentID
@@ -279,7 +286,7 @@ ORDER BY a.idProgram_Touch_Definitions
 
 INSERT INTO bvt_staging.BM_pID_FlightPlan_NoMatch
 SELECT Distinct a.ParentID, a.idProgram_Touch_Definitions, a.idFlight_Plan_Records, b.Media_Code, b.eCRW_Project_Name, b.Campaign_Name, b.Cell_Description, b.Start_Date, b.Vendor,
- Scorecard_Program_Channel ,d.Campaign_Name as [FlightCampaignName], d.InHome_Date as [FlightInHomeDate], d.Touch_Name as [FlightTouchName], d.Program_Name as [FlightProgramName], d.Tactic as [FlightTactic], d.Media as [FlightMedia]
+ Scorecard_Program_Channel, CallStrat_ID ,d.Campaign_Name as [FlightCampaignName], d.InHome_Date as [FlightInHomeDate], d.Touch_Name as [FlightTouchName], d.Program_Name as [FlightProgramName], d.Tactic as [FlightTactic], d.Media as [FlightMedia]
  , d.Campaign_Type as [FlightCampaignType], d.Audience as [FlightAudience], d.Creative_Name as [FlightCreativeName], d.Offer as [FlightOffer]
 FROM #ParentID_ID_Link2 a
 JOIN UVAQ.bvt_processed.BM_ActiveCampaigns b ON a.parentID = b.ParentID
@@ -329,7 +336,7 @@ ORDER BY Start_Date, a.idProgram_Touch_Definitions
 --There are multiple matches within +/- days. Should not occur going forward often. 
 INSERT INTO bvt_staging.BM_pID_FlightPlan_Dups
 SELECT Distinct a.ParentID, a.idProgram_Touch_Definitions, a.idFlight_Plan_Records, b.Media_Code, b.eCRW_Project_Name, b.Campaign_Name, b.Cell_Description, b.Start_Date, b.Vendor,
- Scorecard_Program_Channel ,d.Campaign_Name as [FlightCampaignName], d.InHome_Date as [FlightInHomeDate], d.Touch_Name as [FlightTouchName], d.Program_Name as [FlightProgramName], d.Tactic as [FlightTactic], d.Media as [FlightMedia]
+ Scorecard_Program_Channel, CallStrat_ID ,d.Campaign_Name as [FlightCampaignName], d.InHome_Date as [FlightInHomeDate], d.Touch_Name as [FlightTouchName], d.Program_Name as [FlightProgramName], d.Tactic as [FlightTactic], d.Media as [FlightMedia]
  , d.Campaign_Type as [FlightCampaignType], d.Audience as [FlightAudience], d.Creative_Name as [FlightCreativeName], d.Offer as [FlightOffer]
 FROM #ParentID_ID_Link2 a
 JOIN UVAQ.bvt_processed.BM_ActiveCampaigns b ON a.parentID = b.ParentID
