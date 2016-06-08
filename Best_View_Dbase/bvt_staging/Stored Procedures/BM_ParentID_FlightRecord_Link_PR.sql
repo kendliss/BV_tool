@@ -52,11 +52,11 @@ CASE
 
 --Bill Media -- Bill Inserts
 WHEN Media_Code = 'BI' AND eCRW_Project_Name LIKE '%Bundles%' THEN 452 -- Bill Insert - Bundles
-WHEN Media_Code = 'BI' AND eCRW_Project_Name LIKE '%Broadband%' THEN 453 -- Bill Insert - DSL
-WHEN Media_Code = 'BI' AND eCRW_Classification_Name LIKE '%Wireless%' THEN 454 -- Bill Insert - WRLS
-WHEN Media_Code = 'BI' AND eCRW_Classification_Name LIKE '%DSL in WLS%' THEN 461 --Bill Insert - DSL in WRLS
+WHEN Media_Code = 'BI' AND eCRW_Project_Name LIKE '%Broadband%' AND eCRW_Project_Name NOT LIKE '%WLS%' THEN 453 -- Bill Insert - DSL
+--WHEN Media_Code = 'BI' AND eCRW_Classification_Name LIKE '%Wireless%' THEN 454 -- Bill Insert - WRLS
+WHEN Media_Code = 'BI' AND (eCRW_Project_Name LIKE '%DSL in WLS%' OR eCRW_Project_Name LIKE '%BroadbandinWLS%') THEN 461 --Bill Insert - DSL in WRLS
 WHEN Media_Code = 'BI' AND eCRW_Project_Name LIKE '%DIRECTV%' THEN 603 -- Bill Insert - DTV
-WHEN Media_Code = 'BI' AND eCRW_Classification_Name LIKE '%IP Migration%' THEN 606 -- Bill Insert - Migration
+--WHEN Media_Code = 'BI' AND eCRW_Classification_Name LIKE '%IP Migration%' THEN 606 -- Bill Insert - Migration
 
 --Bill Media -- BAM
 WHEN Media_Code = 'BAM' AND Cell_DTV_Flag LIKE '%DTV%' AND Cell_DTV_Flag NOT LIKE '%NON_DTV%' THEN 809
@@ -96,24 +96,24 @@ WHEN Media_Code = 'FPC' AND eCRW_Project_Name LIKE '%FPC_T21_IPDSL%' AND Campaig
 WHEN Media_Code = 'FPC' AND eCRW_Project_Name LIKE '%FPC_T21_IPDSL%' AND Campaign_Name LIKE '%TDM+DTV+WLS%' AND Cell_DTV_Flag LIKE '%NON_DTV%'  THEN 876 -- FPC IP - Non_DTV - TDM+WLS+DTV
 WHEN Media_Code = 'FPC' AND eCRW_Project_Name LIKE '%FPC_T21_IPDSL%' THEN 873 -- FPC IP - Non_DTV - TDM
 
-WHEN Media_Code = 'FPC' AND eCRW_Classification_Name LIKE  '%Bundles Legacy%' AND eCRW_Project_Name LIKE '%FPC_T21_Bundles%' AND Cell_DTV_Flag LIKE '%DTV%' AND Cell_DTV_FLAG NOT LIKE '%NON_DTV%' THEN 622
-WHEN Media_Code = 'FPC' AND eCRW_Classification_Name LIKE  '%Bundles Legacy%' AND eCRW_Project_Name LIKE '%FPC_T21_Bundles%' AND Cell_DTV_Flag LIKE '%Non_DTV%' THEN 877
+--WHEN Media_Code = 'FPC' AND eCRW_Classification_Name LIKE  '%Bundles Legacy%' AND eCRW_Project_Name LIKE '%FPC_T21_Bundles%' AND Cell_DTV_Flag LIKE '%DTV%' AND Cell_DTV_FLAG NOT LIKE '%NON_DTV%' THEN 622
+WHEN Media_Code = 'FPC' AND eCRW_Project_Name LIKE '%FPC_T21_Bundles%' AND Cell_DTV_Flag LIKE '%Non_DTV%' THEN 877 --FPC - Bundles Monthly - Non-DTV
 
-WHEN Media_Code = 'FPC' AND eCRW_Classification_Name LIKE  '%Bundles Legacy%' AND eCRW_Project_Name LIKE '%FPC_T21_CLM_WLN_Welcome%' AND Cell_DTV_Flag LIKE '%DTV%' AND Cell_DTV_Flag NOT LIKE '%NON_DTV%' THEN 626
-WHEN Media_Code = 'FPC' AND eCRW_Classification_Name LIKE  '%Bundles Legacy%' AND eCRW_Project_Name LIKE '%FPC_T21_CLM_WLN_Welcome%' AND Cell_DTV_Flag LIKE '%Non_DTV%' THEN 899
+--WHEN Media_Code = 'FPC' AND eCRW_Classification_Name LIKE  '%Bundles Legacy%' AND eCRW_Project_Name LIKE '%FPC_T21_CLM_WLN_Welcome%' AND Cell_DTV_Flag LIKE '%DTV%' AND Cell_DTV_Flag NOT LIKE '%NON_DTV%' THEN 626
+WHEN Media_Code = 'FPC' AND eCRW_Project_Name LIKE '%FPC_T21_CLM_WLN_Welcome%' AND Cell_DTV_Flag LIKE '%Non_DTV%' THEN 899 --FPC - Wireline Welcome - Non-DTV
 
-WHEN Media_Code = 'FPC' AND eCRW_Classification_Name LIKE  '%Upgrade IPDSL%' AND Cell_DTV_Flag LIKE '%DTV%' AND Cell_DTV_Flag NOT LIKE '%NON_DTV%' THEN 935
-WHEN Media_Code = 'FPC' AND eCRW_Classification_Name LIKE  '%Upgrade IPDSL%' AND Cell_DTV_Flag LIKE '%Non_DTV%' THEN 936
+--WHEN Media_Code = 'FPC' AND eCRW_Classification_Name LIKE  '%Upgrade IPDSL%' AND Cell_DTV_Flag LIKE '%DTV%' AND Cell_DTV_Flag NOT LIKE '%NON_DTV%' THEN 935
+--WHEN Media_Code = 'FPC' AND eCRW_Classification_Name LIKE  '%Upgrade IPDSL%' AND Cell_DTV_Flag LIKE '%Non_DTV%' THEN 936
 
-WHEN Media_Code = 'FPC' AND eCRW_Classification_Name LIKE  '%Welcome IPDSL%' AND Cell_DTV_Flag LIKE '%DTV%' AND Cell_DTV_Flag NOT LIKE '%NON_DTV%' THEN 624
-WHEN Media_Code = 'FPC' AND eCRW_Classification_Name LIKE  '%Welcome IPDSL%' AND Cell_DTV_Flag LIKE '%Non_DTV%' THEN 897
+--WHEN Media_Code = 'FPC' AND eCRW_Classification_Name LIKE  '%Welcome IPDSL%' AND Cell_DTV_Flag LIKE '%DTV%' AND Cell_DTV_Flag NOT LIKE '%NON_DTV%' THEN 624
+--WHEN Media_Code = 'FPC' AND eCRW_Classification_Name LIKE  '%Welcome IPDSL%' AND Cell_DTV_Flag LIKE '%Non_DTV%' THEN 897
 
-WHEN Media_Code = 'FPC' AND eCRW_Classification_Name LIKE  '%DSL%' AND Cell_DTV_Flag LIKE '%DTV%' AND Cell_DTV_Flag NOT LIKE '%NON_DTV%' THEN 463
-WHEN Media_Code = 'FPC' AND eCRW_Classification_Name LIKE  '%DSL%' AND Campaign_Name LIKE '%DTV%' THEN 871
-WHEN Media_Code = 'FPC' AND eCRW_Classification_Name LIKE  '%DSL%' THEN 463
+--WHEN Media_Code = 'FPC' AND eCRW_Classification_Name LIKE  '%DSL%' AND Cell_DTV_Flag LIKE '%DTV%' AND Cell_DTV_Flag NOT LIKE '%NON_DTV%' THEN 463
+--WHEN Media_Code = 'FPC' AND eCRW_Classification_Name LIKE  '%DSL%' AND Campaign_Name LIKE '%DTV%' THEN 871
+--WHEN Media_Code = 'FPC' AND eCRW_Classification_Name LIKE  '%DSL%' THEN 463
 
-WHEN Media_Code = 'FPC' AND eCRW_Classification_Name LIKE  '%UVV%' AND Cell_DTV_Flag LIKE '%DTV%' AND Cell_DTV_Flag NOT LIKE '%NON_DTV%' THEN 625
-WHEN Media_Code = 'FPC' AND eCRW_Classification_Name LIKE  '%UVV%' AND Cell_DTV_Flag LIKE '%Non_DTV%' THEN 898
+--WHEN Media_Code = 'FPC' AND eCRW_Classification_Name LIKE  '%UVV%' AND Cell_DTV_Flag LIKE '%DTV%' AND Cell_DTV_Flag NOT LIKE '%NON_DTV%' THEN 625
+--WHEN Media_Code = 'FPC' AND eCRW_Classification_Name LIKE  '%UVV%' AND Cell_DTV_Flag LIKE '%Non_DTV%' THEN 898
 
 WHEN Media_Code = 'FPC' AND eCRW_Project_Name LIKE '%Migration%' THEN 464 -- FPC - Migration
 WHEN Media_Code = 'FPC' AND eCRW_Project_Name LIKE '%Gigapower%' THEN 1266 -- Gigapower FPC
@@ -149,6 +149,8 @@ WHEN Media_Code = 'FPC' AND eCRW_Project_Name LIKE '%DTVCrossSellUVBill%' THEN 1
 WHEN Media_Code = 'FPC' AND eCRW_Project_Name LIKE '%HSIA%Sell%' THEN 1248 --HSIA Cross Sell FPC
 
 WHEN Media_Code = 'FYI' AND eCRW_Project_Name LIKE '%Uverse OE%' THEN 1026 --TV Cross Sell OE
+WHEN Media_Code = 'OE' AND eCRW_Project_Name LIKE '%Wireline OE%' THEN 1307 --OE - Wireline OE Message
+WHEN Media_Code = 'Onsert' AND eCRW_Project_Name LIKE '%HSIA Cross%' AND eCRW_Project_Name LIKE '%D%TV%' THEN 1367 --HSIA Cross Sell Bill Onsert DTV Bill
 
 
 
