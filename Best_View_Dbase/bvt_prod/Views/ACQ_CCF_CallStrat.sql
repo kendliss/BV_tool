@@ -14,7 +14,8 @@ ALTER VIEW [bvt_prod].[ACQ_CCF_CallStrat]
 	AS	
 	
 Select a.Touch_Name, a.Media, Campaign_Name, idFlight_Plan_Records, b.Source_System_ID as ParentID, a.InHome_Date, Media_Week, SUM(Forecast*ISNULL(PIDPercent,1)) as Calls
-, Coalesce(CAST(CallStrat_ID as Varchar(10)),c.Channel) as CallStrat, c.Channel
+,  CASE WHEN a.Touch_Name LIKE '%Hisp%' THEN 'HISP ' ELSE '' END + Coalesce(CAST(CallStrat_ID as Varchar(10)),c.Channel) as CallStrat
+, CASE WHEN a.Touch_Name LIKE '%Hisp%' THEN 'HISP ' ELSE '' END + Channel AS Channel
 from (Select Touch_Name, Media, Campaign_Name, idFlight_Plan_Records, InHome_Date, Media_Week, SUM(Forecast) as Forecast
 	  from bvt_prod.ACQ_Best_View_Forecast_VW
 	  Where Product_Code = 'Call' and Media_Year = 2016
