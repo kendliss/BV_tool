@@ -10,7 +10,6 @@ GO
 
 
 
-
 ALTER PROC [bvt_staging].[Movers_ParentID_FlightRecord_Link_PR]
 
 AS
@@ -34,6 +33,9 @@ TRUNCATE TABLE bvt_staging.Movers_pID_FlightPlan_Dups
 IF Object_ID('#MoversParentIDs') IS NOT NULL
 DROP TABLE #MoversParentIDs
 
+IF Object_ID('#MoveATT') IS NOT NULL
+DROP TABLE #MoveATT
+
 
 select ParentID
 INTO #MoversParentIDs
@@ -43,25 +45,21 @@ from UVAQ.bvt_processed.Movers_ActiveCampaigns
 
 
 INSERT INTO UVAQ.bvt_processed.Movers_ActiveCampaigns
-SELECT distinct [eCRW_Project_Name], [Project_Id], a.[ParentID], [Campaign_Name], [Media_Code], [Start_Date], [In_Home_Date], CONVERT(date,GETDATE())
+SELECT distinct [eCRW_Project_Name], [Project_Id], a.[ParentID], [Campaign_Name], a.[Media_Code], [Start_Date], [In_Home_Date], CONVERT(date,GETDATE())
 
-      FROM javdb.IREPORT_2015.dbo.WB_01_Campaign_List_WB a
+      FROM javdb.IREPORT_2015.dbo.WB_01_Campaign_list_WB_2016 a
+      JOIN JAVDB.IREPORT_2015.dbo.WB_00_Reporting_Hierarchy_2016 c
+      on a.tactic_id = c.id
       LEFT JOIN #MoversParentIDs b
       on a.parentID = b.parentID
-      where  
-      program='Movers' 
+      where c.scorecard_lob_Tab in ( 'Bill Media/Movers', 'Acquisition')
+      AND scorecard_type_major = 'Movers'
 	  AND [End_Date_Traditional] > '2014-12-28'
       AND Campaign_Name NOT LIKE '%best view objectives%'
       AND Campaign_Name NOT LIKE '%commitment view objectives%'
       AND eCRW_Project_Name NOT LIKE '%YP%'
       AND Campaign_Name NOT LIKE '%remaining data%'
 	  AND b.parentID IS NULL
-
-
-
-
-
-
 
 
 Select ParentID,
@@ -71,12 +69,15 @@ CASE
 WHEN Media_Code = 'MoveATT' THEN 33 --MoveATT
 
 --Shared Mail
+WHEN Media_Code = 'Shared Mail' AND eCRW_Project_Name LIKE '%Bridgetree%' AND Campaign_Name LIKE '%Seller%Address%' THEN 1284 --Bridgetree Realogy - Seller at New Address
+WHEN Media_Code = 'Shared Mail' AND eCRW_Project_Name LIKE '%Bridgetree%' AND Campaign_Name LIKE '%Buyer%Address%' THEN 1285 --Bridgetree Realogy - Buyer at New Address
+WHEN Media_Code = 'Shared Mail' AND eCRW_Project_Name LIKE '%Bridgetree%' AND Campaign_Name LIKE '%Seller%Contract%' THEN 1282 --Bridgetree Realogy - Seller Under Contract
 WHEN Media_Code = 'Shared Mail' THEN 491 --U-verse Welcome Home Post Move Shared Mail
 
 --USPS
 WHEN Media_Code = 'USPS' AND eCRW_Project_Name LIKE '%Movers Guide Shared Market%' THEN 762 --Livebase DTV Pre Move Movers Guide
 WHEN Media_Code = 'USPS' AND eCRW_Project_Name LIKE '%Movers Guide ATT Market%' THEN 763 --Livebase UVTV Pre Move Movers Guide
-WHEN Media_Code = 'USPS' AND eCRW_Project_Name LIKE '%Mover Advantage Shared Market%' THEN 764 --Livebase DTV Pre Move Movers Guide Online
+WHEN Media_Code = 'USPS' AND eCRW_Project_Name LIKE '%Mover Advantage Shared%' THEN 764 --Livebase DTV Pre Move Movers Guide Online
 WHEN Media_Code = 'USPS' AND eCRW_Project_Name LIKE '%Mover Advantage ATT Market%' THEN 765 --Livebase UVTV Pre Move Movers Guide Online
 WHEN Media_Code = 'USPS' AND eCRW_Project_Name LIKE '%MVL Shared Market%' AND In_Home_Date <= '3/31/16' THEN 766 --Livebase DTV Pre Move Mover Validation Letter DTV CC
 WHEN Media_Code = 'USPS' AND eCRW_Project_Name LIKE '%MVL Shared Market%' AND In_Home_Date >= '4/1/16' THEN 989 --Livebase DTV Pre Move Mover Validation Letter
@@ -156,6 +157,52 @@ ON (a.idprogram_Touch_Definitions = c.idProgram_Touch_Definitions_TBL_FK  AND
 ORDER BY a.idProgram_Touch_Definitions
 
 
+SELECT idFlight_Plan_Records, Campaign_Name, TFN_ind
+INTO #MoveATT
+FROM UVAQ.bvt_prod.Movers_Flight_Plan_VW
+where idProgram_Touch_Definitions_TBL_FK = 33
+
+
+
+UPDATE #ParentID_ID_Link2
+Set idFlight_Plan_Records = 0
+where idFlight_Plan_Records in 
+	(Select b.idFlight_Plan_Records
+	FROM UVAQ.bvt_processed.Movers_ActiveCampaigns a
+	JOIN #ParentID_ID_Link2 b
+	on a.ParentID = b.ParentID and a.AssignDate = Convert(date, getdate())
+	JOIN #MoveATT c
+	on b.idFlight_Plan_Records = c.idFlight_Plan_Records
+	WHERE a.Campaign_Name LIKE '%URL Only%' AND TFN_ind <> 0)
+AND ParentID in (Select b.ParentID
+	FROM UVAQ.bvt_processed.Movers_ActiveCampaigns a
+	JOIN #ParentID_ID_Link2 b
+	on a.ParentID = b.ParentID and a.AssignDate = Convert(date, getdate())
+	JOIN #MoveATT c
+	on b.idFlight_Plan_Records = c.idFlight_Plan_Records
+	WHERE a.Campaign_Name LIKE '%URL Only%' AND TFN_ind <> 0)
+
+UPDATE #ParentID_ID_Link2
+Set idFlight_Plan_Records = 0
+where idFlight_Plan_Records in 
+	(Select b.idFlight_Plan_Records
+	FROM UVAQ.bvt_processed.Movers_ActiveCampaigns a
+	JOIN #ParentID_ID_Link2 b
+	on a.ParentID = b.ParentID and a.AssignDate = Convert(date, getdate())
+	JOIN #MoveATT c
+	on b.idFlight_Plan_Records = c.idFlight_Plan_Records
+	WHERE a.Campaign_Name LIKE '%TFN+URL%' AND TFN_ind = 0)
+AND ParentID in (Select b.ParentID
+	FROM UVAQ.bvt_processed.Movers_ActiveCampaigns a
+	JOIN #ParentID_ID_Link2 b
+	on a.ParentID = b.ParentID and a.AssignDate = Convert(date, getdate())
+	JOIN #MoveATT c
+	on b.idFlight_Plan_Records = c.idFlight_Plan_Records
+	WHERE a.Campaign_Name LIKE '%TFN+URL%' AND TFN_ind = 0) 
+ 
+DELETE #ParentID_ID_Link2
+where idFlight_Plan_Records = 0
+
 
 
 --for QC purposes adds information about touch type and campaign instead of only having ID numbers and puts it into the different category tables.
@@ -184,7 +231,7 @@ LEFT JOIN (SELECT DISTINCT
 		FROM UVAQ.bvt_prod.Movers_Best_View_Forecast_VW_FOR_LINK
 		where KPI_Type = 'Volume') d
 ON a.idFlight_Plan_Records = d.idFlight_Plan_Records
-Where b.In_Home_Date = d.InHome_Date
+Where b.Start_Date = d.InHome_Date
 AND a.ParentID not in (Select ParentID from #ParentID_ID_Link2 group by parentid having COUNT(ParentID) >1)
 AND b.AssignDate =Convert(date, getdate())
 ORDER BY a.idProgram_Touch_Definitions
@@ -213,7 +260,7 @@ LEFT JOIN (SELECT DISTINCT
 		FROM UVAQ.bvt_prod.Movers_Best_View_Forecast_VW_FOR_LINK
 		where KPI_Type = 'Volume') d
 ON a.idFlight_Plan_Records = d.idFlight_Plan_Records
-Where b.In_Home_Date <> d.InHome_Date and d.InHome_Date is not null
+Where b.Start_Date <> d.InHome_Date and d.InHome_Date is not null
 AND a.ParentID not in (Select ParentID from #ParentID_ID_Link2 group by parentid having COUNT(ParentID) >1)
 AND b.AssignDate = Convert(date, getdate())
 ORDER BY a.idProgram_Touch_Definitions
@@ -279,6 +326,8 @@ ON a.idFlight_Plan_Records = d.idFlight_Plan_Records
 Where a.ParentID in (Select ParentID from #ParentID_ID_Link2 group by parentid having COUNT(ParentID) >1)
 AND b.AssignDate = Convert(date, getdate())
 ORDER BY a.idProgram_Touch_Definitions
+
+
 
 
 END

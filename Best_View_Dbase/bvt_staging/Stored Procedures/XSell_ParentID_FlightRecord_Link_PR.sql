@@ -31,26 +31,32 @@ IF Object_ID('bvt_staging.UVLB_pID_FlightPlan_Dups') IS NOT NULL
 TRUNCATE TABLE bvt_staging.UVLB_pID_FlightPlan_Dups
 
 
-INSERT INTO UVAQ.bvt_processed.UVLB_ActiveCampaigns
-SELECT DISTINCT a.ParentID, a.Campaign_Name, a.Start_Date as [In_Home_Date], a.Media_Code, a.Vendor,  a.eCRW_Project_Name, GETDATE(), a.Cell_Description
+Select Source_System_ID
+into #TempXSellPID
+from  bvt_prod.External_ID_linkage_TBL a
+JOIN bvt_prod.External_ID_linkage_TBL_has_Flight_Plan_Records b
+on a.idExternal_ID_linkage_TBL = b.idExternal_ID_linkage_TBL_FK
+JOIN bvt_prod.Flight_Plan_Records c
+on b.idFlight_Plan_Records_FK = c.idFlight_Plan_Records
+JOIN bvt_Prod.Touch_Definition_VW d
+on d.idProgram_Touch_Definitions_TBL = c.idProgram_Touch_Definitions_TBL_FK
+where PROGRAM_NAME = 'X-Sell'
 
-	FROM JAVDB.IREPORT_2015.dbo.WB_01_Campaign_List AS a JOIN JAVDB.IREPORT_2015.dbo.WB_00_Reporting_Hierarchy AS b
+
+Insert INTO bvt_processed.XSell_ActiveCampaigns
+SELECT DISTINCT a.ParentID, a.Project_ID, a.eCRW_Project_Name, a.Campaign_Name, a.Start_Date, b.Scorecard_Program_Channel, a.Media_Code, a.Vendor, a.CallStrat_ID,
+a.Cell_Description, GETDATE() as AssignDate
+
+	FROM JAVDB.IREPORT_2015.dbo.WB_01_Campaign_list_WB_2016 AS a 
+	JOIN JAVDB.IREPORT_2015.dbo.WB_00_Reporting_Hierarchy_2016 AS b
       ON a.tactic_id=b.id
-     WHERE b.Scorecard_Top_Tab = 'Direct Marketing'
-AND  b.Scorecard_LOB_Tab = 'U-verse'
-AND  b.Scorecard_tab in( 'Uverse', 'U-verse CLM')
-AND ((b.Scorecard_tab = 'Uverse' and b.scorecard_program_channel NOT LIKE '%Prospect%')
-	OR (b.Scorecard_Program_Channel LIKE '%Prospect%' AND (a.eCRW_project_Name LIKE '%Giga%' OR a.eCRW_Project_Name LIKE '%_OOF_%') and a.Start_Date >= '12/28/15')
-	OR (a.business_unit_Name LIKE 'U-verse CLM' AND a.eCRW_Project_Name LIKE '%Gig%' and a.Start_Date >= CASE WHEN a.Media_Code IN ('DM','EM') THEN '12/28/15' ELSE '5/1/16' END)
-	OR (a.business_unit_Name LIKE 'U-verse CLM' AND a.eCRW_Project_Name LIKE '%HSIA%Sell%' and a.Start_Date >= '12/28/15'))
-AND (a.[Start_Date]<= '27-DEC-2016' AND a.End_Date_Traditional>='28-DEC-2014') 
+     WHERE b.Scorecard_lob_Tab = 'Cross-Sell'
+    AND a.End_Date_Traditional>='12/28/15'
 	AND a.Media_Code <> 'DR'
-	AND a.ParentID > 1334
-	AND a.ParentID <> 250911
-	AND a.parentID  NOT IN (SELECT parentID FROM UVAQ.bvt_processed.UVLB_ActiveCampaigns)
 	AND a.campaign_name NOT LIKE '%Commitment View%'
 	AND a.campaign_name NOT LIKE '%Remaining data%'
 	AND a.campaign_name NOT LIKE '%best View Objectives%'
+	AND a.ParentID not in (Select ParentID from bvt_processed.XSell_ActiveCampaigns)
 
 
 

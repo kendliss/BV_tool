@@ -8,10 +8,10 @@ If anything is not copied exactly, you can comment that out and either bulk load
 --  Commit Tran
 
 Declare @A Int 
-SET @A =  1005 --touch that is being cloned
+SET @A =  790 --touch that is being cloned
 
 Declare @B Int 
-Set @B = 1249 --new touch
+Set @B = 1280 --new touch
 
 
 declare @C float
@@ -29,11 +29,11 @@ select  @B as idProgram_Touch_definitions_TBL_FK,
 a.idKPI_Types_FK, (KPI_Rate*@C) as KPI_Rate, a.Rate_Start_Date 
 from bvt_prod.KPI_Rates a
 JOIN (Select idProgram_Touch_Definitions_TBL_FK, Rate_Start_Date, idkpi_types_FK
-		from bvt_prod.KPI_Rates
-		where rate_start_Date >= '12/18/15') b
+		from bvt_prod.KPI_Rates) b
 on a.idProgram_Touch_Definitions_TBL_FK = b.idProgram_Touch_Definitions_TBL_FK and 
 a.Rate_Start_Date = b.Rate_Start_Date and a.idkpi_types_FK = b.idkpi_types_FK
 where a.idProgram_Touch_Definitions_TBL_FK = @a
+order by idKPI_Types_FK, Rate_Start_Date
 
 
 
@@ -52,7 +52,6 @@ where a.idProgram_Touch_Definitions_TBL_FK =@A
 order by idkpi_type_FK, Week_ID
 
 
-
 --sales rates
 
 Insert into bvt_prod.Sales_Rates
@@ -60,13 +59,13 @@ select a.idProduct_LU_TBL_FK, @B as idProgram_Touch_Definitions_TBL_FK,
 a.Sales_Rate_Start_Date, (Sales_Rate*@C) as Sales_Rate, a.idkpi_type_FK
 from bvt_prod.Sales_Rates a
 JOIN (Select idProgram_Touch_Definitions_TBL_FK, Sales_Rate_Start_Date, idkpi_type_FK, idProduct_LU_TBL_FK
-		from bvt_prod.Sales_Rates
-		where Sales_Rate_Start_Date >= '12/18/15') b
+		from bvt_prod.Sales_Rates) b
 on a.idProgram_Touch_Definitions_TBL_FK = b.idProgram_Touch_Definitions_TBL_FK and 
 a.Sales_Rate_Start_Date = b.Sales_Rate_Start_Date and a.idkpi_type_FK = b.idkpi_type_FK
 and a.idProduct_LU_TBL_FK = b.idProduct_LU_TBL_FK
 where a.idProgram_Touch_Definitions_TBL_FK =@A
-order by idkpi_type_FK, idProduct_LU_TBL_FK
+and a.idProduct_LU_TBL_FK not in (15,16)
+order by idkpi_type_FK, Sales_Rate_Start_Date, idProduct_LU_TBL_FK
 
 
 
