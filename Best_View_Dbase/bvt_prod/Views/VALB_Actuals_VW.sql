@@ -33,3 +33,4 @@ CREATE VIEW [bvt_prod].[VALB_Actuals_VW]
 
 		---linking fields
 		on IR_Campaign_Data_Weekly_MAIN_2012_Sbset.idFlight_Plan_Records_FK= fltpln.idFlight_Plan_Records
+		where ExcludefromScorecard = 'N'
