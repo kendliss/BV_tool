@@ -20,6 +20,7 @@ group by Owner_type_matrix_id_FK
 	, month(Forecast_Daydate) 
 	, KPI_Type
 	, Product_Code
+	, channel
 
 union all
 /*Temporary removal of BM Best view as it is not yet active 5-3-2016
@@ -63,6 +64,7 @@ group by Owner_type_matrix_id_FK
 	, month(Forecast_Daydate) 
 	, KPI_Type
 	, Product_Code
+	, channel
 
 union all
 
@@ -86,7 +88,7 @@ group by Owner_type_matrix_id_FK
 	, month(Forecast_week_date) 
 	, KPI_Type
 	, Product_Code
-
+	, channel
 union all
 -----End of Temporary code for use of UVLB and VALB for bill media
 
@@ -108,7 +110,7 @@ group by Owner_type_matrix_id_FK
 	, month(Forecast_Daydate) 
 	, KPI_Type
 	, Product_Code
-
+	, channel
 union all
 
 Select Owner_type_matrix_id_FK as hierarchy_id
@@ -129,7 +131,7 @@ group by Owner_type_matrix_id_FK
 	, month(Forecast_Daydate) 
 	, KPI_Type
 	, Product_Code
-
+	, channel
 union all
 
 Select Owner_type_matrix_id_FK as hierarchy_id
@@ -150,7 +152,7 @@ group by Owner_type_matrix_id_FK
 	, month(Forecast_Daydate) 
 	, KPI_Type
 	, Product_Code
-
+	, channel
 union all
 
 Select Owner_type_matrix_id_FK as hierarchy_id
@@ -171,4 +173,5 @@ group by Owner_type_matrix_id_FK
 	, month(Forecast_Daydate) 
 	, KPI_Type
 	, Product_Code
+	, channel
 
