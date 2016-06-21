@@ -1,4 +1,4 @@
-﻿ALTER VIEW [bvt_prod].[BV_SCard_HierarchyID_VW]
+﻿CREATE VIEW [bvt_prod].[BV_SCard_Hierarchy_CallStrategy_VW]
 	AS 
 	
 SELECT
@@ -9,6 +9,7 @@ SELECT
 	, month(Forecast_Daydate) as calendar_month
 	, KPI_Type
 	, Product_Code
+	, Channel
 	, sum(Forecast) as forecast
 FROM bvt_prod.[ACQ_Best_View_Forecast_VW]
 where media_year>=2016
@@ -19,6 +20,7 @@ group by Owner_type_matrix_id_FK
 	, month(Forecast_Daydate) 
 	, KPI_Type
 	, Product_Code
+	, channel
 
 union all
 /*Temporary removal of BM Best view as it is not yet active 5-3-2016
@@ -29,6 +31,7 @@ Select Owner_type_matrix_id_FK as hierarchy_id
 	, month(Forecast_Daydate) as calendar_month
 	, KPI_Type
 	, Product_Code
+	, Channel
 	, sum(Forecast)  as forecast 
 FROM bvt_prod.BM_Forecast_VW
 where media_year>=2016
@@ -49,6 +52,7 @@ SELECT
 	, month(Forecast_Daydate) as calendar_month
 	, KPI_Type
 	, Product_Code
+	, Channel
 	, sum(Forecast) as forecast
 FROM bvt_prod.[UVLB_Best_View_Forecast_VW]
 where media_year>=2016
@@ -60,6 +64,7 @@ group by Owner_type_matrix_id_FK
 	, month(Forecast_Daydate) 
 	, KPI_Type
 	, Product_Code
+	, channel
 
 union all
 
@@ -71,6 +76,7 @@ SELECT
 	, month(Forecast_week_date) as calendar_month
 	, KPI_Type
 	, Product_Code
+	, Channel
 	, sum(Forecast) as forecast
 FROM bvt_prod.[VALB_Best_View_Forecast_VW]
 where media_year>=2016
@@ -82,7 +88,7 @@ group by Owner_type_matrix_id_FK
 	, month(Forecast_week_date) 
 	, KPI_Type
 	, Product_Code
-
+	, channel
 union all
 -----End of Temporary code for use of UVLB and VALB for bill media
 
@@ -93,6 +99,7 @@ Select Owner_type_matrix_id_FK as hierarchy_id
 	, month(Forecast_Daydate) as calendar_month
 	, KPI_Type
 	, Product_Code
+	, '9. Blue' as Channel
 	, sum(Forecast)  as forecast
 FROM bvt_prod.CLM_Revenue_Forecast_VW
 where media_year>=2016
@@ -103,7 +110,7 @@ group by Owner_type_matrix_id_FK
 	, month(Forecast_Daydate) 
 	, KPI_Type
 	, Product_Code
-
+	, channel
 union all
 
 Select Owner_type_matrix_id_FK as hierarchy_id
@@ -113,6 +120,7 @@ Select Owner_type_matrix_id_FK as hierarchy_id
 	, month(Forecast_Daydate) as calendar_month
 	, KPI_Type
 	, Product_Code
+	, Channel
 	, sum(Forecast)  as forecast
 FROM bvt_prod.Movers_Best_View_Forecast_VW
 where media_year>=2016
@@ -123,7 +131,7 @@ group by Owner_type_matrix_id_FK
 	, month(Forecast_Daydate) 
 	, KPI_Type
 	, Product_Code
-
+	, channel
 union all
 
 Select Owner_type_matrix_id_FK as hierarchy_id
@@ -133,6 +141,7 @@ Select Owner_type_matrix_id_FK as hierarchy_id
 	, month(Forecast_Daydate) as calendar_month
 	, KPI_Type
 	, Product_Code
+	, '9. Blue' as Channel
 	, sum(Forecast)  as forecast
 FROM bvt_prod.UCLM_Best_View_Forecast_VW
 where media_year>=2016
@@ -143,7 +152,7 @@ group by Owner_type_matrix_id_FK
 	, month(Forecast_Daydate) 
 	, KPI_Type
 	, Product_Code
-
+	, channel
 union all
 
 Select Owner_type_matrix_id_FK as hierarchy_id
@@ -153,6 +162,7 @@ Select Owner_type_matrix_id_FK as hierarchy_id
 	, month(Forecast_Daydate) as calendar_month
 	, KPI_Type
 	, Product_Code
+	, Channel
 	, sum(Forecast)  as forecast
 FROM bvt_prod.XSell_Best_View_Forecast_VW
 where media_year>=2016
@@ -163,4 +173,5 @@ group by Owner_type_matrix_id_FK
 	, month(Forecast_Daydate) 
 	, KPI_Type
 	, Product_Code
+	, channel
 

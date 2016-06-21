@@ -24,6 +24,7 @@ select FPR.idFlight_Plan_Records
 	, Goal
 	, Offer
 	, Channel
+	, owner_type_matrix_id_FK
 
 ----Metrics
 	, KPI_Type

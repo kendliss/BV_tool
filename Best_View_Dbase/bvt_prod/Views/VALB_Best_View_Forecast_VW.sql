@@ -14,7 +14,7 @@ GO
 
 
 
-CREATE view [bvt_prod].[VALB_Best_View_Forecast_VW]
+alter view [bvt_prod].[VALB_Best_View_Forecast_VW]
 as
 select FPR.idFlight_Plan_Records
 
@@ -37,6 +37,7 @@ select FPR.idFlight_Plan_Records
 	, Goal
 	, Offer
 	, Channel
+	, owner_type_matrix_id_FK
 
 ----Metrics
 	, KPI_Type
