@@ -1,4 +1,4 @@
-﻿CREATE VIEW [bvt_prod].[Daily_Response_Curve_Parentid_VW]
+﻿alter VIEW [bvt_prod].[Daily_Response_Curve_Parentid_VW]
 	AS 
 
 ------Acquisition Curves by day by parentid	
@@ -7,6 +7,7 @@
 		, DATEADD(day,Day_of_Week,DATEADD(week,curve.Week_ID,InHome_Date)) as Forecast_DayDate
 		, daily_perc.idKPI_TYPE_fk
 		, Day_Percent*week_percent as response_percent 
+		, daily_perc.idProgram_Touch_Definitions_TBL_FK
 	FROM
 
 	(select parentid, campaigns.idProgram_Touch_Definitions_TBL_FK, InHome_Date, Day_of_Week, day_percent, idkpi_type_fk	
@@ -40,6 +41,7 @@
 		, DATEADD(day,Day_of_Week,DATEADD(week,curve.Week_ID,InHome_Date)) as Forecast_DayDate
 		, daily_perc.idKPI_TYPE_fk
 		, Day_Percent*week_percent as response_percent 
+		, daily_perc.idProgram_Touch_Definitions_TBL_FK
 	FROM
 
 	(select parentid, campaigns.idProgram_Touch_Definitions_TBL_FK, InHome_Date, Day_of_Week, day_percent, idkpi_type_fk	
@@ -72,7 +74,8 @@
 		parentid
 		, DATEADD(day,Day_of_Week,DATEADD(week,curve.Week_ID,InHome_Date)) as Forecast_DayDate
 		, daily_perc.idKPI_TYPE_fk
-		, Day_Percent*week_percent as response_percent 
+		, Day_Percent*week_percent as response_percent
+		, daily_perc.idProgram_Touch_Definitions_TBL_FK 
 	FROM
 
 	(select parentid, campaigns.idProgram_Touch_Definitions_TBL_FK, InHome_Date, Day_of_Week, day_percent, idkpi_type_fk	
@@ -107,6 +110,7 @@ union
 		, DATEADD(day,Day_of_Week,DATEADD(week,curve.Week_ID,InHome_Date)) as Forecast_DayDate
 		, daily_perc.idKPI_TYPE_fk
 		, Day_Percent*week_percent as response_percent 
+		, daily_perc.idProgram_Touch_Definitions_TBL_FK
 	FROM
 
 	(select parentid, campaigns.idProgram_Touch_Definitions_TBL_FK, InHome_Date, Day_of_Week, day_percent, idkpi_type_fk	
@@ -139,6 +143,7 @@ UNION
 		, DATEADD(day,Day_of_Week,DATEADD(week,curve.Week_ID,InHome_Date)) as Forecast_DayDate
 		, daily_perc.idKPI_TYPE_fk
 		, Day_Percent*week_percent as response_percent 
+		, daily_perc.idProgram_Touch_Definitions_TBL_FK
 	FROM
 
 	(select parentid, campaigns.idProgram_Touch_Definitions_TBL_FK, InHome_Date, Day_of_Week, day_percent, idkpi_type_fk	
@@ -171,6 +176,7 @@ UNION
 		, DATEADD(day,Day_of_Week,DATEADD(week,curve.Week_ID,InHome_Date)) as Forecast_DayDate
 		, daily_perc.idKPI_TYPE_fk
 		, Day_Percent*week_percent as response_percent 
+		, daily_perc.idProgram_Touch_Definitions_TBL_FK
 	FROM
 
 	(select parentid, campaigns.idProgram_Touch_Definitions_TBL_FK, InHome_Date, Day_of_Week, day_percent, idkpi_type_fk	
@@ -203,6 +209,7 @@ SELECT
 		, DATEADD(day,Day_of_Week,DATEADD(week,curve.Week_ID,InHome_Date)) as Forecast_DayDate
 		, daily_perc.idKPI_TYPE_fk
 		, Day_Percent*week_percent as response_percent 
+		, daily_perc.idProgram_Touch_Definitions_TBL_FK
 	FROM
 
 	(select parentid, campaigns.idProgram_Touch_Definitions_TBL_FK, InHome_Date, Day_of_Week, day_percent, idkpi_type_fk	
