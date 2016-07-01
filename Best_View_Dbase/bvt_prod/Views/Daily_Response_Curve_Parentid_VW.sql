@@ -140,7 +140,7 @@ UNION
 -------------------Movers Curves by day by parentid-----------------------
 	SELECT 
 		parentid
-		, DATEADD(day,Day_of_Week,DATEADD(week,curve.Week_ID,InHome_Date)) as Forecast_DayDate
+		, DATEADD(day,Day_of_Week,DATEADD(week,curve.Week_ID-1,InHome_Date)) as Forecast_DayDate
 		, daily_perc.idKPI_TYPE_fk
 		, Day_Percent*week_percent as response_percent 
 		, daily_perc.idProgram_Touch_Definitions_TBL_FK
@@ -173,7 +173,7 @@ UNION
 ------------------Historic VALB BV-------------------------
 	SELECT 
 		parentid
-		, DATEADD(day,Day_of_Week,DATEADD(week,curve.Week_ID,InHome_Date)) as Forecast_DayDate
+		, DATEADD(day,Day_of_Week,DATEADD(week,curve.Week_ID-1,InHome_Date)) as Forecast_DayDate
 		, daily_perc.idKPI_TYPE_fk
 		, Day_Percent*week_percent as response_percent 
 		, daily_perc.idProgram_Touch_Definitions_TBL_FK
