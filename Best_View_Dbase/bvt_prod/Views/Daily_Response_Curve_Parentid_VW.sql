@@ -72,7 +72,7 @@
 ------------Retention Curves by day by parentid----------------------
 	SELECT 
 		parentid
-		, DATEADD(day,Day_of_Week,DATEADD(week,curve.Week_ID,InHome_Date)) as Forecast_DayDate
+		, DATEADD(day,curve.Week_ID,InHome_Date) as Forecast_DayDate
 		, daily_perc.idKPI_TYPE_fk
 		, Day_Percent*week_percent as response_percent
 		, daily_perc.idProgram_Touch_Definitions_TBL_FK 
@@ -107,7 +107,7 @@ union
 ----------Revenue Curves by day by parentid----------------------
 	SELECT 
 		parentid
-		, DATEADD(day,Day_of_Week,DATEADD(week,curve.Week_ID,InHome_Date)) as Forecast_DayDate
+		, DATEADD(day,curve.Week_ID,InHome_Date) as Forecast_DayDate
 		, daily_perc.idKPI_TYPE_fk
 		, Day_Percent*week_percent as response_percent 
 		, daily_perc.idProgram_Touch_Definitions_TBL_FK
