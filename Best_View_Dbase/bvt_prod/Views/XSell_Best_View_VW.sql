@@ -83,7 +83,7 @@ CREATE VIEW [bvt_prod].[XSell_Best_View_VW]
 	  from
 	  [bvt_prod].[XSell_Best_View_Forecast_VW] a
 	  JOIN bvt_prod.Touch_Definition_VW b
-	  on a.Touch_Name = b.Touch_Name
+	  on a.idProgram_Touch_Definitions_TBL_FK = b.idProgram_Touch_Definitions_TBL
 	  group by [idFlight_Plan_Records]
       ,a.Campaign_Name
       , a.InHome_Date

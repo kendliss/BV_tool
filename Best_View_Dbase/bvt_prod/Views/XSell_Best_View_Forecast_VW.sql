@@ -14,6 +14,7 @@ select FPR.idFlight_Plan_Records
 	, Media_Calendar_Daily.MediaMonth as Media_Month
 	
 ---Touch Lookup Tables
+	, idProgram_Touch_Definitions_TBL_FK
 	, Touch_Name
 	, Program_Name
 	, Tactic
