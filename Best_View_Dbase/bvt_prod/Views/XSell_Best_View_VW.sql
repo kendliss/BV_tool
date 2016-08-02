@@ -218,6 +218,7 @@ CREATE VIEW [bvt_prod].[XSell_Best_View_VW]
 	when kpiproduct like '%DISH%' then 'DirecTV'
 	when kpiproduct like '%DSL_DRY%' then 'DSL Direct'
 	when kpiproduct like '%DSL_REG%' then 'DSL'
+	when kpiproduct like '%HSIAG%' then 'Gigapower'
 	when kpiproduct like '%HSIA%' then 'HSIA'
 	when kpiproduct like '%DSL_IP%' then 'IPDSL'
 	when kpiproduct like '%UVRS_TV%' then 'UVTV'
@@ -239,11 +240,11 @@ UNPIVOT (Actual for kpiproduct in
 			([ITP_Dir_Calls], [ITP_Dir_Clicks], 
 			[ITP_Dir_Sales_TS_CING_VOICE_N], [ITP_Dir_Sales_TS_CING_FAMILY_N], 
 			[ITP_Dir_Sales_TS_CING_DATA_N], [ITP_Dir_Sales_TS_DISH_N], [ITP_Dir_Sales_TS_DSL_REG_N], 
-			[ITP_Dir_Sales_TS_DSL_DRY_N], [ITP_Dir_Sales_TS_DSL_IP_N], [ITP_Dir_Sales_TS_UVRS_HSIA_N], [ITP_Dir_Sales_TS_UVRS_TV_N], 
+			[ITP_Dir_Sales_TS_DSL_DRY_N], [ITP_Dir_Sales_TS_DSL_IP_N], [ITP_Dir_Sales_TS_UVRS_HSIAG_N], [ITP_Dir_Sales_TS_UVRS_HSIA_N], [ITP_Dir_Sales_TS_UVRS_TV_N], 
 			[ITP_Dir_Sales_TS_UVRS_BOLT_N], [ITP_Dir_Sales_TS_LOCAL_ACCL_N], [ITP_Dir_Sales_TS_UVRS_VOIP_N], [ITP_Dir_Sales_TS_CTECH_N], 
 			[ITP_Dir_Sales_TS_DLIFE_N], [ITP_Dir_sales_TS_CING_WHP_N], [ITP_Dir_Sales_TS_Migrations], 
 			[ITP_Dir_Sales_ON_CING_VOICE_N], [ITP_Dir_Sales_ON_CING_FAMILY_N], [ITP_Dir_Sales_ON_CING_DATA_N], [ITP_Dir_Sales_ON_DISH_N], 
-			[ITP_Dir_Sales_ON_DSL_REG_N], [ITP_Dir_Sales_ON_DSL_DRY_N], [ITP_Dir_Sales_ON_DSL_IP_N], 
+			[ITP_Dir_Sales_ON_DSL_REG_N], [ITP_Dir_Sales_ON_DSL_DRY_N], [ITP_Dir_Sales_ON_DSL_IP_N], [ITP_Dir_Sales_ON_UVRS_HSIAG_N],
 			[ITP_Dir_Sales_ON_UVRS_HSIA_N], [ITP_Dir_Sales_ON_UVRS_TV_N], [ITP_Dir_Sales_ON_UVRS_BOLT_N], [ITP_Dir_Sales_ON_LOCAL_ACCL_N], 
 			[ITP_Dir_Sales_ON_UVRS_VOIP_N], [ITP_Dir_Sales_ON_DLIFE_N], [ITP_Dir_Sales_ON_CING_WHP_N], [ITP_Dir_Sales_ON_Migrations])) as Actuals
 GROUP BY idFlight_Plan_Records_FK, Report_Year, Report_Week
@@ -264,6 +265,7 @@ GROUP BY idFlight_Plan_Records_FK, Report_Year, Report_Week
 	when kpiproduct like '%DISH%' then 'DirecTV'
 	when kpiproduct like '%DSL_DRY%' then 'DSL Direct'
 	when kpiproduct like '%DSL_REG%' then 'DSL'
+	when kpiproduct like '%HSIAG%' then 'Gigapower'
 	when kpiproduct like '%HSIA%' then 'HSIA'
 	when kpiproduct like '%DSL_IP%' then 'IPDSL'
 	when kpiproduct like '%UVRS_TV%' then 'UVTV'
