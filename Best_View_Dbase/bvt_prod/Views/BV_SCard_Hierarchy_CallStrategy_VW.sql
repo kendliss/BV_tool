@@ -1,4 +1,4 @@
-﻿CREATE VIEW [bvt_prod].[BV_SCard_Hierarchy_CallStrategy_VW]
+﻿ALTER VIEW [bvt_prod].[BV_SCard_Hierarchy_CallStrategy_VW]
 	AS 
 	
 SELECT
@@ -102,7 +102,7 @@ Select Owner_type_matrix_id_FK as hierarchy_id
 	, '9. Blue' as Channel
 	, sum(Forecast)  as forecast
 FROM bvt_prod.CLM_Revenue_Forecast_VW
-where media_year>=2016
+where media_year>=2016 and media_week<=27
 group by Owner_type_matrix_id_FK 
 	, Media_Year
 	, Media_Week
@@ -144,7 +144,7 @@ Select Owner_type_matrix_id_FK as hierarchy_id
 	, '9. Blue' as Channel
 	, sum(Forecast)  as forecast
 FROM bvt_prod.UCLM_Best_View_Forecast_VW
-where media_year>=2016
+where media_year>=2016 and media_week<=27
 group by Owner_type_matrix_id_FK 
 	, Media_Year
 	, Media_Week
