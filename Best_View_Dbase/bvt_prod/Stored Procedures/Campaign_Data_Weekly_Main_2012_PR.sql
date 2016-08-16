@@ -22,16 +22,18 @@ select a.Project_ID, a.Parentid, idFlight_Plan_Records_FK, a.[Report_Year], a.[R
 		, a.[media_code], a.Program, a.[Toll_Free_Numbers], a.[URL_List], a.ExcludefromScorecard, a.[CTD_Quantity], a.[ITP_Quantity], a.[ITP_Quantity_Unapp], a.[CTD_Budget], a.[ITP_Budget]
 		, a.[ITP_Dir_Calls], a.[ITP_Dir_Calls_BH], a.[ITP_Dir_Clicks], a.[ITP_Dir_Sales_TS_CING_N], a.[ITP_Dir_Sales_TS_CING_VOICE_N], a.[ITP_Dir_Sales_TS_CING_FAMILY_N]
 		, a.[ITP_Dir_Sales_TS_CING_DATA_N], a.[ITP_Dir_Sales_TS_DISH_N], a.[ITP_Dir_Sales_TS_LD_N], a.[ITP_Dir_Sales_TS_DSL_REG_N], a.[ITP_Dir_Sales_TS_DSL_DRY_N]
-		, a.[ITP_Dir_Sales_TS_DSL_IP_N], a.[ITP_Dir_Sales_TS_UVRS_HSIA_N], b.[ITP_Dir_Sales_TS_UVRS_HSIAG_N], a.[ITP_Dir_Sales_TS_UVRS_TV_N], a.[ITP_Dir_Sales_TS_UVRS_BOLT_N]
+		, a.[ITP_Dir_Sales_TS_DSL_IP_N], b.[ITP_Dir_Sales_TS_UVRS_HSIA_N], b.[ITP_Dir_Sales_TS_UVRS_HSIAG_N], a.[ITP_Dir_Sales_TS_UVRS_TV_N], a.[ITP_Dir_Sales_TS_UVRS_BOLT_N]
 		, a.[ITP_Dir_Sales_TS_LOCAL_ACCL_N], a.[ITP_Dir_Sales_TS_UVRS_VOIP_N], a.[ITP_Dir_Sales_TS_CTECH_N], a.[ITP_Dir_Sales_TS_DLIFE_N], a.[ITP_Dir_sales_TS_CING_WHP_N], a.[ITP_Dir_Sales_TS_Migrations]
 		, a.[ITP_Dir_Sales_ON_CING_N], a.[ITP_Dir_Sales_ON_CING_VOICE_N], a.[ITP_Dir_Sales_ON_CING_FAMILY_N], a.[ITP_Dir_Sales_ON_CING_DATA_N], a.[ITP_Dir_Sales_ON_DISH_N]
-		, a.[ITP_Dir_Sales_ON_LD_N], a.[ITP_Dir_Sales_ON_DSL_REG_N], a.[ITP_Dir_Sales_ON_DSL_DRY_N], a.[ITP_Dir_Sales_ON_DSL_IP_N], a.[ITP_Dir_Sales_ON_UVRS_HSIA_N], b.[ITP_Dir_Sales_ON_UVRS_HSIAG_N]
+		, a.[ITP_Dir_Sales_ON_LD_N], a.[ITP_Dir_Sales_ON_DSL_REG_N], a.[ITP_Dir_Sales_ON_DSL_DRY_N], a.[ITP_Dir_Sales_ON_DSL_IP_N], b.[ITP_Dir_Sales_ON_UVRS_HSIA_N], b.[ITP_Dir_Sales_ON_UVRS_HSIAG_N]
 		, a.[ITP_Dir_Sales_ON_UVRS_TV_N], a.[ITP_Dir_Sales_ON_UVRS_BOLT_N], a.[ITP_Dir_Sales_ON_LOCAL_ACCL_N], a.[ITP_Dir_Sales_ON_UVRS_VOIP_N], a.[ITP_Dir_Sales_ON_DLIFE_N]
 		, a.[ITP_Dir_Sales_ON_CING_WHP_N], a.[ITP_Dir_Sales_ON_Migrations], a.[ITP_Dir_Sales_TS_TOTAL], a.[ITP_Dir_Sales_TS_Strat], a.[ITP_Dir_Sales_ON_TOTAL], a.[ITP_Dir_Sales_ON_Strat]
 		, a.[LTV_ITP_DIRECTED], a.[LTV_ITP_TOTAL], a.[LTV_ITP_TS_TOTAL], a.[LTV_ITP_ON_TOTAL]
+		
+
 from javdb.ireport.[dbo].[IR_Campaign_Data_Weekly_MAIN_2012] a
-JOIN javdb.ireport_2015.dbo.IR_Workbook_Data_2016 b
-on a.parentID = b.parentID and a.Report_Year = b.Report_Year and a.Report_week = b.Report_week
+	left join javdb.ireport_2015.dbo.IR_Workbook_Data_2016 b
+	on a.parentID = b.parentID and a.Report_Year = b.Report_Year and a.Report_Week = b.Report_Week
 		inner join 
 		---subquery to get linkage from flightplan records to parent ids
 		(SELECT Source_System_id , idFlight_Plan_Records_FK
