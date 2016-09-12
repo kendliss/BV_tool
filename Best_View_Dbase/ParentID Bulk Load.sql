@@ -28,3 +28,6 @@ GO
 
 
 commit tran
+
+
+Delete bvt_staging.BulkUpdates

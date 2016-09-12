@@ -21,13 +21,15 @@ TRUNCATE TABLE bvt_staging.CCF_CallStrat_pID
 
 INSERT INTO bvt_staging.CCF_CallStrat_pID
 
-SELECT b.idFlight_Plan_Records_FK, Source_System_ID, e.TOLLFREE_NUMBER,  e.cat_ID AS CallStrat_ID, CTD_Quantity, ISNULL(CTD_Quantity,0)/FlightVolume AS PIDPercent
+SELECT b.idFlight_Plan_Records_FK, Source_System_ID, e.TOLLFREE_NUMBER, Coalesce(e.cat_ID, f.CallStrat_ID) AS CallStrat_ID, CTD_Quantity, ISNULL(CTD_Quantity,0)/FlightVolume AS PIDPercent
 
 FROM  UVAQ.bvt_prod.External_ID_linkage_TBL a
 JOIN UVAQ.bvt_prod.External_ID_linkage_TBL_has_Flight_Plan_Records b
 	ON a.idExternal_ID_linkage_TBL = b.idExternal_ID_linkage_TBL_FK
 LEFT JOIN JAVDB.IREPORT_2015.dbo.WB_01_Campaign_List_WB_2016 c
 	ON a.Source_System_ID = c.parentID
+LEFT JOIN JAVDB.IREPORT_2015.dbo.WB_01_TFN_List_WB f
+on c.parentID = f.ParentID and f.Source = 'eCRW_TFN'
 LEFT JOIN (SELECT Tollfree_number, category,
 			CASE WHEN category LIKE '%Z%' THEN 100
 				 WHEN CATEGORY LIKE '[A-Z][0-9][0-9][A-Z]%' AND CAST(SUBSTRING(category,2,2) AS INT) = 10 AND category LIKE '%Green%' THEN 10.1
@@ -39,9 +41,9 @@ LEFT JOIN (SELECT Tollfree_number, category,
 				 ELSE 0
 				 END AS cat_ID
 		FROM SCAMP.dbo.TFN_CATEGORY_WEEKLY 
-		WHERE  ReportWeek_YYYYWW >=201624
+		WHERE  ReportWeek_YYYYWW >=201632
 		GROUP BY Tollfree_number, category) e
-	ON RIGHT(c.Toll_Free_Numbers,10) = e.TOLLFREE_NUMBER
+	ON f.TFN = e.TOLLFREE_NUMBER
 JOIN (SELECT idFlight_Plan_Records_FK, SUM(ISNULL(CTD_Quantity,0)) AS FlightVolume
 		FROM UVAQ.bvt_prod.External_ID_linkage_TBL a
 		JOIN UVAQ.bvt_prod.External_ID_linkage_TBL_has_Flight_Plan_Records b
