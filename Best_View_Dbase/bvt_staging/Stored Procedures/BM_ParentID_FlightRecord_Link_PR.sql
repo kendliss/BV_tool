@@ -56,23 +56,25 @@ WHEN Media_Code = 'BAM' THEN 1493 --Wireline BAM
 
 
 --Bill Media -- Bill Inserts
---Still Missing: 1436, 1439, 1531, 1560, 1561
+--Still Missing: 1436, 1439, 1560, 1561
 
 WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Wireline Bill - Bill Insert' AND (Campaign_Name LIKE '%EBill%' OR Campaign_Name like '%E-Bill%') AND Campaign_Name NOT LIKE '%TV%' THEN 1429 --Wireline TV Cross Sell eBill Insert
 WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'U-verse Bill - Bill Insert' AND Campaign_Name LIKE '%TV%' AND (Campaign_Name LIKE '%EBill%' OR Campaign_Name LIKE '%E-Bill%') THEN 1430 --U-verse TV Cross Sell eBill Insert
 WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Wireless Bill - Bill Insert' AND eCRW_Project_Name LIKE '%TV%sell%' THEN 1431 --Wireless TV Cross Sell Bill Insert 
 --WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Wireline Bill - Bill Insert' AND eCRW_Project_Name LIKE '%TV%sell%' THEN 1432 --Wireline TV Cross Sell Bill Insert (OLD U-verse)
 WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'U-verse Bill - Bill Insert' AND eCRW_Project_Name LIKE '%BI_DTV_CROSS_SELL%' THEN 1433 --U-verse TV Cross Sell Bill Insert
-WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Wireline Bill - Bill Insert' AND eCRW_Project_Name LIKE '%Bundles%' THEN 1434 --Wireline Bundles Bill Insert
-WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Wireline Bill - Bill Insert' AND eCRW_Project_Name LIKE '%IPBBMonthly%' AND eCRW_Project_Name LIKE '%WRLN%' THEN 1435 --Wireline DSL Cross Sell Bill Insert
+WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Wireline Bill - Bill Insert' AND (eCRW_Project_Name LIKE '%Bundles%' OR eCRW_Project_Name LIKE '%Thankyougeneric%') THEN 1434 --Wireline Bundles Bill Insert
+--WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Wireline Bill - Bill Insert' AND eCRW_Project_Name LIKE '%IPBBMonthly%' AND eCRW_Project_Name LIKE '%WRLN%' THEN 1435 --Wireline DSL Cross Sell Bill Insert
 WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Wireless Bill - Bill Insert' AND (eCRW_Project_Name LIKE '%DSL in WLS%' OR eCRW_Project_Name LIKE '%BroadbandinWLS%') THEN 1437 --Wireless DSL Cross Sell Bill Insert
 WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Wireline Bill - Bill Insert' AND eCRW_Project_Name LIKE '%TV%sell%' THEN 1438 --Wireline DTV Cross Sell Bill Insert
 WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'U-verse Bill - Bill Insert' AND eCRW_Project_Name LIKE '%IPBB%' THEN 1440 --U-verse IPBB Cross Sell Bill Insert
+WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Wireline Bill - Bill Insert' AND eCRW_Project_Name LIKE '%IPBBMonthly%' THEN 1531 --Wireline IPBB Cross Sell Bill Insert
 WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Wireline Bill - Bill Insert' AND eCRW_Project_Name LIKE '%Wireless%' THEN 1532 --Wireline WRLS Cross Sell Bill Insert
 WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Wireline Bill - Bill Insert' AND eCRW_Project_Name LIKE '%VOIP%' THEN 1533 --Wireline VoIP Cross Sell Bill Insert
 WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'DIRECTV Bill - Bill Insert' AND eCRW_Project_Name LIKE '%IPBB%' THEN 1541 --DTV INFA HSIA Cross Sell Bill Insert
 WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'DIRECTV Bill - Bill Insert' AND eCRW_Project_Name LIKE '%Wireless%' THEN 1542 --DTV OOF Wireless Bill Insert
-WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'U-verse Bill - Bill Insert' AND eCRW_Project_Name LIKE '%Welcom%' THEN 1551 --U-verse Welcome Bill Insert
+WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'U-verse Bill - Bill Insert' AND eCRW_Project_Name LIKE '%Welcome%' THEN 1551 --U-verse Welcome Bill Insert
+WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Wireline Bill - Bill Insert' AND eCRW_Project_Name LIKE '%Mandatory%' THEN 1572 --Wireline Mandatory Bill Insert
 
 
 --Bill Media -- FPC
@@ -121,14 +123,14 @@ WHEN Media_Code = 'FYI' AND Scorecard_Program_Channel = 'U-verse Bill - Bill Mes
 WHEN Media_Code = 'FYI' AND Scorecard_Program_Channel = 'Wireless Bill - Bill Message' AND eCRW_Project_Name LIKE '%Wireless%' AND eCRW_Project_Name LIKE '%Broadband%' THEN 1487 --Wireless IPBB Cross Sell Bill Message
 
 -- Bill Media -- OE
--- Still Missing: 1488
+-- Still Missing:
 
 WHEN Media_Code = 'OE' AND Scorecard_Program_Channel = 'U-verse Bill - OE/RE' AND eCRW_Project_Name LIKE '%Uverse OE%' THEN 1489 --U-verse TV Cross Sell OE
-WHEN Media_Code = 'OE' AND Scorecard_Program_Channel = 'Wireline Bill - OE/RE' AND eCRW_Project_Name LIKE '%Wireline OE%' THEN 1490 --Wireline OE
+WHEN Media_Code = 'OE' AND Scorecard_Program_Channel = 'Wireline Bill - OE/RE' AND eCRW_Project_Name LIKE '%Wireline OE%' THEN 1488 --Wireline OE
 
 
 --Bill Media -- Onsert
--- Still Missing: 1467, 1537, 1538, 1539, 1540, 1554
+-- Still Missing: 1467, 1537, 1538, 1554
 
 WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'Wireless Bill - Bill Onsert' AND eCRW_Project_Name LIKE '%Wireless%' AND eCRW_Project_Name LIKE '%TV%' AND eCRW_Project_Name LIKE '%Spanish%' THEN 1461 --Wireless DTV Cross Sell Onsert
 WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'U-verse Bill - Bill Onsert' AND eCRW_Project_Name LIKE '%U%verse%' AND eCRW_Project_Name LIKE '%TV%' THEN 1462 --U-Verse DTV Cross Sell Onsert
@@ -138,10 +140,17 @@ WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'U-verse Bill - Bill 
 WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'U-verse Bill - Bill Onsert' AND eCRW_Project_Name LIKE '%U%verse%' AND eCRW_Project_Name LIKE '%Welcome%' And eCRW_Project_Name NOT LIKE '%GIGA%' THEN 1466 --U-verse Welcome Onsert
 WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'U-verse Bill - Bill Onsert' AND eCRW_Project_Name LIKE '%U%Verse%' AND eCRW_Project_Name LIKE '%Giga%' THEN 1468 --U-Verse Gigapower Welcome Onsert
 WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'U-verse Bill - Bill Onsert' AND eCRW_Project_Name LIKE '%U%verse%' AND eCRW_Project_Name LIKE '%HSIA%' THEN 1469 --U-Verse HSIA Cross Sell Onsert
-WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'DIRECTV Bill - Bill Onsert' AND eCRW_Project_Name LIKE '%HSIA Cross%' AND eCRW_Project_Name LIKE '%D%TV%' THEN 1470 --DTV HSIA Cross Sell Bill Onsert
+--WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'DIRECTV Bill - Bill Onsert' AND eCRW_Project_Name LIKE '%HSIA Cross%' AND eCRW_Project_Name LIKE '%D%TV%' THEN 1470 --DTV HSIA Cross Sell Bill Onsert
+WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'DIRECTV Bill - Bill Onsert' AND eCRW_Project_Name LIKE '%HSIA%' AND eCRW_Project_Name LIKE '%Spanish%' THEN 1538 -- DIRECTV INF IPBB Cross Sell Spanish
+WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'DIRECTV Bill - Bill Onsert' AND eCRW_Project_Name LIKE '%HSIA%' THEN 1538 -- DIRECTV INF IPBB Cross Sell English
+WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'DIRECTV Bill - Bill Onsert' AND eCRW_Project_Name LIKE '%Wireless%' AND eCRW_Project_Name LIKE '%Spanish%' THEN 1540 --DIRECTV OOF WRLS Spanish Onsert
+WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'DIRECTV Bill - Bill Onsert' AND eCRW_Project_Name LIKE '%Wireless%' THEN 1539 --DIRECTV OOF WRLS Onsert
 
 --Bill Media -- RE
---Still Missing: 1491,1492
+--Still Missing:
+
+WHEN Media_Code = 'RE' AND Scorecard_Program_Channel = 'Wireline Bill - OE/RE' AND eCRW_Project_Name LIKE '%Wireline RE%' THEN 1491
+WHEN Media_Code = 'RE' AND Scorecard_Program_Channel = 'U-verse Bill - OE/RE' THEN 1571
 
 --Bill Media -- TPC
 --Still Missing: 1553
