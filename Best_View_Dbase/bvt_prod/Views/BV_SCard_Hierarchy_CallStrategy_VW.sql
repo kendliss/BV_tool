@@ -23,7 +23,7 @@ group by Owner_type_matrix_id_FK
 	, channel
 
 union all
-/*Temporary removal of BM Best view as it is not yet active 5-3-2016
+
 Select Owner_type_matrix_id_FK as hierarchy_id
 	, Media_Year
 	, Media_Week
@@ -39,11 +39,12 @@ group by Owner_type_matrix_id_FK
 	, Media_Year
 	, Media_Week
 	, Media_Month
+	, channel
 	, month(Forecast_Daydate) 
 	, KPI_Type
 	, Product_Code
-*/
------This code pulls in the bill media touches from the old UVLB and VALB best views
+union all
+/*-----This code pulls in the bill media touches from the old UVLB and VALB best views
 SELECT
 	Owner_type_matrix_id_FK as hierarchy_id
 	, Media_Year
@@ -90,7 +91,7 @@ group by Owner_type_matrix_id_FK
 	, Product_Code
 	, channel
 union all
------End of Temporary code for use of UVLB and VALB for bill media
+-----End of Temporary code for use of UVLB and VALB for bill media*/
 
 Select Owner_type_matrix_id_FK as hierarchy_id
 	, Media_Year
