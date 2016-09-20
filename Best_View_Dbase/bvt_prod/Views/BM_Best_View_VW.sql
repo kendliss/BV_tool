@@ -93,17 +93,21 @@
       , Media_Week) as forecast
 		
 		---Join CV to Current Forecast Table
+		/*added work around to account for touches that were in the CV but did not get moved to the Bill Media Program because were
+		canceled before we transitions. KL 2016.09.20*/
 		full join 
 			(select [id_Flight_Plan_Records_FK], [idProgram_Touch_Definitions_TBL_FK], [Campaign_Name], [InHome_Date], 
 			[Media_Year], [Media_Month], [Media_Week], [KPI_TYPE], [Product_Code], sum([Forecast]) as forecast, 
-			[Touch_Name], [Program_Name], [Tactic], [Media], [Audience], [Creative_Name], [Goal], [Offer], [Channel], [Campaign_Type]
+			CASE WHEN [Program_Name] = 'BM' THEN [Touch_Name] ELSE '2016 Commitment View' END AS [Touch_Name],
+			'BM' AS [Program_Name], [Tactic], [Media], [Audience], [Creative_Name], [Goal], [Offer], [Channel], [Campaign_Type]
 			from [bvt_processed].[Commitment_Views] 
 				-----Bring in touch definition labels 
 				left join [bvt_prod].[Touch_Definition_VW] on [Commitment_Views].[idProgram_Touch_Definitions_TBL_FK]=[Touch_Definition_VW].[idProgram_Touch_Definitions_TBL]
 			where CV_Submission in ('BM Commitment View 2015', 'BM CV 2016 Submission New Program 20160809') --extract_date='2015-06-26'
 			GROUP BY [id_Flight_Plan_Records_FK], [idProgram_Touch_Definitions_TBL_FK], [Campaign_Name], [InHome_Date], 
 			[Media_Year], [Media_Month], [Media_Week], [KPI_TYPE], [Product_Code],
-			[Touch_Name], [Program_Name], [Tactic], [Media], [Audience], [Creative_Name], [Goal], [Offer], [Channel], [Campaign_Type] ) as CV
+			CASE WHEN [Program_Name] = 'BM' THEN [Touch_Name] ELSE '2016 Commitment View' END, 
+			[Tactic], [Media], [Audience], [Creative_Name], [Goal], [Offer], [Channel], [Campaign_Type] ) as CV
 		 on forecast.[idFlight_Plan_Records]=cv.[id_Flight_Plan_Records_FK] 
 			and forecast.media_year=cv.Media_Year
 			and forecast.media_week=cv.Media_Week
