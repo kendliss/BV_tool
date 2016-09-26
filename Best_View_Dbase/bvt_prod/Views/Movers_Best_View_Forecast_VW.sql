@@ -29,10 +29,7 @@ select FPR.idFlight_Plan_Records
 	, KPI_Type
 	, Product_Code
 	, Forecast_DayDate
-/*ADDING A CASE STATEMENT TO ONLY OUTPUT ONE VOLUME FOR MOVE ATT TO PREVENT DOUBLE COUNTING*/
-	,case when kpi_type='Volume' and touch_name='MoveATT' and campaign_name like '%TFN%' then 0
-	else [Forecast]
-	end as [Forecast]
+	, [Forecast]
 
 from bvt_prod.Movers_Flight_Plan_VW as FPR
 
