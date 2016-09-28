@@ -100,7 +100,7 @@ CREATE VIEW [bvt_prod].[Mover_Best_View_VW]
 		---Join CV to Current Forecast Table
 		full join 
 			(select [id_Flight_Plan_Records_FK], [idProgram_Touch_Definitions_TBL_FK], [Campaign_Name], [InHome_Date], 
-			[Media_Year], [Media_Month], [Media_Week], [KPI_TYPE], [Product_Code],  forecast, 
+			[Media_Year], [Media_Month], [Media_Week], [KPI_TYPE], [Product_Code],  SUM(forecast) as Forecast, 
 			[Touch_Name], [Program_Name], [Tactic], [Media], [Audience], [Creative_Name], [Goal], [Offer], [Campaign_Type]
 			from [bvt_processed].[Commitment_Views] 
 				-----Bring in touch definition labels 
@@ -108,7 +108,7 @@ CREATE VIEW [bvt_prod].[Mover_Best_View_VW]
 			where CV_Submission in('Movers 2016 Submission Adj 20160422','Movers CV Restatement Aug 2015') --extract_date='2015-08-26'
 			GROUP BY [id_Flight_Plan_Records_FK], [idProgram_Touch_Definitions_TBL_FK], [Campaign_Name], [InHome_Date], 
 			[Media_Year], [Media_Month], [Media_Week], [KPI_TYPE], [Product_Code],
-			[Touch_Name], [Program_Name], [Tactic], [Media], [Audience], [Creative_Name], [Goal], [Offer], [Campaign_Type], Forecast ) as CV
+			[Touch_Name], [Program_Name], [Tactic], [Media], [Audience], [Creative_Name], [Goal], [Offer], [Campaign_Type]) as CV
 		 on forecast.[idFlight_Plan_Records]=cv.[id_Flight_Plan_Records_FK] 
 			and forecast.media_year=cv.Media_Year
 			and forecast.media_week=cv.Media_Week
