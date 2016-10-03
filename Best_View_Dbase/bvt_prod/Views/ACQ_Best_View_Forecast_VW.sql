@@ -30,7 +30,8 @@ select FPR.idFlight_Plan_Records
 	, KPI_Type
 	, Product_Code
 	, Forecast_DayDate
-	, Forecast
+	, CASE WHEN idProgram_Touch_Definitions_TBL = 1253 and KPI_Type = 'Volume' THEN 0
+		ELSE Forecast END AS Forecast
 
 from bvt_prod.ACQ_Flight_Plan_VW as FPR
 
