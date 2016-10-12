@@ -27,9 +27,13 @@ CREATE VIEW [bvt_prod].[XSell_Best_View_VW]
 		,isnull(Forecast,0) as Forecast
 		,isnull(Commitment,0) as Commitment
 		,isnull(coalesce(actual_volume.Actual,actual_results.Actual),0) as Actual
-		,case when forecast_cv.Media_Week>(case when DATEPART(weekday,getdate()) <= 5 then DATEPART(wk,getdate())-2 else DATEPART(wk,getdate())-1	end) then isnull(Forecast,0)
+		,case when coalesce(forecast_cv.[KPI_Type], actual_volume.[KPI_Type],actual_results.[KPI_Type])='Telesales' 
+			then (case when forecast_cv.Media_Week>(case when DATEPART(weekday,getdate()) <= 5 then DATEPART(wk,getdate())-4 else DATEPART(wk,getdate())-3	end) then isnull(Forecast,0)
+					else coalesce(actual_volume.Actual,actual_results.Actual) end)
+			else (case when forecast_cv.Media_Week>(case when DATEPART(weekday,getdate()) <= 5 then DATEPART(wk,getdate())-2 else DATEPART(wk,getdate())-1	end) then isnull(Forecast,0)
 			else coalesce(actual_volume.Actual,actual_results.Actual)
-			end as Best_View
+			end)
+		end as Best_View
 		
 	FROM	
 	---select to join the forecast and CV
