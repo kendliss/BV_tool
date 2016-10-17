@@ -32,7 +32,8 @@ CREATE VIEW [bvt_prod].[Mover_Best_View_VW]
 			then (case when forecast_cv.media_YYYYWW <=	(case when DATEPART(weekday,getdate()) <= 5 
 						then (select ISO_Week_YYYYWW from dim.media_calendar_daily where [date]=cast(dateadd(wk,-4,getdate()) as date)) 
 						else (select ISO_Week_YYYYWW from dim.media_calendar_daily where [date]=cast(dateadd(wk,-3,getdate()) as date)) end)
-					then coalesce(actual_volume.Actual,actual_results.Actual)
+					then actual_results.Actual
+					when forecast_cv.media_YYYYWW is null then actual_results.Actual
 					else isnull(Forecast,0)
 					end)
 ----END OF TELESALES LAG CONCERNS
@@ -42,6 +43,7 @@ CREATE VIEW [bvt_prod].[Mover_Best_View_VW]
 						else (select ISO_Week_YYYYWW from dim.media_calendar_daily where [date]=cast(dateadd(wk,-1,getdate()) as date)) end)
 			then coalesce(actual_volume.Actual,actual_results.Actual)
 
+		when forecast_cv.media_YYYYWW is null then coalesce(actual_volume.Actual,actual_results.Actual)
 		else isnull(Forecast,0)
 
 		end as Best_View
