@@ -12,8 +12,10 @@ select FPR.idFlight_Plan_Records
 	, Media_Calendar_Daily.ISO_Week_Year as Media_Year
 	, Media_Calendar_Daily.ISO_Week as Media_Week
 	, Media_Calendar_Daily.MediaMonth as Media_Month
+	, Media_Calendar_Daily.ISO_Week_YYYYWW as Media_YYYYWW
 	
 ---Touch Lookup Tables
+	, idProgram_Touch_Definitions_TBL_FK
 	, Touch_Name
 	, Program_Name
 	, Tactic
@@ -50,6 +52,7 @@ left join
 from bvt_prod.ACQ_FlightplanSalesForecast
  left join bvt_prod.Product_LU_TBL
 		on ACQ_FlightplanSalesForecast.idProduct_LU_TBL_FK=Product_LU_TBL.idProduct_LU_TBL)
+
 
 union 
 
