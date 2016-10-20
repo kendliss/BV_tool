@@ -82,7 +82,7 @@ from bvt_prod.Movers_Flight_Plan_VW as A
 ----------End  Weekly Response Curve and Media Calendar		
 	left join bvt_prod.Seasonality_Adjustements as E
 		on ResponseByDay.idProgram_Touch_Definitions_TBL_FK=E.idProgram_Touch_Definitions_TBL_FK and iso_week_year=Media_Year and mediamonth=Media_Month
-	left join (SELECT * FROM [bvt_prod].[Target_adjustment_start_end_FUN]('UVCLM'))  as Target_adjustment_start_end
+	left join (SELECT * FROM [bvt_prod].[Target_adjustment_start_end_FUN]('Movers'))  as Target_adjustment_start_end
 		on ResponseByDay.idTarget_Rate_Reasons_LU_TBL_FK=Target_adjustment_start_end.idTarget_Rate_Reasons_LU_TBL_FK 
 		and ResponseByDay.idProgram_Touch_Definitions_TBL_FK=Target_adjustment_start_end.idProgram_Touch_Definitions_TBL_FK
 		and responsebyday.inhome_date between Adj_Start_Date and end_date
