@@ -24,14 +24,28 @@ CREATE VIEW [bvt_prod].[Mover_Best_View_VW]
 		,isnull(Forecast,0) as Forecast
 		,isnull(Commitment,0) as Commitment
 		,isnull(coalesce(actual_volume.Actual,actual_results.Actual),0) as Actual
-		,case when forecast_cv.Media_Week>(case when DATEPART(weekday,getdate()) <= 5 then DATEPART(wk,getdate())-2 else DATEPART(wk,getdate())-1	end) then Forecast
-			--Short term work around for missing volume in scorecard
-			when forecast_cv.[KPI_Type]='Volume' then Forecast
-			--work around to prevent double counting forecast and actual volumes due to mismatched drop date timing
-			when actual_volume.KPI_type='Volume'  and forecast_cv.KPI_Type is null then 0
-				---Remove when volume problem fixed
-			else coalesce(actual_volume.Actual,actual_results.Actual)
-			end as Best_View
+-- complex case statement to determine if you should be using forecast or actuals for the best view
+
+--First are these telesales or other metrics as telesales require a lagging
+		,case when coalesce(forecast_cv.[KPI_Type], actual_volume.[KPI_Type],actual_results.[KPI_Type])='Telesales'
+		--IS the forecast YYYYWW two weeks less than the current report week available 
+			then (case when forecast_cv.media_YYYYWW <=	(case when DATEPART(weekday,getdate()) <= 5 
+						then (select ISO_Week_YYYYWW from dim.media_calendar_daily where [date]=cast(dateadd(wk,-4,getdate()) as date)) 
+						else (select ISO_Week_YYYYWW from dim.media_calendar_daily where [date]=cast(dateadd(wk,-3,getdate()) as date)) end)
+					then coalesce(actual_volume.Actual,actual_results.Actual)
+					else isnull(Forecast,0)
+					end)
+----END OF TELESALES LAG CONCERNS
+--Non telesale report through current available week
+		when forecast_cv.media_YYYYWW <= (case when DATEPART(weekday,getdate()) <= 5 
+						then (select ISO_Week_YYYYWW from dim.media_calendar_daily where [date]=cast(dateadd(wk,-2,getdate()) as date)) 
+						else (select ISO_Week_YYYYWW from dim.media_calendar_daily where [date]=cast(dateadd(wk,-1,getdate()) as date)) end)
+			then coalesce(actual_volume.Actual,actual_results.Actual)
+
+		else isnull(Forecast,0)
+
+		end as Best_View
+----END OF COMPLEX Best View case statement-------------------------------------------------------------
 		
 	FROM	
 	---select to join the forecast and CV
@@ -53,6 +67,10 @@ CREATE VIEW [bvt_prod].[Mover_Best_View_VW]
 	  ,coalesce(forecast.media_year, cv.media_year) as media_year
 	  ,coalesce(forecast.media_month, cv.media_month) as media_month
 	  ,coalesce(forecast.media_week, cv.media_week) as media_week
+	  ,case when cv.Media_week<10 
+		then coalesce(forecast.Media_YYYYWW, cast((cast(cv.media_year as char(4))+'0'+cast(cv.media_week as char(1))) as int))
+		else coalesce(forecast.Media_YYYYWW, cast((cast(cv.media_year as char(4))+cast(cv.media_week as char(2))) as int))
+		end as Media_YYYYWW
       ,sum(forecast.[Forecast]) as Forecast
 	  ,sum(CV.forecast) as Commitment 
 	  FROM 
@@ -65,6 +83,7 @@ CREATE VIEW [bvt_prod].[Mover_Best_View_VW]
       , Media_Year
       , Media_Month
       , Media_Week
+	  , Media_YYYYWW
       ,[Program_Name]
       ,[Tactic]
       ,[Media]
@@ -95,7 +114,8 @@ CREATE VIEW [bvt_prod].[Mover_Best_View_VW]
       ,[Product_Code]
       , Media_Year
       , Media_Month
-      , Media_Week) as forecast
+      , Media_Week
+	  , Media_YYYYWW) as forecast
 		
 		---Join CV to Current Forecast Table
 		full join 
@@ -131,7 +151,11 @@ CREATE VIEW [bvt_prod].[Mover_Best_View_VW]
       ,coalesce(forecast.[Product_Code], cv.[Product_Code])
 	  ,coalesce(forecast.media_year, cv.media_year)
 	  ,coalesce(forecast.media_month, cv.media_month)
-	  ,coalesce(forecast.media_week, cv.media_week)) as forecast_cv
+	  ,coalesce(forecast.media_week, cv.media_week)
+	  ,case when cv.Media_week<10 
+		then coalesce(forecast.Media_YYYYWW, cast((cast(cv.media_year as char(4))+'0'+cast(cv.media_week as char(1))) as int))
+		else coalesce(forecast.Media_YYYYWW, cast((cast(cv.media_year as char(4))+cast(cv.media_week as char(2))) as int))
+		end) as forecast_cv
 
 ----Join Actuals
 		--Volume and Budget
