@@ -1,4 +1,8 @@
-﻿alter VIEW [bvt_prod].[BM_Forecast_VW]
+﻿DROP VIEW [bvt_prod].[BM_Forecast_VW]
+GO
+
+
+CREATE VIEW [bvt_prod].[BM_Forecast_VW]
 as
 select FPR.idFlight_Plan_Records
 	, FPR.Campaign_Name
@@ -8,8 +12,10 @@ select FPR.idFlight_Plan_Records
 	, Media_Calendar_Daily.ISO_Week_Year as Media_Year
 	, Media_Calendar_Daily.ISO_Week as Media_Week
 	, Media_Calendar_Daily.MediaMonth as Media_Month
+	, Media_Calendar_Daily.ISO_Week_YYYYWW as Media_YYYYWW
 	
 ---Touch Lookup Tables
+	, idProgram_Touch_Definitions_TBL_FK
 	, Touch_Name
 	, Program_Name
 	, Tactic
@@ -27,6 +33,7 @@ select FPR.idFlight_Plan_Records
 	, Product_Code
 	, Forecast_DayDate
 	, Forecast
+
 
 from bvt_prod.BM_Flight_Plan_VW as FPR
 
