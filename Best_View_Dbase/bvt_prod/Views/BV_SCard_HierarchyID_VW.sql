@@ -96,7 +96,7 @@ Select Owner_type_matrix_id_FK as hierarchy_id
 	, Product_Code
 	, sum(Forecast)  as forecast
 FROM bvt_prod.CLM_Revenue_Forecast_VW
-where media_year>=2016 and media_week<=27
+where media_year>=2016 --nd media_week<=27
 group by Owner_type_matrix_id_FK 
 	, Media_Year
 	, Media_Week
