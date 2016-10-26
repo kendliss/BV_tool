@@ -1,12 +1,13 @@
 USE [UVAQ_STAGING]
 GO
 
-/****** Object:  StoredProcedure [bvt_staging].[CCF_CallStrat_pID_SP]    Script Date: 06/09/2016 16:00:46 ******/
+/****** Object:  StoredProcedure [bvt_staging].[CCF_CallStrat_pID_SP]    Script Date: 09/20/2016 10:29:14 ******/
 SET ANSI_NULLS ON
 GO
 
 SET QUOTED_IDENTIFIER ON
 GO
+
 
 
 
@@ -30,7 +31,7 @@ LEFT JOIN JAVDB.IREPORT_2015.dbo.WB_01_Campaign_List_WB_2016 c
 	ON a.Source_System_ID = c.parentID
 LEFT JOIN JAVDB.IREPORT_2015.dbo.WB_01_TFN_List_WB f
 on c.parentID = f.ParentID and f.Source = 'eCRW_TFN'
-LEFT JOIN (SELECT Tollfree_number, category,
+LEFT JOIN (SELECT Tollfree_number,
 			CASE WHEN category LIKE '%Z%' THEN 100
 				 WHEN CATEGORY LIKE '[A-Z][0-9][0-9][A-Z]%' AND CAST(SUBSTRING(category,2,2) AS INT) = 10 AND category LIKE '%Green%' THEN 10.1
 				 WHEN CATEGORY LIKE '[A-Z][0-9][0-9][A-Z]%' AND CAST(SUBSTRING(category,2,2) AS INT) = 10 AND category LIKE '%Organic%' THEN 10.2
@@ -41,8 +42,17 @@ LEFT JOIN (SELECT Tollfree_number, category,
 				 ELSE 0
 				 END AS cat_ID
 		FROM SCAMP.dbo.TFN_CATEGORY_WEEKLY 
-		WHERE  ReportWeek_YYYYWW >=201632
-		GROUP BY Tollfree_number, category) e
+		WHERE  ReportWeek_YYYYWW = (select ReportCycle_YYYYWW from [JAVDB].[ireport_2015].[dbo].[wb_00_reporting_cycle])
+		GROUP BY Tollfree_number,
+		CASE WHEN category LIKE '%Z%' THEN 100
+				 WHEN CATEGORY LIKE '[A-Z][0-9][0-9][A-Z]%' AND CAST(SUBSTRING(category,2,2) AS INT) = 10 AND category LIKE '%Green%' THEN 10.1
+				 WHEN CATEGORY LIKE '[A-Z][0-9][0-9][A-Z]%' AND CAST(SUBSTRING(category,2,2) AS INT) = 10 AND category LIKE '%Organic%' THEN 10.2
+				 WHEN CATEGORY LIKE '[A-Z][0-9][0-9][A-Z]%' AND CAST(SUBSTRING(category,2,2) AS INT) = 16 AND category LIKE '%ACQ%' THEN 16.1
+				 WHEN CATEGORY LIKE '[A-Z][0-9][0-9][A-Z]%' AND CAST(SUBSTRING(category,2,2) AS INT) = 16 AND category LIKE '%XSell%' THEN 16.2
+				 WHEN CATEGORY LIKE '[A-Z][0-9][0-9][A-Z]%' AND CAST(SUBSTRING(category,2,2) AS INT) = 16 AND category LIKE '%Universal%' THEN 16.3		 
+				 WHEN CATEGORY LIKE '[A-Z][0-9][0-9][A-Z]%' THEN CAST(SUBSTRING(category,2,2) AS INT) 
+				 ELSE 0
+				 END) e
 	ON f.TFN = e.TOLLFREE_NUMBER
 JOIN (SELECT idFlight_Plan_Records_FK, SUM(ISNULL(CTD_Quantity,0)) AS FlightVolume
 		FROM UVAQ.bvt_prod.External_ID_linkage_TBL a
@@ -56,6 +66,7 @@ JOIN (SELECT idFlight_Plan_Records_FK, SUM(ISNULL(CTD_Quantity,0)) AS FlightVolu
 ORDER BY b.idFlight_Plan_Records_FK, Source_System_ID
 
 END
+
 
 
 

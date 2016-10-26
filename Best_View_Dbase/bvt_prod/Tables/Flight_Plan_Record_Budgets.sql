@@ -5,6 +5,7 @@
     [Bill_Year]                    INT        NULL,
     [Bill_Month]                   INT        NULL,
     [idFlight_Plan_Records_FK]     INT        NULL,
+    [idCPP_Category_FK]			   INT		  NULL,
     PRIMARY KEY CLUSTERED ([idFlight_Plan_Record_Budgets] ASC),
     FOREIGN KEY ([idBudget_Status_LU_FK]) REFERENCES [bvt_prod].[Budget_Status_LU] ([idBudget_Status_LU]),
     CONSTRAINT [FK_Flight_Plan_Record_Budgets_Flight_Plan_Records] FOREIGN KEY ([idFlight_Plan_Records_FK]) REFERENCES [bvt_prod].[Flight_Plan_Records] ([idFlight_Plan_Records])

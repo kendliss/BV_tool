@@ -1,16 +1,8 @@
-﻿USE [UVAQ]
-GO
-
-/****** Object:  View [bvt_prod].[CLM_Revenue_Forecast_VW] ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
+﻿DROP VIEW [bvt_prod].[CLM_Revenue_Forecast_VW]
 GO
 
 
-
-alter view [bvt_prod].[CLM_Revenue_Forecast_VW]
+CREATE VIEW [bvt_prod].[CLM_Revenue_Forecast_VW]
 as
 select FPR.idFlight_Plan_Records
 	, FPR.Campaign_Name
@@ -20,8 +12,10 @@ select FPR.idFlight_Plan_Records
 	, Media_Calendar_Daily.ISO_Week_Year as Media_Year
 	, Media_Calendar_Daily.ISO_Week as Media_Week
 	, Media_Calendar_Daily.MediaMonth as Media_Month
+	, Media_Calendar_Daily.ISO_Week_YYYYWW as Media_YYYYWW
 	
 ---Touch Lookup Tables
+	, idProgram_Touch_Definitions_TBL_FK
 	, Touch_Name
 	, Program_Name
 	, Tactic
@@ -32,13 +26,14 @@ select FPR.idFlight_Plan_Records
 	, Goal
 	, Offer
 	, owner_type_matrix_id_FK
-	, channel
+	, Channel
 
 ----Metrics
 	, KPI_Type
 	, Product_Code
 	, Forecast_DayDate
 	, Forecast
+
 
 from bvt_prod.CLM_Revenue_Flight_Plan_VW as FPR
 
@@ -57,7 +52,7 @@ left join
 from bvt_prod.CLM_Revenue_FlightplanSalesForecast
  left join bvt_prod.Product_LU_TBL
 		on CLM_Revenue_FlightplanSalesForecast.idProduct_LU_TBL_FK=Product_LU_TBL.idProduct_LU_TBL
-  where idkpi_types_FK<>3)
+where idkpi_types_FK<>3)
 
 union all
 
@@ -121,8 +116,6 @@ bvt_prod.Touch_Definition_VW as touchdef
 		on FPR.idProgram_Touch_Definitions_TBL_FK=idProgram_Touch_Definitions_TBL
 
 where Tactic <> 'Cost'	
-
-
 
 GO
 

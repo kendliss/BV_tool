@@ -1,7 +1,7 @@
 USE [UVAQ]
 GO
 
-/****** Object:  View [bvt_weeklyops].[BM_Weekly_Current]    Script Date: 08/11/2016 13:01:57 ******/
+/****** Object:  View [bvt_weeklyops].[BM_Weekly_Current_MTD]    Script Date: 09/20/2016 10:43:19 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -11,16 +11,16 @@ GO
 
 
 
+
+
 --Drop View bvt_weeklyops.BM_Summary_Current
 
-ALTER VIEW [bvt_weeklyops].[BM_Weekly_Current]
+ALTER VIEW [bvt_weeklyops].[BM_Weekly_Current_MTD]
 AS
 (
 SELECT Media,
-CASE WHEN Campaign_Type = 'Titan Bill' THEN 'U-Verse Bill'
-ELSE Campaign_Type END as 'Campaign_Type',
-CASE WHEN Campaign_Type = 'Titan Bill' THEN (Media + 'U-Verse Bill')
-ELSE (Media+Campaign_Type) END as 'Look_Up',
+Campaign_Type,
+(Media+''+Campaign_Type) as 'Look_Up',
 Media_Year,
 Media_Month,
 Media_Week,
@@ -47,36 +47,36 @@ sum(ISNULL([Online_AV], 0)) as [Online_AV],
 sum(ISNULL([Online_sales_Access Line_AV], 0)+ISNULL([Online_sales_VoIP_AV], 0)+ISNULL([Telesales_Access Line_AV], 0)+ISNULL([Telesales_VoIP_AV], 0)) as Voice_Sales_AV, 
 sum(ISNULL([Online_sales_DSL_AV], 0)+ISNULL([Online_sales_DSL Direct_AV], 0)+ISNULL([Telesales_DSL_AV], 0)+ISNULL([Telesales_DSL Direct_AV], 0)) as DSL_Sales_AV, 
 sum(ISNULL([Online_sales_HSIA_AV], 0)+ISNULL([Online_sales_IPDSL_AV], 0)+ISNULL([Telesales_HSIA_AV], 0)+ISNULL([Telesales_IPDSL_AV], 0)
-+ISNULL([Online_Sales_Gigapower_AV], 0)+ISNULL([Telesales_Gigapower_AV], 0)) as IPBB_Sales_AV, 
++ISNULL([Online_sales_Gigapower_AV], 0)+ISNULL([Telesales_Gigapower_AV], 0)) as IPBB_Sales_AV, 
 sum(ISNULL([Online_sales_DirecTV_AV], 0)+ISNULL([Online_sales_UVTV_AV], 0)+ISNULL([Telesales_DirecTV_AV], 0)+ISNULL([Telesales_UVTV_AV], 0)) as TV_Sales_AV,
 sum(ISNULL([Telesales_UVTV_AV], 0)+ISNULL([Online_sales_UVTV_AV], 0)) as IPTV_Sales_AV,
 sum(ISNULL([Telesales_DirecTV_AV], 0)+ISNULL([Online_sales_DirecTV_AV], 0)) as DTV_Sales_AV,
 sum(ISNULL([Online_sales_WRLS Data_AV], 0)+ISNULL([Online_sales_WRLS Family_AV], 0)+ISNULL([Online_sales_WRLS Voice_AV], 0)+ISNULL([Telesales_WRLS Data_AV], 0)+
 ISNULL([Telesales_WRLS Family_AV], 0)+ISNULL([Telesales_WRLS Voice_AV], 0)+ isnull([Online_sales_WRLS Home_AV],0)+ isnull([Telesales_WRLS Home_AV],0)) as WRLS_Sales_AV,
-SUM(ISNULL([Online_sales_Digital Life_AV],0)+ ISNULL([Telesales_Digital Life_AV],0)) AS DL_Sales_AV,
 SUM(ISNULL([Online_sales_Access Line_AV], 0)+ISNULL([Online_sales_VoIP_AV], 0)+ISNULL([Telesales_Access Line_AV], 0)+ISNULL([Telesales_VoIP_AV], 0)+
 ISNULL([Online_sales_DSL_AV], 0)+ISNULL([Online_sales_DSL Direct_AV], 0)+ISNULL([Telesales_DSL_AV], 0)+ISNULL([Telesales_DSL Direct_AV], 0)+
 ISNULL([Online_sales_HSIA_AV], 0)+ISNULL([Online_sales_IPDSL_AV], 0)+ISNULL([Telesales_HSIA_AV], 0)+ISNULL([Telesales_IPDSL_AV], 0)+
 ISNULL([Online_sales_DirecTV_AV], 0)+ISNULL([Online_sales_UVTV_AV], 0)+ISNULL([Telesales_DirecTV_AV], 0)+ISNULL([Telesales_UVTV_AV], 0)+
 ISNULL([Online_sales_WRLS Data_AV], 0)+ISNULL([Online_sales_WRLS Family_AV], 0)+ISNULL([Online_sales_WRLS Voice_AV], 0)+ISNULL([Telesales_WRLS Data_AV], 0)+
-ISNULL([Telesales_WRLS Family_AV], 0)+ISNULL([Telesales_WRLS Voice_AV], 0)+ ISNULL([Online_sales_Digital Life_AV],0)+ ISNULL([Telesales_Digital Life_AV],0)
-+ isnull([Online_sales_WRLS Home_AV],0)+ isnull([Telesales_WRLS Home_AV],0)+ISNULL([Online_Sales_Gigapower_AV], 0)+ISNULL([Telesales_Gigapower_AV], 0)) AS Total_Strat_Sales_AV
+ISNULL([Telesales_WRLS Family_AV], 0)+ISNULL([Telesales_WRLS Voice_AV], 0)+ ISNULL([Online_sales_Digital Life_AV],0)+ ISNULL([Telesales_Digital Life_AV],0)+ 
+isnull([Online_sales_WRLS Home_AV],0)+ isnull([Telesales_WRLS Home_AV],0)+ISNULL([Online_sales_Gigapower_AV], 0)+ISNULL([Telesales_Gigapower_AV], 0)) AS Total_Strat_Sales_AV
 
 
 FROM bvt_prod.BM_Best_View_Pivot_VW
 WHERE Media_Year = (select LEFT(ReportCycle_YYYYWW,4) from [JAVDB].[ireport_2015].[dbo].[wb_00_reporting_cycle] group by ReportCycle_YYYYWW)
 AND Media_Week <= (select Right(ReportCycle_YYYYWW,2) from [JAVDB].[ireport_2015].[dbo].[wb_00_reporting_cycle] group by ReportCycle_YYYYWW)
+AND Media_Month = 8
 
 
 GROUP BY Media,
-CASE WHEN Campaign_Type = 'Titan Bill' THEN 'U-Verse Bill'
-ELSE Campaign_Type END,
-CASE WHEN Campaign_Type = 'Titan Bill' THEN (Media + 'U-Verse Bill')
-ELSE (Media+Campaign_Type) END,
+Campaign_Type,
+Media+ ' '+Campaign_Type,
 Media_Year,
 Media_Month,
 Media_Week
 )
+
+
 
 
 
