@@ -48,20 +48,30 @@ from
 (select 
 	a.idFlight_Plan_Records
 	, a.idProgram_Touch_Definitions_TBL_FK
-	, idkpi_type_FK
+	, B.idkpi_type_FK
 	, idProduct_LU_TBL_FK
-	, case when tfn_ind=-1 and idkpi_type_FK=1 then Sales_Rate
-		when TFN_ind=0 and idkpi_type_FK=1 then 0
-		when URL_ind=-1 and idkpi_type_FK=2 then Sales_Rate
-		when URL_ind=0 and idkpi_type_FK=2 then 0
+	, case when adjustment is null then (case when tfn_ind=-1 and b.idkpi_type_FK=1 then Sales_Rate
+		when TFN_ind=0 and b.idkpi_type_FK=1 then 0
+		when URL_ind=-1 and b.idkpi_type_FK=2 then Sales_Rate
+		when URL_ind=0 and b.idkpi_type_FK=2 then 0
 		else Sales_Rate
-		end as Sales_Rate
+		end)
+	else (case when tfn_ind=-1 and b.idkpi_type_FK=1 then Sales_Rate*adjustment
+		when TFN_ind=0 and b.idkpi_type_FK=1 then 0
+		when URL_ind=-1 and b.idkpi_type_FK=2 then Sales_Rate*adjustment
+		when URL_ind=0 and b.idkpi_type_FK=2 then 0
+		else Sales_Rate*adjustment
+		end) 
+	end as Sales_Rate
 	, InHome_Date
 	, idTarget_Rate_Reasons_LU_TBL_FK
 from bvt_prod.Movers_Flight_Plan_VW as A
 	
-	left join (SELECT * FROM [bvt_prod].[Sales_Rate_Start_End_FUN]('Movers')) as B on A.idProgram_Touch_Definitions_TBL_FK=B.idProgram_Touch_Definitions_TBL_FK
-	and InHome_Date between Sales_Rate_Start_Date and b.END_DATE) as SalesRate_Join
+	left join (SELECT * FROM [bvt_prod].[Sales_Rate_Start_End_FUN]('Movers')) as B
+		on A.idProgram_Touch_Definitions_TBL_FK=B.idProgram_Touch_Definitions_TBL_FK
+			and InHome_Date between Sales_Rate_Start_Date and b.END_DATE
+	left join bvt_prod.Target_Rate_Adjustment_Manual_TBL
+		on idFlight_Plan_Records=idFlight_Plan_Records_FK and B.idkpi_type_FK=Target_Rate_Adjustment_Manual_TBL.idkpi_types_FK) as SalesRate_Join
 ---End Join KPI and Flight Plan	
 
 	left join (SELECT * FROM [bvt_prod].[Response_Daily_Start_End_FUN]('Movers')) as B 

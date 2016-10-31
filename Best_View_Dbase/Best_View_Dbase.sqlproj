@@ -614,6 +614,7 @@
     <Build Include="bvt_prod\Views\Daily_Response_Curve_Parentid_VW.sql" />
     <Build Include="bvt_prod\Views\BV_SCard_HierarchyID_VW.sql" />
     <Build Include="bvt_prod\Views\BV_SCard_Hierarchy_CallStrategy_VW.sql" />
+    <Build Include="bvt_prod\Tables\Target_Rate_Adjustment_Manual_TBL.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="Best_View_Dbase.refactorlog" />
