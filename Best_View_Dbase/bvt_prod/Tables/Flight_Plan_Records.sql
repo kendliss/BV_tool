@@ -8,10 +8,12 @@
     [TFN_ind]                                 BIT           NULL,
     [URL_ind]                                 BIT           NULL,
     [idTarget_Rate_Reasons_LU_TBL_FK]         INT           NULL,
+	[idTarget_Adj_Manual_FK]                  INT           NULL,
     PRIMARY KEY CLUSTERED ([idFlight_Plan_Records] ASC),
     FOREIGN KEY ([Budget_Type_LU_TBL_idBudget_Type_LU_TBL]) REFERENCES [bvt_prod].[Budget_Type_LU_TBL] ([idBudget_Type_LU_TBL]),
     FOREIGN KEY ([idProgram_Touch_Definitions_TBL_FK]) REFERENCES [bvt_prod].[Program_Touch_Definitions_TBL] ([idProgram_Touch_Definitions_TBL]),
     FOREIGN KEY ([idVolume_Type_LU_TBL_FK]) REFERENCES [bvt_prod].[Volume_Type_LU_TBL] ([idVolume_Type_LU_TBL]),
+	FOREIGN KEY ([idTarget_Adj_Manual_FK]) REFERENCES [bvt_prod].[Target_Rate_Adjustment_Manual_TBL] ([idTarget_Adj_Manual]),
     CONSTRAINT [FK_Flight_PL_idTarget_Adj] FOREIGN KEY ([idTarget_Rate_Reasons_LU_TBL_FK]) REFERENCES [bvt_prod].[Target_Rate_Reasons_LU_TBL] ([idTarget_Rate_Reasons_LU_TBL])
 );
 
