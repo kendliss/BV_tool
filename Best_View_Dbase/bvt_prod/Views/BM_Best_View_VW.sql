@@ -135,7 +135,8 @@
 		full join 
 			(select [id_Flight_Plan_Records_FK], [idProgram_Touch_Definitions_TBL_FK], [Campaign_Name], [InHome_Date], 
 			[Media_Year], [Media_Month], [Media_Week], [KPI_TYPE], [Product_Code],  SUM([forecast]) as Forecast, 
-			[Touch_Name], [Program_Name], [Tactic], [Media], [Audience], [Creative_Name], [Goal], [Offer], [Campaign_Type], [Channel],
+			CASE WHEN [Program_Name] = 'BM' THEN [Touch_Name] ELSE '2016 Commitment View' END AS Touch_Name, 
+			'BM' AS [Program_Name], [Tactic], [Media], [Audience], [Creative_Name], [Goal], [Offer], [Campaign_Type], [Channel],
 			[Scorecard_Group], [Scorecard_Program_Channel]
 			from bvt_processed.Commitment_Views 
 				-----Bring in touch definition labels 
