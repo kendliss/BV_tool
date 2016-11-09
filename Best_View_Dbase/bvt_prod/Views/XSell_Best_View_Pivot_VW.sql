@@ -4,8 +4,9 @@ GO
 CREATE VIEW [bvt_prod].[XSell_Best_View_Pivot_VW]
 	AS 
 	Select
-	[idFlight_Plan_Records_FK], [Campaign_Name], [InHome_Date], [Media_Year], [Media_Week], [Media_Month], [Touch_Name], [Program_Name], [Tactic], [Media], 
-	[Campaign_Type], [Audience], [Creative_Name], [Goal], [Offer], [Channel], [Scorecard_Group], [Scorecard_Program_Channel], CONVERT(VARCHAR(6),InHome_Date,112) AS Start_Month,
+	[idFlight_Plan_Records_FK], [Campaign_Name], [InHome_Date], [Strategy_Eligibility], [Lead_Offer], [Media_Year], [Media_Week], [Media_Month], [Touch_Name]
+	, [Program_Name], [Tactic], [Media], [Campaign_Type], [Audience], [Creative_Name], [Goal], [Offer], [Channel], [Scorecard_Group], [Scorecard_Program_Channel]
+	, CONVERT(VARCHAR(6),InHome_Date,112) AS Start_Month,
 sum(isnull([Call_CV], 0)) as [Call_CV], 
 sum(isnull([Online_CV], 0)) as [Online_CV], 
 sum(isnull([Online_sales_Access Line_CV], 0)) as [Online_sales_Access Line_CV], 
@@ -140,8 +141,9 @@ sum(isnull([Telesales_Access Line_FV], 0))+ sum(isnull([Telesales_DSL_FV], 0))+ 
 sum(isnull([Telesales_Access Line_AV], 0))+ sum(isnull([Telesales_DSL_AV], 0))+ sum(isnull([Telesales_DSL Direct_AV], 0))+ sum(isnull([Telesales_HSIA_AV], 0))+ sum(isnull([Telesales_Gigapower_AV], 0))+ sum(isnull([Telesales_IPDSL_AV], 0))+ sum(isnull([Telesales_DirecTV_AV], 0))+ sum(isnull([Telesales_UVTV_AV], 0))+ sum(isnull([Telesales_VoIP_AV], 0))+ sum(isnull([Telesales_WRLS Data_AV], 0))+ sum(isnull([Telesales_WRLS Family_AV], 0))+ sum(isnull([Telesales_WRLS Voice_AV], 0))+ sum(isnull([Telesales_WRLS Home_AV], 0))+ sum(isnull([Telesales_Digital Life_AV], 0)) as Telesales_Strat_AV
 	FROM
 		(SELECT  
-	[idFlight_Plan_Records_FK], [Campaign_Name], [InHome_Date], [Media_Year], [Media_Week], [Media_Month], [Touch_Name], [Program_Name], [Tactic], [Media], 
-	[Campaign_Type], [Audience], [Creative_Name], [Goal], [Offer], [Channel], [Scorecard_Group], [Scorecard_Program_Channel], [Forecast], [Commitment], [Actual], [Best_View]
+	[idFlight_Plan_Records_FK], [Campaign_Name], [InHome_Date], [Strategy_Eligibility], [Lead_Offer], [Media_Year], [Media_Week], [Media_Month], [Touch_Name]
+	, [Program_Name], [Tactic], [Media], [Campaign_Type], [Audience], [Creative_Name], [Goal], [Offer], [Channel], [Scorecard_Group], [Scorecard_Program_Channel]
+	, [Forecast], [Commitment], [Actual], [Best_View]
 	,Case when kpi_type in ('Response','Volume','Budget') then Product_Code+'_CV'
 		Else [KPI_Type]+'_'+[Product_Code]+'_CV' end as CV_metric 
 	,Case when kpi_type in ('Response','Volume','Budget') then Product_Code+'_FV'
@@ -283,5 +285,5 @@ sum(isnull([Telesales_Access Line_AV], 0))+ sum(isnull([Telesales_DSL_AV], 0))+ 
 [Telesales_Digital Life_BV], 
 [Volume_BV])) as P4
 
-group by [idFlight_Plan_Records_FK], [Campaign_Name], [InHome_Date], [Media_Year], [Media_Week], [Media_Month], [Touch_Name], [Program_Name], [Tactic], [Media], 
-	[Campaign_Type], [Audience], [Creative_Name], [Goal], [Offer], [Channel], [Scorecard_Group], [Scorecard_Program_Channel], CONVERT(VARCHAR(6),InHome_Date,112)
+group by [idFlight_Plan_Records_FK], [Campaign_Name], [InHome_Date], [Strategy_Eligibility], [Lead_Offer], [Media_Year], [Media_Week], [Media_Month], [Touch_Name]
+, [Program_Name], [Tactic], [Media], [Campaign_Type], [Audience], [Creative_Name], [Goal], [Offer], [Channel], [Scorecard_Group], [Scorecard_Program_Channel], CONVERT(VARCHAR(6),InHome_Date,112)

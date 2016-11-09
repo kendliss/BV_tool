@@ -7,6 +7,8 @@ as
 select FPR.idFlight_Plan_Records
 	, FPR.Campaign_Name
 	, FPR.InHome_Date
+	, strat.Strategy_Eligibility
+	, lead.Lead_Offer
 	
 ---Media_Calendar_Info
 	, Media_Calendar_Daily.ISO_Week_Year as Media_Year
@@ -83,6 +85,11 @@ left join
 bvt_prod.Touch_Definition_VW as touchdef
 		on FPR.idProgram_Touch_Definitions_TBL_FK=idProgram_Touch_Definitions_TBL
 
-	
+left join
+bvt_prod.Strategy_Eligibility_LU_TBL strat
+	on FPR.Strategy_Eligibility_LU_TBL_FK = strat.idStrategy_Eligibility_LU_TBL
+left join
+bvt_prod.Lead_Offer_LU_TBL lead
+	on FPR.Lead_Offer_LU_TBL_FK = lead.idLead_Offer_LU_TBL
 
 
