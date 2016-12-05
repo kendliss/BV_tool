@@ -8,8 +8,8 @@ select idFlight_Plan_Records
 	, responsebyday.idProgram_Touch_Definitions_TBL_FK
 	, idkpi_types_FK
 	, Day_of_Week
-	, --case when ResponseByDay.idTarget_Rate_Reasons_LU_TBL_FK is null then KPI_Daily*Seasonality_Adj
-		--else KPI_Daily*Seasonality_Adj*Rate_Adjustment_Factor end as 
+	, case when ResponseByDay.idTarget_Rate_Reasons_LU_TBL_FK is null then KPI_Daily*Seasonality_Adj
+		else KPI_Daily*Seasonality_Adj*Rate_Adjustment_Factor end as 
 		KPI_Daily
 	, Forecast_DayDate
 
