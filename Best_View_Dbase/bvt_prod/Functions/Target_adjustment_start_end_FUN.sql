@@ -1,5 +1,9 @@
-﻿CREATE FUNCTION [bvt_prod].[Target_adjustment_start_end_FUN]
-(@PROGRAM VARCHAR(15))
+﻿
+DROP FUNCTION bvt_prod.Target_adjustment_start_end_FUN
+GO
+
+CREATE FUNCTION [bvt_prod].[Target_adjustment_start_end_FUN]
+(@PROGRAM INT)
 RETURNS  TABLE
 RETURN
 WITH T1 AS
@@ -23,7 +27,7 @@ as unqid
 --------------------------------------------	
 	
 FROM bvt_prod.Target_Rate_Adjustments s
-	where idProgram_Touch_Definitions_TBL_FK in (SELECT * FROM bvt_prod.Program_Selector(@PROGRAM))
+	where idProgram_Touch_Definitions_TBL_FK in (SELECT * FROM bvt_prod.Program_ID_Selector(@PROGRAM))
 GROUP BY idProgram_Touch_Definitions_TBL_FK,
 idTarget_Rate_Reasons_LU_TBL_FK,
 Rate_Adjustment_Factor,

@@ -1,15 +1,6 @@
-USE [UVAQ]
+
+DROP VIEW bvt_prod.BM_Drag_Forecast_VW
 GO
-
-/****** Object:  View [bvt_prod].[BM_Drag_Forecast_VW]    Script Date: 11/16/2016 12:29:26 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-
-
 
 CREATE VIEW [bvt_prod].[BM_Drag_Forecast_VW]
 	AS 
@@ -28,7 +19,7 @@ CREATE VIEW [bvt_prod].[BM_Drag_Forecast_VW]
 		  FROM (SELECT [Date], MediaMonth, MediaMonth_year as media_year, iso_week as Media_week, [Day_Percent]--, FV_Calls 
 					from dim.media_calendar_daily as calendar
 				
-				left join (select [Day_of_Week],[Day_Percent],[Daily_Start_Date],[END_DATE]  from [bvt_prod].[Response_Daily_Start_End_FUN]('BM')
+				left join (select [Day_of_Week],[Day_Percent],[Daily_Start_Date],[END_DATE]  from [bvt_prod].[Response_Daily_Start_End_FUN](7)
 							where [idProgram_Touch_Definitions_TBL_FK]=1678 and [idkpi_type_FK]=1) as response_daily
 				on datepart(weekday,calendar.date)=[Day_of_Week] and [date] between [Daily_Start_Date] and [END_DATE]
 				

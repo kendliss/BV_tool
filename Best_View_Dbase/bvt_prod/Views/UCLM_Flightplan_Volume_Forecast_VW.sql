@@ -23,11 +23,11 @@ select idFlight_Plan_Records
 		left join bvt_prod.Lead_Volumes on flighting.idProgram_Touch_Definitions_TBL_FK=Lead_Volumes.idProgram_Touch_Definitions_TBL_FK
 			and ISO_Week_Year=Media_Year and MediaMonth=Media_Month
 		left join bvt_prod.Flight_Plan_Record_Budgets on idFlight_Plan_Records=Flight_Plan_Record_Budgets.idFlight_Plan_Records_FK
-		left join (SELECT * FROM [bvt_prod].[Target_adjustment_start_end_FUN]('UVCLM')) as Target_adjustment_start_end
+		left join (SELECT * FROM [bvt_prod].[Target_adjustment_start_end_FUN](3)) as Target_adjustment_start_end
 			on flighting.idTarget_Rate_Reasons_LU_TBL_FK=Target_adjustment_start_end.idTarget_Rate_Reasons_LU_TBL_FK 
 			and flighting.idProgram_Touch_Definitions_TBL_FK=Target_adjustment_start_end.idProgram_Touch_Definitions_TBL_FK
 			and flighting.inhome_date between Adj_Start_Date and end_date
-		left join (SELECT * FROM [bvt_prod].[CPP_Start_End_FUN]('UVCLM')) AS CPP_Start_End on flighting.idProgram_Touch_Definitions_TBL_FK=CPP_Start_End.idProgram_Touch_Definitions_TBL_FK
+		left join (SELECT * FROM [bvt_prod].[CPP_Start_End_FUN](3)) AS CPP_Start_End on flighting.idProgram_Touch_Definitions_TBL_FK=CPP_Start_End.idProgram_Touch_Definitions_TBL_FK
 			and InHome_Date between Cpp_start_date and CPP_Start_End.end_date
 Group by idFlight_Plan_Records, idVolume_Type_LU_TBL_FK, Lead_Volumes.Volume, Target_adjustment_start_end.Volume_Adjustment
 	 , Flight_Plan_Records_Volume.Volume, InHome_Date 

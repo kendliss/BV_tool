@@ -57,18 +57,18 @@ from
 	, idTarget_Rate_Reasons_LU_TBL_FK
 from [bvt_prod].[ACQ_Flight_Plan_VW] as A
 	
-	left join (SELECT * FROM [bvt_prod].[Sales_Rate_Start_End_FUN]('ACQ')) as B on A.idProgram_Touch_Definitions_TBL_FK=B.idProgram_Touch_Definitions_TBL_FK
+	left join (SELECT * FROM [bvt_prod].[Sales_Rate_Start_End_FUN](8)) as B on A.idProgram_Touch_Definitions_TBL_FK=B.idProgram_Touch_Definitions_TBL_FK
 	and InHome_Date between Sales_Rate_Start_Date and b.END_DATE) as SalesRate_Join
 ---End Join KPI and Flight Plan	
 
-	left join (SELECT * FROM [bvt_prod].[Response_Daily_Start_End_FUN]('ACQ')) as B 
+	left join (SELECT * FROM [bvt_prod].[Response_Daily_Start_End_FUN](8)) as B 
 		on SalesRate_Join.idProgram_Touch_Definitions_TBL_FK=b.idProgram_Touch_Definitions_TBL_FK 
 			and SalesRate_Join.idkpi_type_FK=b.idkpi_type_FK
 		and InHome_Date between daily_Start_Date and b.END_DATE) as Daily_Join
 	
 ---End Join Daily Percentages
 
-	left join (SELECT * FROM [bvt_prod].[Sales_Curve_Start_End_FUN]('ACQ')) as C
+	left join (SELECT * FROM [bvt_prod].[Sales_Curve_Start_End_FUN](8)) as C
 		on Daily_Join.idProgram_Touch_Definitions_TBL_FK=c.idProgram_Touch_Definitions_TBL_FK and Daily_Join.idkpi_type_FK=c.idkpi_type_FK
 		and inhome_date between Curve_Start_Date and c.END_DATE
 	left join  dim.Media_Calendar_Daily 

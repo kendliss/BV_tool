@@ -57,7 +57,7 @@ as
 				else CPP*Volume end as Budget
 
 		from bvt_prod.UCLM_Flight_Plan_VW as flight_plan_records
-			LEFT join (select * from bvt_prod.CPP_Start_End_FUN('UVCLM')) cpp
+			LEFT join (select * from bvt_prod.CPP_Start_End_FUN(3)) cpp
 				on flight_plan_records.idProgram_Touch_Definitions_TBL_FK=CPP.idProgram_Touch_Definitions_TBL_FK
 					and flight_plan_records.InHome_Date between CPP.CPP_Start_Date and CPP.END_DATE
 			LEFT join bvt_prod.UCLM_Flightplan_Volume_Forecast_VW as FPV
