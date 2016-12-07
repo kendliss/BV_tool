@@ -24,11 +24,11 @@
 			on [idExternal_ID_linkage_TBL]=[idExternal_ID_linkage_TBL_FK]
 	group by source_system_id, idProgram_Touch_Definitions_TBL_FK, InHome_Date) as campaigns
 	
-	left join (SELECT * FROM [bvt_prod].[Response_Daily_Start_End_FUN]('ACQ')) as daily
+	left join (SELECT * FROM [bvt_prod].[Response_Daily_Start_End_FUN](8)) as daily
 		on campaigns.idProgram_Touch_Definitions_TBL_FK=daily.idProgram_Touch_Definitions_TBL_FK 
 		and InHome_Date between daily_Start_Date and daily.END_DATE) as daily_perc
 	
-	left join (SELECT * FROM [bvt_prod].[Response_Curve_Start_End_FUN]('ACQ')) as curve
+	left join (SELECT * FROM [bvt_prod].[Response_Curve_Start_End_FUN](8)) as curve
 		on daily_perc.idProgram_Touch_Definitions_TBL_FK=curve.idProgram_Touch_Definitions_TBL_FK 
 		and inhome_date between Curve_Start_Date and curve.END_DATE
 		and daily_perc.idkpi_type_FK=curve.idkpi_type_fk
@@ -58,11 +58,11 @@
 			on [idExternal_ID_linkage_TBL]=[idExternal_ID_linkage_TBL_FK]
 	group by source_system_id, idProgram_Touch_Definitions_TBL_FK, InHome_Date) as campaigns
 	
-	left join (SELECT * FROM [bvt_prod].[Response_Daily_Start_End_FUN]('X-Sell')) as daily
+	left join (SELECT * FROM [bvt_prod].[Response_Daily_Start_End_FUN](6)) as daily
 		on campaigns.idProgram_Touch_Definitions_TBL_FK=daily.idProgram_Touch_Definitions_TBL_FK 
 		and InHome_Date between daily_Start_Date and daily.END_DATE) as daily_perc
 	
-	left join (SELECT * FROM [bvt_prod].[Response_Curve_Start_End_FUN]('X-Sell')) as curve
+	left join (SELECT * FROM [bvt_prod].[Response_Curve_Start_End_FUN](6)) as curve
 		on daily_perc.idProgram_Touch_Definitions_TBL_FK=curve.idProgram_Touch_Definitions_TBL_FK 
 		and inhome_date between Curve_Start_Date and curve.END_DATE
 		and daily_perc.idkpi_type_FK=curve.idkpi_type_fk
@@ -92,11 +92,11 @@
 			on [idExternal_ID_linkage_TBL]=[idExternal_ID_linkage_TBL_FK]
 	group by source_system_id, idProgram_Touch_Definitions_TBL_FK, InHome_Date) as campaigns
 	
-	left join (SELECT * FROM [bvt_prod].[Response_Daily_Start_End_FUN]('UVCLM')) as daily
+	left join (SELECT * FROM [bvt_prod].[Response_Daily_Start_End_FUN](3)) as daily
 		on campaigns.idProgram_Touch_Definitions_TBL_FK=daily.idProgram_Touch_Definitions_TBL_FK 
 		and InHome_Date between daily_Start_Date and daily.END_DATE) as daily_perc
 	
-	left join (SELECT * FROM [bvt_prod].[Response_Curve_Start_End_FUN]('UVCLM')) as curve
+	left join (SELECT * FROM [bvt_prod].[Response_Curve_Start_End_FUN](3)) as curve
 		on daily_perc.idProgram_Touch_Definitions_TBL_FK=curve.idProgram_Touch_Definitions_TBL_FK 
 		and inhome_date between Curve_Start_Date and curve.END_DATE
 		and daily_perc.idkpi_type_FK=curve.idkpi_type_fk
@@ -127,11 +127,11 @@ union
 			on [idExternal_ID_linkage_TBL]=[idExternal_ID_linkage_TBL_FK]
 	group by source_system_id, idProgram_Touch_Definitions_TBL_FK, InHome_Date) as campaigns
 	
-	left join (SELECT * FROM [bvt_prod].[Response_Daily_Start_End_FUN]('UCLM Revenue')) as daily
+	left join (SELECT * FROM [bvt_prod].[Response_Daily_Start_End_FUN](9)) as daily
 		on campaigns.idProgram_Touch_Definitions_TBL_FK=daily.idProgram_Touch_Definitions_TBL_FK 
 		and InHome_Date between daily_Start_Date and daily.END_DATE) as daily_perc
 	
-	left join (SELECT * FROM [bvt_prod].[Response_Curve_Start_End_FUN]('UCLM Revenue')) as curve
+	left join (SELECT * FROM [bvt_prod].[Response_Curve_Start_End_FUN](9)) as curve
 		on daily_perc.idProgram_Touch_Definitions_TBL_FK=curve.idProgram_Touch_Definitions_TBL_FK 
 		and inhome_date between Curve_Start_Date and curve.END_DATE
 		and daily_perc.idkpi_type_FK=curve.idkpi_type_fk
@@ -160,11 +160,11 @@ UNION
 			on [idExternal_ID_linkage_TBL]=[idExternal_ID_linkage_TBL_FK]
 	group by source_system_id, idProgram_Touch_Definitions_TBL_FK, InHome_Date) as campaigns
 	
-	left join (SELECT * FROM [bvt_prod].[Response_Daily_Start_End_FUN]('MOVERS')) as daily
+	left join (SELECT * FROM [bvt_prod].[Response_Daily_Start_End_FUN](4)) as daily
 		on campaigns.idProgram_Touch_Definitions_TBL_FK=daily.idProgram_Touch_Definitions_TBL_FK 
 		and InHome_Date between daily_Start_Date and daily.END_DATE) as daily_perc
 	
-	left join (SELECT * FROM [bvt_prod].[Response_Curve_Start_End_FUN]('MOVERS')) as curve
+	left join (SELECT * FROM [bvt_prod].[Response_Curve_Start_End_FUN](4)) as curve
 		on daily_perc.idProgram_Touch_Definitions_TBL_FK=curve.idProgram_Touch_Definitions_TBL_FK 
 		and inhome_date between Curve_Start_Date and curve.END_DATE
 		and daily_perc.idkpi_type_FK=curve.idkpi_type_fk
@@ -193,11 +193,11 @@ UNION
 			on [idExternal_ID_linkage_TBL]=[idExternal_ID_linkage_TBL_FK]
 	group by source_system_id, idProgram_Touch_Definitions_TBL_FK, InHome_Date) as campaigns
 	
-	left join (SELECT * FROM [bvt_prod].[Response_Daily_Start_End_FUN]('VALB')) as daily
+	left join (SELECT * FROM [bvt_prod].[Response_Daily_Start_End_FUN](2)) as daily
 		on campaigns.idProgram_Touch_Definitions_TBL_FK=daily.idProgram_Touch_Definitions_TBL_FK 
 		and InHome_Date between daily_Start_Date and daily.END_DATE) as daily_perc
 	
-	left join (SELECT * FROM [bvt_prod].[Response_Curve_Start_End_FUN]('VALB')) as curve
+	left join (SELECT * FROM [bvt_prod].[Response_Curve_Start_End_FUN](2)) as curve
 		on daily_perc.idProgram_Touch_Definitions_TBL_FK=curve.idProgram_Touch_Definitions_TBL_FK 
 		and inhome_date between Curve_Start_Date and curve.END_DATE
 		and daily_perc.idkpi_type_FK=curve.idkpi_type_fk
@@ -226,11 +226,11 @@ SELECT
 			on [idExternal_ID_linkage_TBL]=[idExternal_ID_linkage_TBL_FK]
 	group by source_system_id, idProgram_Touch_Definitions_TBL_FK, InHome_Date) as campaigns
 	
-	left join (SELECT * FROM [bvt_prod].[Response_Daily_Start_End_FUN]('UVLB')) as daily
+	left join (SELECT * FROM [bvt_prod].[Response_Daily_Start_End_FUN](1)) as daily
 		on campaigns.idProgram_Touch_Definitions_TBL_FK=daily.idProgram_Touch_Definitions_TBL_FK 
 		and InHome_Date between daily_Start_Date and daily.END_DATE) as daily_perc
 	
-	left join (SELECT * FROM [bvt_prod].[Response_Curve_Start_End_FUN]('UVLB')) as curve
+	left join (SELECT * FROM [bvt_prod].[Response_Curve_Start_End_FUN](1)) as curve
 		on daily_perc.idProgram_Touch_Definitions_TBL_FK=curve.idProgram_Touch_Definitions_TBL_FK 
 		and inhome_date between Curve_Start_Date and curve.END_DATE
 		and daily_perc.idkpi_type_FK=curve.idkpi_type_fk
