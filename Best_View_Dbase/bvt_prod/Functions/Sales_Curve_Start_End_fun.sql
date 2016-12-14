@@ -1,5 +1,9 @@
-﻿CREATE FUNCTION [bvt_prod].[Sales_Curve_Start_End_FUN]
-(@PROGRAM VARCHAR(15))
+﻿
+DROP FUNCTION bvt_prod.Sales_Curve_Start_End_FUN
+GO
+
+CREATE FUNCTION [bvt_prod].[Sales_Curve_Start_End_FUN]
+(@PROGRAM INT)
 RETURNS TABLE
 RETURN
 WITH T1 AS
@@ -25,7 +29,7 @@ as unqid
 --------------------------------------------	
 	
 FROM bvt_prod.Sales_Curve s
-	where idProgram_Touch_Definitions_TBL_FK in (SELECT * FROM bvt_prod.Program_Selector(@PROGRAM))
+	where idProgram_Touch_Definitions_TBL_FK in (SELECT * FROM bvt_prod.Program_ID_Selector(@PROGRAM))
 GROUP BY idProgram_Touch_Definitions_TBL_FK,
 idkpi_type_FK,
 Week_ID,

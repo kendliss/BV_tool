@@ -59,18 +59,18 @@ from
 	, idTarget_Rate_Reasons_LU_TBL_FK
 from [bvt_prod].[UVLB_Flight_Plan_VW] as A
 	
-	left join (SELECT * FROM [bvt_prod].[Sales_Rate_Start_End_FUN]('UVLB')) as B on A.idProgram_Touch_Definitions_TBL_FK=B.idProgram_Touch_Definitions_TBL_FK
+	left join (SELECT * FROM [bvt_prod].[Sales_Rate_Start_End_FUN](1)) as B on A.idProgram_Touch_Definitions_TBL_FK=B.idProgram_Touch_Definitions_TBL_FK
 	and InHome_Date between Sales_Rate_Start_Date and b.END_DATE) as SalesRate_Join
 ---End Join KPI and Flight Plan	
 
-	left join (SELECT * FROM [bvt_prod].[Response_Daily_Start_End_FUN]('UVLB')) as B 
+	left join (SELECT * FROM [bvt_prod].[Response_Daily_Start_End_FUN](1)) as B 
 		on SalesRate_Join.idProgram_Touch_Definitions_TBL_FK=b.idProgram_Touch_Definitions_TBL_FK 
 			and SalesRate_Join.idkpi_type_FK=b.idkpi_type_FK
 		and InHome_Date between daily_Start_Date and b.END_DATE) as Daily_Join
 	
 ---End Join Daily Percentages
 
-	left join (SELECT * FROM [bvt_prod].[Sales_Curve_Start_End_FUN]('UVLB')) as C
+	left join (SELECT * FROM [bvt_prod].[Sales_Curve_Start_End_FUN](1)) as C
 		on Daily_Join.idProgram_Touch_Definitions_TBL_FK=c.idProgram_Touch_Definitions_TBL_FK and Daily_Join.idkpi_type_FK=c.idkpi_type_FK
 		and inhome_date between Curve_Start_Date and c.END_DATE
 	left join  dim.Media_Calendar_Daily 
@@ -78,7 +78,7 @@ from [bvt_prod].[UVLB_Flight_Plan_VW] as A
 ----------End  Weekly Response Curve and Media Calendar		
 	left join bvt_prod.Seasonality_Adjustements as E
 		on ResponseByDay.idProgram_Touch_Definitions_TBL_FK=E.idProgram_Touch_Definitions_TBL_FK and iso_week_year=Media_Year and mediamonth=Media_Month
-	left join (SELECT * FROM [bvt_prod].[Target_adjustment_start_end_FUN]('UVLB')) as Target_adjustment_start_end
+	left join (SELECT * FROM [bvt_prod].[Target_adjustment_start_end_FUN](1)) as Target_adjustment_start_end
 		on ResponseByDay.idTarget_Rate_Reasons_LU_TBL_FK=Target_adjustment_start_end.idTarget_Rate_Reasons_LU_TBL_FK 
 		and ResponseByDay.idProgram_Touch_Definitions_TBL_FK=Target_adjustment_start_end.idProgram_Touch_Definitions_TBL_FK
 		and responsebyday.inhome_date between Adj_Start_Date and end_date

@@ -1,4 +1,8 @@
-﻿ALTER VIEW [bvt_prod].[CLM_Revenue_Drag_Forecast_VW]
+﻿
+DROP VIEW bvt_prod.CLM_Revenue_Drag_Forecast_VW
+GO
+
+CREATE VIEW [bvt_prod].[CLM_Revenue_Drag_Forecast_VW]
 AS 
 	--calculate daily calls based on method
 	SELECT 
@@ -15,7 +19,7 @@ AS
 		  FROM (SELECT [Date], MediaMonth, MediaMonth_year as media_year, iso_week as Media_week, [Day_Percent]--, FV_Calls 
 					from dim.media_calendar_daily as calendar
 				
-				left join (select [Day_of_Week],[Day_Percent],[Daily_Start_Date],[END_DATE]  from [bvt_prod].[Response_Daily_Start_End_FUN]('UCLM Revenue')
+				left join (select [Day_of_Week],[Day_Percent],[Daily_Start_Date],[END_DATE]  from [bvt_prod].[Response_Daily_Start_End_FUN](9)
 							where [idProgram_Touch_Definitions_TBL_FK]=1170 and [idkpi_type_FK]=1) as response_daily
 				on datepart(weekday,calendar.date)=[Day_of_Week] and [date] between [Daily_Start_Date] and [END_DATE]
 		/*		

@@ -149,26 +149,29 @@ OR b.idProgram_LU_TBL_FK = @Program
 ORDER BY d.Media, b.idProgram_Touch_Definitions_TBL, c.CPP_Start_Date
 
 --Seasonality Adjustment
-SELECT DISTINCT b.idProgram_Touch_Definitions_TBL, b.Touch_Name, d.Media, c.Media_Year, CountOfRecords
+SELECT DISTINCT b.idProgram_Touch_Definitions_TBL, b.Touch_Name, d.Media, q.Media_Year, CountOfRecords
 FROM bvt_prod.Program_Touch_Definitions_TBL b
-JOIN (SELECT DISTINCT idProgram_Touch_Definitions_TBL_FK
+JOIN (SELECT DISTINCT COALESCE(z.idProgram_touch_definitions_TBL_FK, e.idProgram_Touch_Definitions_TBL_FK) AS idProgram_Touch_Definitions_TBL_FK,
+Media_Year FROM 
+	((SELECT DISTINCT idProgram_Touch_Definitions_TBL_FK
 		FROM bvt_prod.Flight_Plan_Records a
 		JOIN bvt_prod.Flight_Plan_Records_Volume b
 			ON a.idFlight_Plan_Records = b.idFlight_Plan_Records_FK
 		WHERE Volume IS NOT NULL AND Volume <> 0) z
-	ON b.idProgram_Touch_Definitions_TBL = z.idProgram_Touch_Definitions_TBL_FK
-LEFT JOIN bvt_prod.Seasonality_Adjustements a
-	ON a.idProgram_Touch_Definitions_TBL_FK = b.idProgram_Touch_Definitions_TBL
+FULL JOIN (SELECT DISTINCT idProgram_Touch_Definitions_TBL_FK, DATEPART(YYYY, InHome_Date) as Media_Year
+			FROM bvt_prod.Flight_Plan_Records) e
+ON z.idProgram_Touch_Definitions_TBL_FK = e.idProgram_Touch_Definitions_TBL_FK)) q
+ON b.idProgram_Touch_Definitions_TBL = q.idProgram_Touch_Definitions_TBL_FK
 LEFT JOIN (	SELECT idProgram_Touch_Definitions_TBL_FK, Media_Year, COUNT(Seasonality_Adj) as CountOfRecords
-		FROM bvt_prod.Seasonality_Adjustements 
+		FROM bvt_prod.Seasonality_Adjustements
 		GROUP BY idProgram_Touch_Definitions_TBL_FK, Media_Year) c
-	ON a.idProgram_Touch_Definitions_TBL_FK = c.idProgram_Touch_Definitions_TBL_FK 
-		AND a.Media_Year = c.Media_Year 
+	ON q.idProgram_Touch_Definitions_TBL_FK = c.idProgram_Touch_Definitions_TBL_FK 
+		AND q.Media_Year = c.Media_Year 
 JOIN bvt_prod.Media_LU_TBL d
 	ON b.idMedia_LU_TBL_FK = d.idMedia_LU_TBL
 WHERE b.idProgram_Touch_Definitions_TBL = @Touch
 OR b.idProgram_LU_TBL_FK = @Program
-ORDER BY d.Media, b.idProgram_Touch_Definitions_TBL, c.Media_Year
+ORDER BY d.Media, b.idProgram_Touch_Definitions_TBL, q.Media_Year
 
 --Target Rate Adjustment
 SELECT DISTINCT b.idProgram_Touch_Definitions_TBL, b.Touch_Name, d.Media, c.Adj_Start_Date, CountOfRecords

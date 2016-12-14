@@ -1,4 +1,8 @@
-﻿CREATE VIEW [bvt_prod].[BM_Financial_Budget_Forecast]
+﻿
+DROP VIEW bvt_prod.BM_Financial_Budget_Forecast
+GO
+
+CREATE VIEW [bvt_prod].[BM_Financial_Budget_Forecast]
 as select 
 	flight_plan_records.idFlight_Plan_Records
 	, flight_plan_records.Campaign_Name
@@ -32,7 +36,7 @@ as select
 	from [bvt_prod].[BM_Flight_Plan_VW] as flight_plan_records
 		left join bvt_prod.Flight_Plan_Record_Budgets
 			on flight_plan_records.idFlight_Plan_Records=idFlight_Plan_Records_FK
-		LEFT join (SELECT * FROM [bvt_prod].[CPP_Start_End_FUN]('BM')) AS CPP_Start_End
+		LEFT join (SELECT * FROM [bvt_prod].[CPP_Start_End_FUN](7)) AS CPP_Start_End
 			on flight_plan_records.idProgram_Touch_Definitions_TBL_FK=CPP_Start_End.idProgram_Touch_Definitions_TBL_FK
 			and flight_plan_records.InHome_Date between CPP_Start_End.CPP_Start_Date and CPP_Start_End.END_DATE
 		LEFT join bvt_prod.BM_Flightplan_Volume_Forecast_VW as FPV

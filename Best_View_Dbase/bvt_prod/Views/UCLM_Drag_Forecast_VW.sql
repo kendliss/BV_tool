@@ -18,7 +18,7 @@ CREATE VIEW [bvt_prod].[UCLM_Drag_Forecast_VW]
 		  FROM (SELECT [Date], MediaMonth, MediaMonth_year as media_year, iso_week as Media_week, [Day_Percent]--, FV_Calls 
 					from dim.media_calendar_daily as calendar
 				
-				left join (select [Day_of_Week],[Day_Percent],[Daily_Start_Date],[END_DATE]  from [bvt_prod].[Response_Daily_Start_End_FUN]('UVCLM')
+				left join (select [Day_of_Week],[Day_Percent],[Daily_Start_Date],[END_DATE]  from [bvt_prod].[Response_Daily_Start_End_FUN](3)
 							where [idProgram_Touch_Definitions_TBL_FK]=800 and [idkpi_type_FK]=1) as response_daily
 				on datepart(weekday,calendar.date)=[Day_of_Week] and [date] between [Daily_Start_Date] and [END_DATE]
 			/* temporary removal for speed improvements *//*	

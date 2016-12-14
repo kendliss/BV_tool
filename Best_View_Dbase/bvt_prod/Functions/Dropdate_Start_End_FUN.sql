@@ -2,7 +2,7 @@
 GO
 
 create function
-bvt_prod.Dropdate_Start_End_FUN (@PROGRAM varchar(15))
+bvt_prod.Dropdate_Start_End_FUN (@PROGRAM INT)
 RETURNS TABLE AS
 RETURN 	
 WITH T1 AS
@@ -22,7 +22,7 @@ as unqid
 --------------------------------------------	
 	
 FROM bvt_prod.Drop_Date_Calc_Rules s
-	where idProgram_Touch_Definitions_TBL_FK in (SELECT * FROM bvt_prod.Program_Selector(@PROGRAM))
+	where idProgram_Touch_Definitions_TBL_FK in (SELECT * FROM bvt_prod.Program_ID_Selector(@PROGRAM))
 GROUP BY idProgram_Touch_Definitions_TBL_FK,
 Days_Before_Inhome,
 drop_start_date)

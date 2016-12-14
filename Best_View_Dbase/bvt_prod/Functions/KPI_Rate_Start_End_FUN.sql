@@ -1,4 +1,8 @@
-﻿CREATE FUNCTION [bvt_prod].KPI_Rate_Start_End_FUN (@PROGRAM varchar(15))
+﻿
+DROP FUNCTION bvt_prod.KPI_Rate_Start_End_FUN
+GO
+
+CREATE FUNCTION [bvt_prod].KPI_Rate_Start_End_FUN (@PROGRAM int)
 RETURNS TABLE AS
 RETURN
 WITH T1 AS
@@ -21,7 +25,7 @@ as unqid
 --------------------------------------------	
 	
 FROM bvt_prod.KPI_Rates s
-	where idProgram_Touch_Definitions_TBL_FK in (SELECT * FROM bvt_prod.Program_Selector(@PROGRAM))
+	where idProgram_Touch_Definitions_TBL_FK in (SELECT * FROM bvt_prod.Program_ID_Selector(@PROGRAM))
 GROUP BY idProgram_Touch_Definitions_TBL_FK,
 idkpi_types_FK,
 KPI_Rate,

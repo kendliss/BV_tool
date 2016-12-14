@@ -7,6 +7,8 @@ CREATE VIEW [bvt_prod].[XSell_Best_View_VW]
 		coalesce(forecast_cv.[idFlight_Plan_Records_FK], actual_volume.[idFlight_Plan_Records_FK], actual_results.[idFlight_Plan_Records_FK]) as idFlight_Plan_Records_FK,
 		coalesce(forecast_cv.[Campaign_Name], actual_volume.[Campaign_Name], actual_results.[Campaign_Name]) as Campaign_Name,
 		coalesce(forecast_cv.[InHome_Date], actual_volume.[InHome_Date], actual_results.[InHome_Date]) as InHome_Date,
+		coalesce(forecast_cv.[Strategy_Eligibility], '') as Strategy_Eligibility,
+		coalesce(forecast_cv.[Lead_Offer], '') as Lead_Offer,
 		coalesce(forecast_cv.[Media_Year], actual_volume.[Media_Year], actual_results.[Media_Year]) as Media_Year,
 		coalesce(forecast_cv.[Media_Week], actual_volume.[Media_Week], actual_results.[Media_Week]) as Media_Week,
 		coalesce(forecast_cv.[Media_Month], actual_volume.[Media_Month], actual_results.Media_Month) as Media_Month,
@@ -57,6 +59,8 @@ CREATE VIEW [bvt_prod].[XSell_Best_View_VW]
 	   Coalesce(forecast.[idFlight_Plan_Records], cv.[id_Flight_Plan_Records_FK]) as idFlight_Plan_Records_FK
       ,Coalesce(forecast.[Campaign_Name], cv.[Campaign_Name]) as Campaign_Name
       ,coalesce(forecast.[InHome_Date], cv.[InHome_Date]) as InHome_Date
+      ,coalesce(forecast.[Strategy_Eligibility], '') as Strategy_Eligibility
+      ,coalesce(forecast.[Lead_Offer], '') as Lead_Offer
       ,coalesce(forecast.[Touch_Name], cv.[Touch_Name]) as Touch_Name
       ,coalesce(forecast.[Program_Name], cv.[Program_Name]) as Program_Name
       ,coalesce(forecast.[Tactic], cv.[Tactic]) as Tactic
@@ -86,6 +90,8 @@ CREATE VIEW [bvt_prod].[XSell_Best_View_VW]
 	    a.[idFlight_Plan_Records]
       , a.[Campaign_Name]
       , a.[InHome_Date]
+      , a.[Strategy_Eligibility]
+      , a.[Lead_Offer]
       , a.[Touch_Name]
       , a.[Media_Year]
       , a.[Media_Month]
@@ -113,6 +119,8 @@ CREATE VIEW [bvt_prod].[XSell_Best_View_VW]
 	    a.[idFlight_Plan_Records]
       , a.[Campaign_Name]
       , a.[InHome_Date]
+      , a.[Strategy_Eligibility]
+      , a.[Lead_Offer]
       , a.[Touch_Name]
       , a.[Media_Year]
       , a.[Media_Month]
@@ -155,6 +163,8 @@ CREATE VIEW [bvt_prod].[XSell_Best_View_VW]
 	  group by Coalesce(forecast.[idFlight_Plan_Records], cv.[id_Flight_Plan_Records_FK]) 
       ,Coalesce(forecast.[Campaign_Name], cv.[Campaign_Name]) 
       ,coalesce(forecast.[InHome_Date], cv.[InHome_Date]) 
+      ,coalesce(forecast.[Strategy_Eligibility], '')
+      ,coalesce(forecast.[Lead_Offer], '')
       ,coalesce(forecast.[Touch_Name], cv.[Touch_Name]) 
       ,coalesce(forecast.[Program_Name], cv.[Program_Name])
       ,coalesce(forecast.[Tactic], cv.[Tactic]) 
@@ -200,9 +210,14 @@ CREATE VIEW [bvt_prod].[XSell_Best_View_VW]
 
 			, sum(Actuals.[Actual]) as Actual
 
-			from (select [idFlight_Plan_Records_FK], [Start_Date], [CTD_Quantity], [CTD_Budget]
-				from bvt_prod.XSell_Actuals_VW 
-				group by [idFlight_Plan_Records_FK], [Start_Date], [CTD_Quantity], [CTD_Budget]) as actual_query
+			from (select idFlight_Plan_Records_FK, Start_Date, sum(CTD_Quantity) as CTD_Quantity, sum(CTD_Budget) as CTD_Budget
+					from 
+					(
+					select idFlight_Plan_Records_FK, parentid, Start_Date, CTD_Quantity, CTD_Budget 
+						from bvt_prod.XSell_Actuals_VW 
+					group by idFlight_Plan_Records_FK, parentid, Start_Date, CTD_Quantity, CTD_Budget
+					) A
+				group by idFlight_Plan_Records_FK, Start_Date) as actual_query
 
 				UNPIVOT (Actual for kpiproduct in 
 					([CTD_Quantity], [CTD_Budget])) as Actuals
