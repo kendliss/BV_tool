@@ -165,3 +165,23 @@ group by Owner_type_matrix_id_FK
 	, KPI_Type
 	, Product_Code
 
+
+union all
+
+Select Owner_type_matrix_id_FK as hierarchy_id
+	, Media_Year
+	, Media_Week
+	, Media_Month
+	, month(Forecast_Daydate) as calendar_month
+	, KPI_Type
+	, Product_Code
+	, sum(Forecast)  as forecast
+FROM bvt_prod.Email_Best_View_Forecast_VW
+where media_year>=2016
+group by Owner_type_matrix_id_FK 
+	, Media_Year
+	, Media_Week
+	, Media_Month
+	, month(Forecast_Daydate) 
+	, KPI_Type
+	, Product_Code
