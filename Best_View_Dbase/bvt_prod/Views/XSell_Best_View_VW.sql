@@ -35,17 +35,17 @@ CREATE VIEW [bvt_prod].[XSell_Best_View_VW]
 		,case when coalesce(forecast_cv.[KPI_Type], actual_volume.[KPI_Type], actual_results.[KPI_Type]) = 'Telesales'
 		--IS the forecast YYYYWW two weeks less than the current report week available 
 			then (case when forecast_cv.[media_YYYYWW] <= (case when DATEPART(weekday,getdate()) <= 5 
-						then (select [ISO_Week_YYYYWW] from dim.media_calendar_daily where [date] = cast(dateadd(wk,-4,getdate()) as date)) 
-						else (select [ISO_Week_YYYYWW] from dim.media_calendar_daily where [date] = cast(dateadd(wk,-3,getdate()) as date)) end)
+						then (select [ISO_Week_YYYYWW] from dim.media_calendar_daily where [date] = cast(dateadd(wk,-5,getdate()) as date)) 
+						else (select [ISO_Week_YYYYWW] from dim.media_calendar_daily where [date] = cast(dateadd(wk,-4,getdate()) as date)) end)
 					then actual_results.[Actual]
 					when forecast_cv.[media_YYYYWW] is null then actual_results.[Actual]
 					else isnull([Forecast],0)
 					end)
 ----END OF TELESALES LAG CONCERNS
 --Non telesale report through current available week
-		when forecast_cv.[media_YYYYWW] <= (case when DATEPART(weekday,getdate()) <= 5 
-						then (select [ISO_Week_YYYYWW] from dim.media_calendar_daily where [date] = cast(dateadd(wk,-2,getdate()) as date)) 
-						else (select [ISO_Week_YYYYWW] from dim.media_calendar_daily where [date] = cast(dateadd(wk,-1,getdate()) as date)) end)
+		when forecast_cv.[media_YYYYWW] <= (case when DATEPART(weekday,getdate())<= 5 
+						then (select [ISO_Week_YYYYWW] from dim.media_calendar_daily where [date] = cast(dateadd(wk,-3,getdate()) as date)) 
+						else (select [ISO_Week_YYYYWW] from dim.media_calendar_daily where [date] = cast(dateadd(wk,-2,getdate()) as date)) end)
 			then coalesce(actual_volume.[Actual], actual_results.[Actual])
 
 		when forecast_cv.[media_YYYYWW] is null then coalesce(actual_volume.[Actual], actual_results.[Actual])
@@ -264,7 +264,7 @@ CREATE VIEW [bvt_prod].[XSell_Best_View_VW]
 	when kpiproduct like '%DISH%' then 'DirecTV'
 	when kpiproduct like '%DSL_DRY%' then 'DSL Direct'
 	when kpiproduct like '%DSL_REG%' then 'DSL'
-	when kpiproduct like '%HSIAG%' then 'Gigapower'
+	when kpiproduct like '%HSIAG%' then 'Fiber'
 	when kpiproduct like '%HSIA%' then 'HSIA'
 	when kpiproduct like '%DSL_IP%' then 'IPDSL'
 	when kpiproduct like '%UVRS_TV%' then 'UVTV'
@@ -311,7 +311,7 @@ GROUP BY [idFlight_Plan_Records_FK], [Report_Year], [Report_Week]
 	when kpiproduct like '%DISH%' then 'DirecTV'
 	when kpiproduct like '%DSL_DRY%' then 'DSL Direct'
 	when kpiproduct like '%DSL_REG%' then 'DSL'
-	when kpiproduct like '%HSIAG%' then 'Gigapower'
+	when kpiproduct like '%HSIAG%' then 'Fiber'
 	when kpiproduct like '%HSIA%' then 'HSIA'
 	when kpiproduct like '%DSL_IP%' then 'IPDSL'
 	when kpiproduct like '%UVRS_TV%' then 'UVTV'
