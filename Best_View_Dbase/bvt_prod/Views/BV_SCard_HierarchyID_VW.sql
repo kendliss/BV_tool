@@ -11,7 +11,7 @@ SELECT
 	, Product_Code
 	, sum(Forecast) as forecast
 FROM bvt_prod.[ACQ_Best_View_Forecast_VW]
-where Forecast_Daydate>='2017-01-01'
+where Forecast_Daydate between '2017-01-01' and '2017-12-31'
 group by Owner_type_matrix_id_FK 
 	, Media_Year
 	, Media_Week
@@ -31,7 +31,7 @@ Select Owner_type_matrix_id_FK as hierarchy_id
 	, Product_Code
 	, sum(Forecast)  as forecast 
 FROM bvt_prod.BM_Forecast_VW
-where  Forecast_Daydate>='2017-01-01'
+where  Forecast_Daydate between '2017-01-01' and '2017-12-31'
 group by Owner_type_matrix_id_FK 
 	, Media_Year
 	, Media_Week
@@ -96,7 +96,7 @@ Select Owner_type_matrix_id_FK as hierarchy_id
 	, Product_Code
 	, sum(Forecast)  as forecast
 FROM bvt_prod.CLM_Revenue_Forecast_VW
-where  Forecast_Daydate>='2017-01-01'
+where  Forecast_Daydate between '2017-01-01' and '2017-12-31'
 group by Owner_type_matrix_id_FK 
 	, Media_Year
 	, Media_Week
@@ -116,7 +116,7 @@ Select Owner_type_matrix_id_FK as hierarchy_id
 	, Product_Code
 	, sum(Forecast)  as forecast
 FROM bvt_prod.Movers_Best_View_Forecast_VW
-where  Forecast_Daydate>='2017-01-01'
+where  Forecast_Daydate between '2017-01-01' and '2017-12-31'
 group by Owner_type_matrix_id_FK 
 	, Media_Year
 	, Media_Week
@@ -156,7 +156,7 @@ Select Owner_type_matrix_id_FK as hierarchy_id
 	, Product_Code
 	, sum(Forecast)  as forecast
 FROM bvt_prod.XSell_Best_View_Forecast_VW
-where  Forecast_Daydate>='2017-01-01'
+where  Forecast_Daydate between '2017-01-01' and '2017-12-31'
 group by Owner_type_matrix_id_FK 
 	, Media_Year
 	, Media_Week
@@ -177,7 +177,7 @@ Select Owner_type_matrix_id_FK as hierarchy_id
 	, Product_Code
 	, sum(Forecast)  as forecast
 FROM bvt_prod.Email_Best_View_Forecast_VW
-where  Forecast_Daydate>='2017-01-01'
+where  Forecast_Daydate between '2017-01-01' and '2017-12-31'
 group by Owner_type_matrix_id_FK 
 	, Media_Year
 	, Media_Week
@@ -197,7 +197,7 @@ Select Owner_type_matrix_id_FK as hierarchy_id
 	, Product_Code
 	, sum(Forecast)  as forecast
 FROM bvt_prod.Mig_Forecast_VW
-where Forecast_Daydate>='2017-01-01'
+where Forecast_Daydate between '2017-01-01' and '2017-12-31'
 group by Owner_type_matrix_id_FK 
 	, Media_Year
 	, Media_Week
