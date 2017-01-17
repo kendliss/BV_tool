@@ -39,15 +39,16 @@ TRUNCATE TABLE bvt_staging.UCLM_pID_FlightPlan_Dups
 
 INSERT INTO UVAQ.bvt_processed.UCLM_ActiveCampaigns
 SELECT DISTINCT a.ParentID, a.Campaign_Name, a.start_date AS [In_Home_Date], a.Media_Code,  a.eCRW_Project_Name, GETDATE()
-	FROM JAVDB.IREPORT_2015.dbo.WB_01_Campaign_list_WB_2016 AS a 
-	JOIN JAVDB.IREPORT_2015.dbo.WB_00_Reporting_Hierarchy_2016 AS b
+	FROM JAVDB.IREPORT_2015.dbo.WB_01_Campaign_list_WB_2017 AS a 
+	JOIN JAVDB.IREPORT_2015.dbo.WB_00_Reporting_Hierarchy_2017 AS b
       ON a.tactic_id=b.id
 WHERE b.Scorecard_lob_Tab in ('Revenue Enhancement')--,'Retention')
 	AND a.End_Date_Traditional>='28-DEC-2015'
-	AND a.Media_Code <> 'DR'
+	AND a.Media_Code <> 'Drag'
 	AND a.parentID  NOT IN (SELECT parentID FROM UVAQ.bvt_processed.UCLM_ActiveCampaigns)
 	AND a.campaign_name NOT LIKE '%Commitment View%'
 	AND a.campaign_name NOT LIKE '%best View Objectives%'
+	AND a.eCRW_Project_Name NOT LIKE '%WeeklyMovies%'
 
 
 SELECT ParentID,
@@ -134,8 +135,9 @@ When Media_Code = 'OE' AND eCRW_Project_Name LIKE '%HSIA%' THEN 563 --HSIA Messa
 /*still missing 1176*/
 
 --Onserts
-/*still missing 242*/
+/*still missing*/
 
+WHEN (Media_Code = 'FYI' AND eCRW_Project_Name LIKE '%Onsert%' OR Media_Code = 'Onsert') AND eCRW_Project_Name LIKE '%Epix%' THEN 242 --Epix Onsert
 WHEN (Media_Code = 'FYI' AND eCRW_Project_Name LIKE '%Onsert%' OR Media_Code = 'Onsert') AND eCRW_Project_Name LIKE '%Football%' THEN 244 --Football Onsert
 WHEN (Media_Code = 'FYI' AND eCRW_Project_Name LIKE '%Onsert%' OR Media_Code = 'Onsert') AND eCRW_Project_Name LIKE '%HD%' THEN 251 --HD Onsert
 WHEN (Media_Code = 'FYI' AND eCRW_Project_Name LIKE '%Onsert%' OR Media_Code = 'Onsert') AND eCRW_Project_Name LIKE '%Screen%Pack%' THEN 346 --Screen Pack Onsert
