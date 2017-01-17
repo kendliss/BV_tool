@@ -32,7 +32,7 @@ select a.Project_ID, a.Parentid, idFlight_Plan_Records_FK, a.[Report_Year], a.[R
 		
 
 from javdb.ireport.[dbo].[IR_Campaign_Data_Weekly_MAIN_2012] a
-	left join javdb.ireport_2015.dbo.IR_Workbook_Data_2016 b
+	left join javdb.ireport_2015.dbo.IR_Workbook_Data_2017 b
 	on a.parentID = b.parentID and a.Report_Year = b.Report_Year and a.Report_Week = b.Report_Week
 		inner join 
 		---subquery to get linkage from flightplan records to parent ids
