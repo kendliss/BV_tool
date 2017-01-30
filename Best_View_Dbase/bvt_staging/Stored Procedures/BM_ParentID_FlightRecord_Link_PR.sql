@@ -63,9 +63,9 @@ WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Enabler Bill - Bill Inse
 WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Wireless Bill - Bill Insert' AND eCRW_Project_Name LIKE '%TV%sell%' THEN 1431 --Wireless TV Cross Sell Bill Insert 
 --WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Wireline Bill - Bill Insert' AND eCRW_Project_Name LIKE '%TV%sell%' THEN 1432 --Wireline TV Cross Sell Bill Insert (OLD Enabler)
 WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Enabler Bill - Bill Insert' AND eCRW_Project_Name LIKE '%BI_DTV_CROSS_SELL%' THEN 1433 --Enabler TV Cross Sell Bill Insert
-WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Wireline Bill - Bill Insert' AND (eCRW_Project_Name LIKE '%Bundles%' OR eCRW_Project_Name LIKE '%Thankyougeneric%') THEN 1434 --Wireline Bundles Bill Insert
+WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Wireline Bill - Bill Insert' AND eCRW_Project_Name LIKE '%Bundles%' THEN 1434 --Wireline Bundles Bill Insert
 --WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Wireline Bill - Bill Insert' AND eCRW_Project_Name LIKE '%IPBBMonthly%' AND eCRW_Project_Name LIKE '%WRLN%' THEN 1435 --Wireline DSL Cross Sell Bill Insert
-WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Wireless Bill - Bill Insert' AND (eCRW_Project_Name LIKE '%DSL in WLS%' OR eCRW_Project_Name LIKE '%BroadbandinWLS%') THEN 1437 --Wireless DSL Cross Sell Bill Insert
+WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Wireless Bill - Bill Insert' AND (eCRW_Project_Name LIKE '%IPBB%' OR eCRW_Project_Name LIKE '%Broadband%') THEN 1437 --Wireless IPBB Cross Sell Bill Insert
 WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Wireline Bill - Bill Insert' AND eCRW_Project_Name LIKE '%TV%sell%' THEN 1438 --Wireline DTV Cross Sell Bill Insert
 WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Enabler Bill - Bill Insert' AND eCRW_Project_Name LIKE '%IPBB%' THEN 1440 --Enabler IPBB Cross Sell Bill Insert
 WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Wireline Bill - Bill Insert' AND eCRW_Project_Name LIKE '%IPBBMonthly%' THEN 1531 --Wireline IPBB Cross Sell Bill Insert
@@ -77,7 +77,9 @@ WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Enabler Bill - Bill Inse
 WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Wireline Bill - Bill Insert' AND eCRW_Project_Name LIKE '%Mover%' THEN 1560 --Wireline Movers Bill Insert
 WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Enabler Bill - Bill Insert' AND eCRW_Project_Name LIKE '%ThankYou%' THEN 1561 --Enabler Thank you Bill Insert
 WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Wireline Bill - Bill Insert' AND eCRW_Project_Name LIKE '%Mandatory%' THEN 1572 --Wireline Mandatory Bill Insert
-
+WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Enabler Bill - Bill Insert' AND eCRW_Project_Name LIKE '%WLS%' THEN 1616 --Enabler WRLS Cross Sell Bill Insert
+WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Wireless Bill - Bill Insert' AND eCRW_Project_Name LIKE '%Add-a-line%' THEN 1618 --Wireless WRLS AAL Bill Insert
+WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Wireline Bill - Bill Insert' AND eCRW_Project_Name LIKE '%Thankyou%' THEN 1619 --Wireline Thank You Bill Insert
 
 --Bill Media -- FPC
 --Still Missing: 1445, 1534
@@ -127,11 +129,11 @@ WHEN Media_Code = 'FYI' AND Scorecard_Program_Channel = 'Enabler Bill - Bill Mes
 WHEN Media_Code = 'FYI' AND Scorecard_Program_Channel = 'Wireless Bill - Bill Message' AND eCRW_Project_Name LIKE '%Wireless%' AND eCRW_Project_Name LIKE '%Broadband%' THEN 1487 --Wireless IPBB Cross Sell Bill Message
 WHEN Media_Code = 'FYI' AND Scorecard_Program_Channel = 'Wireline Bill - Bill Message' AND (eCRW_Project_Name LIKE '%_ALL_%' OR eCRW_Project_Name LIKE '%Generic%') AND eCRW_Project_Name LIKE '%Spanish%' THEN 1567 --Wireline Spanish Thank you Bill Message
 WHEN Media_Code = 'FYI' AND Scorecard_Program_Channel = 'Wireline Bill - Bill Message' AND (eCRW_Project_Name LIKE '%_ALL_%' OR eCRW_Project_Name LIKE '%Generic%') THEN 1557 --Wireline Thank you Bill Message
-WHEN Media_Code = 'FYI' AND Scorecard_Program_Channel = 'Wireless Bill - Bill Message' AND (eCRW_Project_Name LIKE '%_ALL_%' OR eCRW_Project_Name LIKE '%Generic%') AND eCRW_Project_Name LIKE '%Spanish%' THEN 1559 --Wireless Spanish Thank you Bill Message
-WHEN Media_Code = 'FYI' AND Scorecard_Program_Channel = 'Wireless Bill - Bill Message' AND (eCRW_Project_Name LIKE '%_ALL_%' OR eCRW_Project_Name LIKE '%Generic%') THEN 1568 --Wireless Thank you Bill Message
+WHEN Media_Code = 'FYI' AND Scorecard_Program_Channel = 'Wireless Bill - Bill Message' AND (eCRW_Project_Name LIKE '%_ALL_%' OR eCRW_Project_Name LIKE '%Generic%') AND eCRW_Project_Name LIKE '%Spanish%' THEN 1568 --Wireless Spanish Thank you Bill Message
+WHEN Media_Code = 'FYI' AND Scorecard_Program_Channel = 'Wireless Bill - Bill Message' AND (eCRW_Project_Name LIKE '%_ALL_%' OR eCRW_Project_Name LIKE '%Generic%') THEN 1559 --Wireless Thank you Bill Message
 WHEN Media_Code = 'FYI' AND Scorecard_Program_Channel = 'Enabler Bill - Bill Message' AND (eCRW_Project_Name LIKE '%_ALL_%' OR eCRW_Project_Name LIKE '%Generic%') AND eCRW_Project_Name LIKE '%Spanish%' THEN 1569 --Enabler Spanish Thank you Bill Message
 WHEN Media_Code = 'FYI' AND Scorecard_Program_Channel = 'Enabler Bill - Bill Message' AND (eCRW_Project_Name LIKE '%_ALL_%' OR eCRW_Project_Name LIKE '%Generic%') THEN 1558 --Enabler Thank you Bill Message
-
+WHEN Media_Code = 'FYI' AND Scorecard_Program_Channel = 'Wireless Bill - Bill Message' AND eCRW_Project_Name LIKE '%Add-a-line%' THEN 1625 --Wireless WRLS AAL Bill Message
 
 -- Bill Media -- OE
 -- Still Missing:
