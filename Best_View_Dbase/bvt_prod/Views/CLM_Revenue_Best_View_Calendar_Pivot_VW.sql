@@ -1,9 +1,14 @@
-﻿CREATE VIEW [bvt_prod].[CLM_Revenue_Best_View_Calendar_Pivot_VW]
+﻿
+DROP View [bvt_prod].[CLM_Revenue_Best_View_Calendar_Pivot_VW]
+GO
+
+
+CREATE VIEW [bvt_prod].[CLM_Revenue_Best_View_Calendar_Pivot_VW]
 AS 
 	Select
 	[idFlight_Plan_Records_FK], [Campaign_Name], [InHome_Date], [Media_Year], [Media_Week], [Media_Month], [Touch_Name], [Program_Name], [Tactic], [Media], 
 	[Campaign_Type], [Audience], [Creative_Name], [Goal], [Offer], [Channel], [Scorecard_Group], [Scorecard_Program_Channel], 
-	CONVERT(VARCHAR(6),InHome_Date,112) AS Start_Month, [Calendar_Year], [Calendar_Month],
+	CONVERT(VARCHAR(6),InHome_Date,112) AS Start_Month, [Calendar_Year], [Calendar_Month], M_Schedule,
 sum(isnull([Call_CV], 0)) as [Call_CV], 
 sum(isnull([Online_CV], 0)) as [Online_CV], 
 sum(isnull([Online_sales_Access Line_CV], 0)) as [Online_sales_Access Line_CV], 
@@ -144,6 +149,8 @@ sum(isnull([Telesales_Access Line_AV], 0))+ sum(isnull([Telesales_DSL_AV], 0))+ 
 		Else [KPI_Type]+'_'+[Product_Code]+'_BV' end as BV_metric 
 
 	FROM [bvt_prod].[CLM_Revenue_Best_View_Calendar_VW]) as transform
+	JOIN dim.Media_Calendar_Daily as cal
+	on transform.InHome_Date = cal.Date
 
 	pivot 
 	(SUM(Commitment) for CV_METRIC IN ([Call_CV], 
@@ -269,7 +276,7 @@ sum(isnull([Telesales_Access Line_AV], 0))+ sum(isnull([Telesales_DSL_AV], 0))+ 
 
 group by [idFlight_Plan_Records_FK], [Campaign_Name], [InHome_Date], [Media_Year], [Media_Week], [Media_Month], [Calendar_Year], [Calendar_Month]
 	, [Touch_Name], [Program_Name], [Tactic], [Media], [Campaign_Type], [Audience], [Creative_Name], [Goal], [Offer], [Channel]
-	, [Scorecard_Group], [Scorecard_Program_Channel], CONVERT(VARCHAR(6),InHome_Date,112)
+	, [Scorecard_Group], [Scorecard_Program_Channel], CONVERT(VARCHAR(6),InHome_Date,112), M_Schedule
 
 
 GO

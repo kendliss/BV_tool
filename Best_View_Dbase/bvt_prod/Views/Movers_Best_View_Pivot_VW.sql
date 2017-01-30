@@ -6,7 +6,7 @@ CREATE VIEW [bvt_prod].[Movers_Best_View_Pivot_VW]
 	Select
 	[idFlight_Plan_Records_FK], [Campaign_Name], [InHome_Date], [Media_Year], [Media_Week], [Media_Month], [Touch_Name], [Program_Name], [Tactic], [Media], 
 	[Campaign_Type], [Audience], [Creative_Name], [Goal], [Offer], [Channel], [Scorecard_Group], [Scorecard_Program_Channel], CONVERT(VARCHAR(6),InHome_Date,112) AS Start_Month,
-	Media_Start_YYYYMM,
+	Media_Start_YYYYMM, M_Schedule,
 sum(isnull([Call_CV], 0)) as [Call_CV], 
 sum(isnull([Online_CV], 0)) as [Online_CV], 
 sum(isnull([Online_sales_Access Line_CV], 0)) as [Online_sales_Access Line_CV], 
@@ -147,6 +147,8 @@ sum(isnull([Telesales_Access Line_AV], 0))+ sum(isnull([Telesales_DSL_AV], 0))+ 
 	FROM bvt_prod.Mover_Best_View_VW bv
 	JOIN (Select Distinct Date, MediaMonth, MediaMonth_Year, MediaMonth_YYYYMM as Media_Start_YYYYMM from DIM.Media_Calendar_Daily) cal
 	on InHome_Date = cal.Date) as transform
+	JOIN dim.Media_Calendar_Daily as cal
+	on transform.InHome_Date = cal.Date
 
 	pivot 
 	(SUM(Commitment) for CV_METRIC IN ([Call_CV], 
@@ -271,4 +273,5 @@ sum(isnull([Telesales_Access Line_AV], 0))+ sum(isnull([Telesales_DSL_AV], 0))+ 
 [Volume_BV])) as P4
 
 group by [idFlight_Plan_Records_FK], [Campaign_Name], [InHome_Date], [Media_Year], [Media_Week], [Media_Month], [Touch_Name], [Program_Name], [Tactic], [Media], 
-	[Campaign_Type], [Audience], [Creative_Name], [Goal], [Offer], [Channel], [Scorecard_Group], [Scorecard_Program_Channel], CONVERT(VARCHAR(6),InHome_Date,112), Media_Start_YYYYMM
+	[Campaign_Type], [Audience], [Creative_Name], [Goal], [Offer], [Channel], [Scorecard_Group], 
+	[Scorecard_Program_Channel], CONVERT(VARCHAR(6),InHome_Date,112), Media_Start_YYYYMM, M_Schedule
