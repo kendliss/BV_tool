@@ -147,7 +147,7 @@ CREATE VIEW [bvt_prod].[ACQ_Best_View_VW]
 				-----Bring in touch definition labels 
 				left join bvt_prod.Touch_Definition_VW
 				 on Commitment_Views.[idProgram_Touch_Definitions_TBL_FK]=Touch_Definition_VW.[idProgram_Touch_Definitions_TBL]
-			where CV_Submission in ('ACQ 2016 Commitment View Adj 20160509')
+			where CV_Submission in ('ACQ 2016 Commitment View Adj 20160509', 'ACQ 2017 Submission 20170119')
 			GROUP BY [id_Flight_Plan_Records_FK], [idProgram_Touch_Definitions_TBL_FK], [Campaign_Name], [InHome_Date], 
 			[Media_Year], [Media_Month], [Media_Week], [KPI_TYPE], [Product_Code],
 			[Touch_Name], [Program_Name], [Tactic], [Media], [Audience], [Creative_Name], [Goal], [Offer], [Campaign_Type], [Channel],
@@ -256,6 +256,7 @@ CREATE VIEW [bvt_prod].[ACQ_Best_View_VW]
 	when kpiproduct like '%DISH%' then 'DirecTV'
 	when kpiproduct like '%DSL_DRY%' then 'DSL Direct'
 	when kpiproduct like '%DSL_REG%' then 'DSL'
+	when kpiproduct like '%HSIAG%' then 'Fiber'
 	when kpiproduct like '%HSIA%' then 'HSIA'
 	when kpiproduct like '%DSL_IP%' then 'IPDSL'
 	when kpiproduct like '%UVRS_TV%' then 'UVTV'
@@ -302,6 +303,7 @@ GROUP BY [idFlight_Plan_Records_FK], [Report_Year], [Report_Week]
 	when kpiproduct like '%DISH%' then 'DirecTV'
 	when kpiproduct like '%DSL_DRY%' then 'DSL Direct'
 	when kpiproduct like '%DSL_REG%' then 'DSL'
+	when kpiproduct like '%HSIAG%' then 'Fiber'
 	when kpiproduct like '%HSIA%' then 'HSIA'
 	when kpiproduct like '%DSL_IP%' then 'IPDSL'
 	when kpiproduct like '%UVRS_TV%' then 'UVTV'

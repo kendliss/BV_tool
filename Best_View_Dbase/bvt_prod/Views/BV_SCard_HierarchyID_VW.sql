@@ -185,7 +185,7 @@ group by Owner_type_matrix_id_FK
 	, month(Forecast_Daydate) 
 	, KPI_Type
 	, Product_Code
-
+  
 union all
 
 Select Owner_type_matrix_id_FK as hierarchy_id

@@ -13,6 +13,9 @@ select FPR.idFlight_Plan_Records
 	, Media_Calendar_Daily.ISO_Week as Media_Week
 	, Media_Calendar_Daily.MediaMonth as Media_Month
 	, Media_Calendar_Daily.ISO_Week_YYYYWW as Media_YYYYWW
+	, YEAR(metrics.Forecast_DayDate) as Calendar_Year
+	, MONTH(metrics.Forecast_DayDate) as Calendar_Month
+
 	
 ---Touch Lookup Tables
 	, idProgram_Touch_Definitions_TBL_FK

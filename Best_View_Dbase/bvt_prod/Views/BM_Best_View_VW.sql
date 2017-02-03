@@ -1,4 +1,14 @@
-﻿ALTER VIEW [bvt_prod].[BM_Best_View_VW]
+USE [UVAQ]
+GO
+
+/****** Object:  View [bvt_prod].[BM_Best_View_VW]    Script Date: 01/30/2017 14:25:13 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+ALTER VIEW [bvt_prod].[BM_Best_View_VW]
 	AS 
 	select 
 		coalesce(forecast_cv.[idFlight_Plan_Records_FK], actual_volume.[idFlight_Plan_Records_FK], actual_results.[idFlight_Plan_Records_FK]) as idFlight_Plan_Records_FK,
@@ -141,7 +151,7 @@
 			from bvt_processed.Commitment_Views 
 				-----Bring in touch definition labels 
 				left join bvt_prod.Touch_Definition_VW on Commitment_Views.[idProgram_Touch_Definitions_TBL_FK] = Touch_Definition_VW.[idProgram_Touch_Definitions_TBL]
-			where CV_Submission in ('BM Commitment View 2015', 'BM CV 2016 Submission New Program 20160809') --extract_date='2015-06-26'
+			where CV_Submission in ('BM Commitment View 2015', 'BM CV 2016 Submission New Program 20160809', 'BM 2017 Submission 20161213') 
 			GROUP BY [id_Flight_Plan_Records_FK], [idProgram_Touch_Definitions_TBL_FK], [Campaign_Name], [InHome_Date], 
 			[Media_Year], [Media_Month], [Media_Week], [KPI_TYPE], [Product_Code],
 			[Touch_Name], [Program_Name], [Tactic], [Media], [Audience], [Creative_Name], [Goal], [Offer], [Campaign_Type], [Channel],
@@ -248,7 +258,7 @@
 	when kpiproduct like '%DISH%' then 'DirecTV'
 	when kpiproduct like '%DSL_DRY%' then 'DSL Direct'
 	when kpiproduct like '%DSL_REG%' then 'DSL'
-	when kpiproduct like '%HSIAG%' then 'Gigapower'
+	when kpiproduct like '%HSIAG%' then 'Fiber'
 	when kpiproduct like '%HSIA%' then 'HSIA'
 	when kpiproduct like '%DSL_IP%' then 'IPDSL'
 	when kpiproduct like '%UVRS_TV%' then 'UVTV'
@@ -295,7 +305,7 @@ GROUP BY [idFlight_Plan_Records_FK], [Report_Year], [Report_Week]
 	when kpiproduct like '%DISH%' then 'DirecTV'
 	when kpiproduct like '%DSL_DRY%' then 'DSL Direct'
 	when kpiproduct like '%DSL_REG%' then 'DSL'
-	when kpiproduct like '%HSIAG%' then 'Gigapower'
+	when kpiproduct like '%HSIAG%' then 'Fiber'
 	when kpiproduct like '%HSIA%' then 'HSIA'
 	when kpiproduct like '%DSL_IP%' then 'IPDSL'
 	when kpiproduct like '%UVRS_TV%' then 'UVTV'
@@ -316,4 +326,7 @@ on [Media_week] = d.[ISO_Week] and [Media_Year] = d.[ISO_Week_Year]) as actual_r
 	 ON forecast_cv.[idFlight_Plan_Records_FK] = actual_results.[idFlight_Plan_Records_FK] and forecast_cv.[media_year] = actual_results.[media_year]
 		 and forecast_cv.[media_week] = actual_results.[media_week] and forecast_cv.[KPI_Type] =actual_results.[KPI_Type]
 		 and forecast_cv.[Product_Code] = actual_results.[product_code]
+
 GO
+
+

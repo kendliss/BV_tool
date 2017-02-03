@@ -47,7 +47,7 @@ sum(ISNULL([Online_AV], 0)) as [Online_AV],
 sum(ISNULL([Online_sales_Access Line_AV], 0)+ISNULL([Online_sales_VoIP_AV], 0)+ISNULL([Telesales_Access Line_AV], 0)+ISNULL([Telesales_VoIP_AV], 0)) as Voice_Sales_AV, 
 sum(ISNULL([Online_sales_DSL_AV], 0)+ISNULL([Online_sales_DSL Direct_AV], 0)+ISNULL([Telesales_DSL_AV], 0)+ISNULL([Telesales_DSL Direct_AV], 0)) as DSL_Sales_AV, 
 sum(ISNULL([Online_sales_HSIA_AV], 0)+ISNULL([Online_sales_IPDSL_AV], 0)+ISNULL([Telesales_HSIA_AV], 0)+ISNULL([Telesales_IPDSL_AV], 0)
-+ISNULL([Online_sales_Gigapower_AV], 0)+ISNULL([Telesales_Gigapower_AV], 0)) as IPBB_Sales_AV, 
++ISNULL([Online_sales_Fiber_AV], 0)+ISNULL([Telesales_Fiber_AV], 0)) as IPBB_Sales_AV, 
 sum(ISNULL([Online_sales_DirecTV_AV], 0)+ISNULL([Online_sales_UVTV_AV], 0)+ISNULL([Telesales_DirecTV_AV], 0)+ISNULL([Telesales_UVTV_AV], 0)) as TV_Sales_AV,
 sum(ISNULL([Telesales_UVTV_AV], 0)+ISNULL([Online_sales_UVTV_AV], 0)) as IPTV_Sales_AV,
 sum(ISNULL([Telesales_DirecTV_AV], 0)+ISNULL([Online_sales_DirecTV_AV], 0)) as DTV_Sales_AV,
@@ -59,7 +59,7 @@ ISNULL([Online_sales_HSIA_AV], 0)+ISNULL([Online_sales_IPDSL_AV], 0)+ISNULL([Tel
 ISNULL([Online_sales_DirecTV_AV], 0)+ISNULL([Online_sales_UVTV_AV], 0)+ISNULL([Telesales_DirecTV_AV], 0)+ISNULL([Telesales_UVTV_AV], 0)+
 ISNULL([Online_sales_WRLS Data_AV], 0)+ISNULL([Online_sales_WRLS Family_AV], 0)+ISNULL([Online_sales_WRLS Voice_AV], 0)+ISNULL([Telesales_WRLS Data_AV], 0)+
 ISNULL([Telesales_WRLS Family_AV], 0)+ISNULL([Telesales_WRLS Voice_AV], 0)+ ISNULL([Online_sales_Digital Life_AV],0)+ ISNULL([Telesales_Digital Life_AV],0)+ 
-isnull([Online_sales_WRLS Home_AV],0)+ isnull([Telesales_WRLS Home_AV],0)+ISNULL([Online_sales_Gigapower_AV], 0)+ISNULL([Telesales_Gigapower_AV], 0)) AS Total_Strat_Sales_AV
+isnull([Online_sales_WRLS Home_AV],0)+ isnull([Telesales_WRLS Home_AV],0)+ISNULL([Online_sales_Fiber_AV], 0)+ISNULL([Telesales_Fiber_AV], 0)) AS Total_Strat_Sales_AV
 
 
 FROM bvt_prod.BM_Best_View_Pivot_VW

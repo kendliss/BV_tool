@@ -220,7 +220,5 @@ group by Owner_type_matrix_id_FK
 	, month(Forecast_Daydate) 
 	, KPI_Type
 	, Product_Code
-	, channel
-
-
+  , channel
 

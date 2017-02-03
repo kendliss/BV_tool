@@ -1,4 +1,5 @@
-
+DROP View [bvt_prod].[Email_Flightplan_SalesRate_Daily_VW]
+GO
 
 -------------------------------------------
 CREATE view [bvt_prod].[Email_Flightplan_SalesRate_Daily_VW]
@@ -75,7 +76,7 @@ from [bvt_prod].[Email_Flight_Plan_VW] as A
 		on Daily_Join.InHome_Date=Media_Calendar_Daily.Date) as ResponseByDay
 ----------End  Weekly Response Curve and Media Calendar		
 	left join bvt_prod.Seasonality_Adjustements as E
-		on ResponseByDay.idProgram_Touch_Definitions_TBL_FK=E.idProgram_Touch_Definitions_TBL_FK and iso_week_year=Media_Year and mediamonth=Media_Month
+		on ResponseByDay.idProgram_Touch_Definitions_TBL_FK=E.idProgram_Touch_Definitions_TBL_FK and iso_week_year=Media_Year and mediamonth=Media_Month and ISO_Week = Media_Week
 	left join (SELECT * FROM [bvt_prod].[Target_adjustment_start_end_FUN](11)) as Target_adjustment_start_end
 		on ResponseByDay.idTarget_Rate_Reasons_LU_TBL_FK=Target_adjustment_start_end.idTarget_Rate_Reasons_LU_TBL_FK 
 		and ResponseByDay.idProgram_Touch_Definitions_TBL_FK=Target_adjustment_start_end.idProgram_Touch_Definitions_TBL_FK

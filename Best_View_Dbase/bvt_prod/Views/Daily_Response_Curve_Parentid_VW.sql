@@ -300,6 +300,7 @@ SELECT
 	left join (SELECT * FROM [bvt_prod].[Response_Curve_Start_End_FUN](12)) as curve
 		on daily_perc.idProgram_Touch_Definitions_TBL_FK=curve.idProgram_Touch_Definitions_TBL_FK 
 		and inhome_date between Curve_Start_Date and curve.END_DATE
+
 		and daily_perc.idkpi_type_FK=curve.idkpi_type_fk
 
 union
@@ -334,5 +335,3 @@ union
 		on daily_perc.idProgram_Touch_Definitions_TBL_FK=curve.idProgram_Touch_Definitions_TBL_FK 
 		and inhome_date between Curve_Start_Date and curve.END_DATE
 		and daily_perc.idkpi_type_FK=curve.idkpi_type_fk
-
-

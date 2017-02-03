@@ -149,7 +149,7 @@ CREATE VIEW [bvt_prod].[Email_Best_View_VW]
 			from bvt_processed.Commitment_Views
 				-----Bring in touch definition labels 
 				left join bvt_prod.Touch_Definition_VW on Commitment_Views.[idProgram_Touch_Definitions_TBL_FK] = Touch_Definition_VW.[idProgram_Touch_Definitions_TBL]
-			where CV_Submission in ('') 
+			where CV_Submission in ('XSell Email 2016 Submission Adj 20160426') 
 			GROUP BY [id_Flight_Plan_Records_FK], [idProgram_Touch_Definitions_TBL_FK], [Campaign_Name], [InHome_Date], 
 			[Media_Year], [Media_Month], [Media_Week], [KPI_TYPE], [Product_Code],
 			[Touch_Name], [Program_Name], [Tactic], [Media], [Audience], [Creative_Name], [Goal], [Offer], [Campaign_Type], [Channel],
@@ -214,7 +214,7 @@ CREATE VIEW [bvt_prod].[Email_Best_View_VW]
 					from 
 					(
 					select idFlight_Plan_Records_FK, parentid, Start_Date, CTD_Quantity, CTD_Budget 
-						from bvt_prod.XSell_Actuals_VW 
+						from bvt_prod.Email_Actuals_VW 
 					group by idFlight_Plan_Records_FK, parentid, Start_Date, CTD_Quantity, CTD_Budget
 					) A
 				group by idFlight_Plan_Records_FK, Start_Date) as actual_query
@@ -264,7 +264,7 @@ CREATE VIEW [bvt_prod].[Email_Best_View_VW]
 	when kpiproduct like '%DISH%' then 'DirecTV'
 	when kpiproduct like '%DSL_DRY%' then 'DSL Direct'
 	when kpiproduct like '%DSL_REG%' then 'DSL'
-	when kpiproduct like '%HSIAG%' then 'Gigapower'
+	when kpiproduct like '%HSIAG%' then 'Fiber'
 	when kpiproduct like '%HSIA%' then 'HSIA'
 	when kpiproduct like '%DSL_IP%' then 'IPDSL'
 	when kpiproduct like '%UVRS_TV%' then 'UVTV'
@@ -311,7 +311,7 @@ GROUP BY [idFlight_Plan_Records_FK], [Report_Year], [Report_Week]
 	when kpiproduct like '%DISH%' then 'DirecTV'
 	when kpiproduct like '%DSL_DRY%' then 'DSL Direct'
 	when kpiproduct like '%DSL_REG%' then 'DSL'
-	when kpiproduct like '%HSIAG%' then 'Gigapower'
+	when kpiproduct like '%HSIAG%' then 'Fiber'
 	when kpiproduct like '%HSIA%' then 'HSIA'
 	when kpiproduct like '%DSL_IP%' then 'IPDSL'
 	when kpiproduct like '%UVRS_TV%' then 'UVTV'
