@@ -157,6 +157,7 @@ Where b.att_program_code = 'UCLM'
 And Campaign_Name NOT LIKE '%Best View Objectives%' and Campaign_Name NOT LIKE '%Remaining Data%'
 AND ExcludeFromScorecard = 'N'
 AND a.Media_Code <> 'Drag'
+AND a.ReportWeek_YYYYWW <= (Select ReportCycle_YYYYWW from JAVDB.IREPORT_2015.dbo.wb_00_reporting_cycle)
 
 GROUP BY Project_ID, ParentID, a.media_code, Start_Date, End_Date_Traditional,
 Month(Start_Date), YEAR(Start_Date), eCrw_Project_Name, Campaign_Name

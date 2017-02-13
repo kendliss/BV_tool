@@ -20,13 +20,13 @@ as select
 	, Offer
 	
 	, case when Budget_Type_LU_TBL_idBudget_Type_LU_TBL=2 then Bill_Month
-		when CPP_Start_End.[idCPP_Category_FK]=5 then month(DATEADD(month,bill_timing,Flight_Plan_Records.InHome_Date)) 
-		when MONTH(Flight_Plan_Records.InHome_Date)=12 then 12
+		--when CPP_Start_End.[idCPP_Category_FK]=5 then month(DATEADD(month,bill_timing,Flight_Plan_Records.InHome_Date)) 
+		--when MONTH(Flight_Plan_Records.InHome_Date)=12 then 12
 		else month(DATEADD(month,bill_timing,Flight_Plan_Records.InHome_Date)) 
 		end as bill_month
 	, case when Budget_Type_LU_TBL_idBudget_Type_LU_TBL=2 then Bill_Year
-		when CPP_Start_End.[idCPP_Category_FK]=5 then year(DATEADD(month,bill_timing,Flight_Plan_Records.InHome_Date)) 
-		when MONTH(Flight_Plan_Records.InHome_Date)=12 then year(Flight_Plan_Records.InHome_Date)
+		--when CPP_Start_End.[idCPP_Category_FK]=5 then year(DATEADD(month,bill_timing,Flight_Plan_Records.InHome_Date)) 
+		--when MONTH(Flight_Plan_Records.InHome_Date)=12 then year(Flight_Plan_Records.InHome_Date)
 		else year(DATEADD(month,bill_timing,Flight_Plan_Records.InHome_Date)) 
 		end as bill_year
 	, case when Budget_Type_LU_TBL_idBudget_Type_LU_TBL=2 then Budget
@@ -44,10 +44,10 @@ as select
 		
 		right join (select min(iso_week) as mediaweek, MediaMonth, MediaMonth_year from dim.Media_Calendar_Daily group by MediaMonth, MediaMonth_year) as A
 			on (case when Budget_Type_LU_TBL_idBudget_Type_LU_TBL=2 then Bill_Month
-		when MONTH(Flight_Plan_Records.InHome_Date)=12 then 12
+		--when MONTH(Flight_Plan_Records.InHome_Date)=12 then 12
 		else month(DATEADD(month,bill_timing,Flight_Plan_Records.InHome_Date)) 
 		end)= A.MediaMonth and (case when Budget_Type_LU_TBL_idBudget_Type_LU_TBL=2 then Bill_Year
-		when month(Flight_Plan_Records.InHome_Date)=12 then YEAR(Flight_Plan_Records.inhome_date)
+		--when month(Flight_Plan_Records.InHome_Date)=12 then YEAR(Flight_Plan_Records.inhome_date)
 		else year(DATEADD(month,bill_timing,Flight_Plan_Records.InHome_Date)) 
 		end)=A.MediaMonth_Year
 		-----Bring in touch definition labels 

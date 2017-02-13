@@ -78,8 +78,9 @@ WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Wireline Bill - Bill Ins
 WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Enabler Bill - Bill Insert' AND eCRW_Project_Name LIKE '%ThankYou%' THEN 1561 --Enabler Thank you Bill Insert
 WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Wireline Bill - Bill Insert' AND eCRW_Project_Name LIKE '%Mandatory%' THEN 1572 --Wireline Mandatory Bill Insert
 WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Enabler Bill - Bill Insert' AND eCRW_Project_Name LIKE '%WLS%' THEN 1616 --Enabler WRLS Cross Sell Bill Insert
-WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Wireless Bill - Bill Insert' AND eCRW_Project_Name LIKE '%Add-a-line%' THEN 1618 --Wireless WRLS AAL Bill Insert
+WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Wireless Bill - Bill Insert' AND eCRW_Project_Name LIKE '%Add a line%' THEN 1618 --Wireless WRLS AAL Bill Insert
 WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Wireline Bill - Bill Insert' AND eCRW_Project_Name LIKE '%Thankyou%' THEN 1619 --Wireline Thank You Bill Insert
+
 
 --Bill Media -- FPC
 --Still Missing: 1445, 1534
