@@ -56,7 +56,7 @@ WHEN Media_Code = 'BAM' THEN 1493 --Wireline BAM
 
 
 --Bill Media -- Bill Inserts
---Still Missing: 1436, 1439
+--Still Missing: 1439, 1615
 
 WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Wireline Bill - Bill Insert' AND (Campaign_Name LIKE '%EBill%' OR Campaign_Name like '%E-Bill%') AND Campaign_Name NOT LIKE '%TV%' THEN 1429 --Wireline TV Cross Sell eBill Insert
 WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Enabler Bill - Bill Insert' AND Campaign_Name LIKE '%TV%' AND (Campaign_Name LIKE '%EBill%' OR Campaign_Name LIKE '%E-Bill%') THEN 1430 --Enabler TV Cross Sell eBill Insert
@@ -83,7 +83,7 @@ WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Wireline Bill - Bill Ins
 
 
 --Bill Media -- FPC
---Still Missing: 1445, 1534
+--Still Missing: 1445, 1621, 1629
 
 WHEN Media_Code = 'FPC' AND Scorecard_Program_Channel = 'Wireline Bill - FPC' AND eCRW_Project_Name LIKE '%NancyFPCAllIPTVGreen%' AND Campaign_Name LIKE '%Remaining%' THEN 1441 --Wireline Non-DSL HSIA Cross Sell FPC
 WHEN Media_Code = 'FPC' AND Scorecard_Program_Channel = 'Enabler Bill - FPC' AND eCRW_Project_Name LIKE '%DTVCrossSellUVBill%' THEN 1442 --Enabler TV Cross Sell FPC
@@ -108,12 +108,13 @@ WHEN Media_Code = 'FPC' AND Scorecard_Program_Channel = 'Wireline Bill - FPC' AN
 WHEN Media_Code = 'FPC' AND Scorecard_Program_Channel = 'DIRECTV Bill - FPC' AND eCRW_Project_Name LIKE '%Wireless%' THEN 1553 --DIRECTV WRLS Cross Sell TPC
 WHEN Media_Code = 'FPC' AND Scorecard_Program_Channel = 'Wireline Bill - FPC' AND eCRW_Project_Name LIKE '%Wireless%' THEN 1562 --Wireline WRLS Cross Sell FPC
 WHEN Media_Code = 'FPC' AND Scorecard_Program_Channel = 'Enabler Bill - FPC' AND eCRW_Project_Name LIKE '%Wireless%' THEN 1563 --Enabler WRLS Cross Sell FPC
+WHEN Media_Code = 'FPC' AND Scorecard_Program_Channel = 'Wireline Bill - FPC' AND eCRW_Project_Name LIKE '%Tripleplay%' THEN 1620 --Wireline Triple Play Bundles FPC
 WHEN Media_Code = 'FPC' AND Scorecard_Program_Channel = 'Mobility Bill - FPC' AND eCRW_Project_Name LIKE '%DTV%' THEN 1622 --Mobility TV Cross Sell FPC
 WHEN Media_Code = 'FPC' AND Scorecard_Program_Channel = 'Mobility Bill - FPC' AND eCRW_Project_Name LIKE '%IPBB%' THEN 1623 --Mobility IPBB Cross Sell FPC
 WHEN Media_Code = 'FPC' AND Scorecard_Program_Channel = 'Mobility Bill - FPC' AND eCRW_Project_Name LIKE '%Add_a_Line%' THEN 1624 --Mobility WRLS AAL FPC
 
 --Bill Media -- FYI
--- Still Missing: 1485
+-- Still Missing: 1485, 1631, 1633, 1686
 
 WHEN Media_Code = 'FYI' AND Scorecard_Program_Channel = 'Wireline Bill - Bill Message' AND eCRW_Project_Name LIKE '%Wireline%' AND eCRW_Project_Name LIKE '%TV%' AND eCRW_Project_Name LIKE '%Spanish%' THEN 1471 --Wireline TV Cross Sell Spanish Bill Message
 WHEN Media_Code = 'FYI' AND Scorecard_Program_Channel = 'Mobility Bill - Bill Message' AND eCRW_Project_Name LIKE '%Wireless%' AND eCRW_Project_Name LIKE '%TV%' AND eCRW_Project_Name LIKE '%Spanish%' THEN 1472 --Wireless DTV Cross Sell Spanish Bill Message
@@ -167,7 +168,8 @@ WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'DIRECTV Bill - Bill 
 WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'DIRECTV Bill - Bill Onsert' AND eCRW_Project_Name LIKE '%Wireless%' AND eCRW_Project_Name LIKE '%Spanish%' THEN 1540 --DIRECTV OOF WRLS Spanish Onsert
 WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'DIRECTV Bill - Bill Onsert' AND eCRW_Project_Name LIKE '%Wireless%' THEN 1539 --DIRECTV OOF WRLS Onsert
 WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'Enabler Bill - Bill Onsert' AND eCRW_Project_Name LIKE '%Wireless%' THEN 1554 --Titan WRLS Cross Sell Onsert
-WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'Mobility Bill - Bill Onsert' AND eCRW_Project_Name LIKE '%HSIA%' THEN 1627 --Wireless IPBB Cross Sell Onsert
+WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'Mobility Bill - Bill Onsert' AND eCRW_Project_Name LIKE '%HSIA%' THEN 1627 --Mobility IPBB Cross Sell Onsert
+When Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'Mobility Bill - Bill Onsert' AND eCRW_Project_Name LIKE '%Add-a-line%' THEN 1628 --Mobility WRLS AAL Cross Sell Onsert
 
 --Bill Media -- RE
 --Still Missing:
