@@ -81,9 +81,13 @@ WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Enabler Bill - Bill Inse
 WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Mobility Bill - Bill Insert' AND eCRW_Project_Name LIKE '%Add a line%' THEN 1618 --Wireless WRLS AAL Bill Insert
 WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Wireline Bill - Bill Insert' AND eCRW_Project_Name LIKE '%Thankyou%' THEN 1619 --Wireline Thank You Bill Insert
 
+--Bill Media -- FPA
+--Still Missing: 
+WHEN Media_Code IN ('FPC','FPA') AND Scorecard_Program_Channel = 'DIRECTV Bill - Full Page Ad' AND eCRW_Project_Name LIKE '%Wireless%' THEN 1553 --DIRECTV WRLS Cross Sell FPA
+WHEN Media_Code IN ('FPC','FPA') AND Scorecard_Program_Channel = 'DIRECTV Bill - Full Page Ad' AND eCRW_Project_Name LIKE '%IPBB%' THEN 1629 --DIRECTV IPBB Cross Sell FPA
 
 --Bill Media -- FPC
---Still Missing: 1445, 1621, 1629
+--Still Missing: 1445, 1621
 
 WHEN Media_Code = 'FPC' AND Scorecard_Program_Channel = 'Wireline Bill - FPC' AND eCRW_Project_Name LIKE '%NancyFPCAllIPTVGreen%' AND Campaign_Name LIKE '%Remaining%' THEN 1441 --Wireline Non-DSL HSIA Cross Sell FPC
 WHEN Media_Code = 'FPC' AND Scorecard_Program_Channel = 'Enabler Bill - FPC' AND eCRW_Project_Name LIKE '%DTVCrossSellUVBill%' THEN 1442 --Enabler TV Cross Sell FPC
@@ -105,7 +109,6 @@ WHEN Media_Code = 'FPC' AND Scorecard_Program_Channel = 'Wireline Bill - FPC' AN
 WHEN Media_Code = 'FPC' AND Scorecard_Program_Channel = 'Enabler Bill - FPC' AND eCRW_Project_Name LIKE '%IPBB%Sell%' THEN 1459 --Enabler HSIA Cross Sell FPC
 WHEN Media_Code = 'FPC' AND Scorecard_Program_Channel = 'Enabler Bill - FPC' AND eCRW_Project_Name LIKE '%Gigapower%' THEN 1460 --Enabler Gigapower Cross Sell FPC
 WHEN Media_Code = 'FPC' AND Scorecard_Program_Channel = 'Wireline Bill - FPC' AND eCRW_Project_Name LIKE '%IPBB%' THEN 1535 --Wireline IPBB Cross Sell FPC
-WHEN Media_Code = 'FPC' AND Scorecard_Program_Channel = 'DIRECTV Bill - FPC' AND eCRW_Project_Name LIKE '%Wireless%' THEN 1553 --DIRECTV WRLS Cross Sell TPC
 WHEN Media_Code = 'FPC' AND Scorecard_Program_Channel = 'Wireline Bill - FPC' AND eCRW_Project_Name LIKE '%Wireless%' THEN 1562 --Wireline WRLS Cross Sell FPC
 WHEN Media_Code = 'FPC' AND Scorecard_Program_Channel = 'Enabler Bill - FPC' AND eCRW_Project_Name LIKE '%Wireless%' THEN 1563 --Enabler WRLS Cross Sell FPC
 WHEN Media_Code = 'FPC' AND Scorecard_Program_Channel = 'Wireline Bill - FPC' AND eCRW_Project_Name LIKE '%Tripleplay%' THEN 1620 --Wireline Triple Play Bundles FPC
@@ -155,13 +158,13 @@ WHEN Media_Code = 'OE' AND Scorecard_Program_Channel = 'Enabler Bill - OE/RE' AN
 -- Still Missing: 1467, 1537, 1538
 
 WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'Mobility Bill - Bill Onsert' AND eCRW_Project_Name LIKE '%Wireless%' AND eCRW_Project_Name LIKE '%TV%' AND eCRW_Project_Name LIKE '%Spanish%' THEN 1461 --Wireless DTV Cross Sell Onsert
-WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'Enabler Bill - Bill Onsert' AND eCRW_Project_Name LIKE '%U%verse%' AND eCRW_Project_Name LIKE '%TV%' THEN 1462 --Enabler DTV Cross Sell Onsert
+WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'Enabler Bill - Bill Onsert' AND eCRW_Project_Name LIKE '%TV%' THEN 1462 --Enabler DTV Cross Sell Onsert
 WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'Mobility Bill - Bill Onsert' AND (Campaign_Name LIKE '%TV%') THEN 1463 --Wireless TV Cross Sell Bill Onsert
-WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'Enabler Bill - Bill Onsert' AND eCRW_Project_Name LIKE '%U%verse%' AND eCRW_Project_Name LIKE '%Upgrade%' THEN 1464 --Enabler Internet Update Onsert
-WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'Enabler Bill - Bill Onsert' AND eCRW_Project_Name LIKE '%U%verse%' AND eCRW_Project_Name LIKE '%Voice%' THEN 1465 -- Enabler Voice Onsert
-WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'Enabler Bill - Bill Onsert' AND eCRW_Project_Name LIKE '%U%verse%' AND eCRW_Project_Name LIKE '%Welcome%' And eCRW_Project_Name NOT LIKE '%GIGA%' THEN 1466 --Enabler Welcome Onsert
-WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'Enabler Bill - Bill Onsert' AND eCRW_Project_Name LIKE '%U%Verse%' AND eCRW_Project_Name LIKE '%Giga%' THEN 1468 --Enabler Gigapower Welcome Onsert
-WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'Enabler Bill - Bill Onsert' AND eCRW_Project_Name LIKE '%U%verse%' AND eCRW_Project_Name LIKE '%HSIA%' THEN 1469 --Enabler HSIA Cross Sell Onsert
+WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'Enabler Bill - Bill Onsert' AND eCRW_Project_Name LIKE '%Upgrade%' THEN 1464 --Enabler Internet Update Onsert
+WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'Enabler Bill - Bill Onsert' AND eCRW_Project_Name LIKE '%Voice%' THEN 1465 -- Enabler Voice Onsert
+WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'Enabler Bill - Bill Onsert' AND eCRW_Project_Name LIKE '%Welcome%' And eCRW_Project_Name NOT LIKE '%GIGA%' THEN 1466 --Enabler Welcome Onsert
+WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'Enabler Bill - Bill Onsert' AND eCRW_Project_Name LIKE '%Giga%' THEN 1468 --Enabler Gigapower Welcome Onsert
+WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'Enabler Bill - Bill Onsert' AND eCRW_Project_Name LIKE '%HSIA%' THEN 1469 --Enabler HSIA Cross Sell Onsert
 --WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'DIRECTV Bill - Bill Onsert' AND eCRW_Project_Name LIKE '%HSIA Cross%' AND eCRW_Project_Name LIKE '%D%TV%' THEN 1470 --DTV HSIA Cross Sell Bill Onsert
 WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'DIRECTV Bill - Bill Onsert' AND eCRW_Project_Name LIKE '%HSIA%' AND eCRW_Project_Name LIKE '%Spanish%' THEN 1538 -- DIRECTV INF IPBB Cross Sell Spanish
 WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'DIRECTV Bill - Bill Onsert' AND eCRW_Project_Name LIKE '%HSIA%' THEN 1537 -- DIRECTV INF IPBB Cross Sell English
