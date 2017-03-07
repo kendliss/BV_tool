@@ -1,5 +1,5 @@
-﻿--drop view [bvt_prod].[Email_Best_View_Calendar_VW]
---GO
+﻿drop view [bvt_prod].[Email_Best_View_Calendar_VW]
+GO
 
 CREATE VIEW [bvt_prod].[Email_Best_View_Calendar_VW]
 	AS 
@@ -157,7 +157,7 @@ CREATE VIEW [bvt_prod].[Email_Best_View_Calendar_VW]
 			from bvt_processed.Commitment_Views
 				-----Bring in touch definition labels 
 				left join bvt_prod.Touch_Definition_VW on Commitment_Views.[idProgram_Touch_Definitions_TBL_FK] = Touch_Definition_VW.[idProgram_Touch_Definitions_TBL]
-			where CV_Submission in ('XSell Email 2016 Submission Adj 20160426') 
+			where CV_Submission in ('XSell Email 2016 Submission Adj 20160426', 'Email 2017 Adj Submission 20170227') 
 			GROUP BY [id_Flight_Plan_Records_FK], [idProgram_Touch_Definitions_TBL_FK], [Campaign_Name], [InHome_Date], 
 			[Media_Year], [Media_Month], [Media_Week], [Calendar_Year], [Calendar_Month], [KPI_TYPE], [Product_Code],
 			[Touch_Name], [Program_Name], [Tactic], [Media], [Audience], [Creative_Name], [Goal], [Offer], [Campaign_Type], [Channel],
@@ -288,6 +288,7 @@ CREATE VIEW [bvt_prod].[Email_Best_View_Calendar_VW]
 	when kpiproduct like '%CTECH%' then 'ConnecTech'
 	when kpiproduct like '%DLIFE%' then 'Digital Life'
 	when kpiproduct like '%WHP%' then 'WRLS Home'
+	when kpiproduct like '%DTVNow%' then 'DTV Now'
 	end as
 	Product_Code
 
@@ -305,7 +306,7 @@ UNPIVOT (Actual for kpiproduct in
 			[ITP_Dir_Sales_ON_CING_VOICE_N], [ITP_Dir_Sales_ON_CING_FAMILY_N], [ITP_Dir_Sales_ON_CING_DATA_N], [ITP_Dir_Sales_ON_DISH_N], 
 			[ITP_Dir_Sales_ON_DSL_REG_N], [ITP_Dir_Sales_ON_DSL_DRY_N], [ITP_Dir_Sales_ON_DSL_IP_N], [ITP_Dir_Sales_ON_UVRS_HSIAG_N],
 			[ITP_Dir_Sales_ON_UVRS_HSIA_N], [ITP_Dir_Sales_ON_UVRS_TV_N], [ITP_Dir_Sales_ON_UVRS_BOLT_N], [ITP_Dir_Sales_ON_LOCAL_ACCL_N], 
-			[ITP_Dir_Sales_ON_UVRS_VOIP_N], [ITP_Dir_Sales_ON_DLIFE_N], [ITP_Dir_Sales_ON_CING_WHP_N], [ITP_Dir_Sales_ON_Migrations])) as Actuals
+			[ITP_Dir_Sales_ON_UVRS_VOIP_N], [ITP_Dir_Sales_ON_DLIFE_N], [ITP_Dir_Sales_ON_CING_WHP_N], [ITP_Dir_Sales_ON_Migrations], [ITP_Dir_Sales_ON_DTVNOW_N])) as Actuals
 GROUP BY [idFlight_Plan_Records_FK], [Report_Year], [Report_Week], [Calendar_Year], [Calendar_Month]
 
 , case
@@ -335,6 +336,7 @@ GROUP BY [idFlight_Plan_Records_FK], [Report_Year], [Report_Week], [Calendar_Yea
 	when kpiproduct like '%CTECH%' then 'ConnecTech'
 	when kpiproduct like '%DLIFE%' then 'Digital Life'
 	when kpiproduct like '%WHP%' then 'WRLS Home'
+	when kpiproduct like '%DTVNow%' then 'DTV Now'
 	end 
 	) as actuals 
 	inner join bvt_prod.Email_Flight_Plan_VW on [idFlight_Plan_Records_FK] = [idFlight_Plan_Records]
