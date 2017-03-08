@@ -47,19 +47,29 @@ from
 	a.idFlight_Plan_Records
 	, a.idProgram_Touch_Definitions_TBL_FK
 	, idkpi_type_FK
-	, idProduct_LU_TBL_FK
-	, case when tfn_ind=-1 and idkpi_type_FK=1 then Sales_Rate
+	, B.idProduct_LU_TBL_FK
+	, case when tfn_ind=1 and idkpi_type_FK=1 then Sales_Rate*Coalesce(Adjustment,1)*Coalesce(Sales_Adjustment,1)
 		when TFN_ind=0 and idkpi_type_FK=1 then 0
-		when URL_ind=-1 and idkpi_type_FK=2 then Sales_Rate
+		when URL_ind=1 and idkpi_type_FK=2 then Sales_Rate*Coalesce(Adjustment,1)*Coalesce(Sales_Adjustment,1)
 		when URL_ind=0 and idkpi_type_FK=2 then 0
-		else Sales_Rate
+		else Sales_Rate*Coalesce(Adjustment,1)*Coalesce(Sales_Adjustment,1)
 		end as Sales_Rate
 	, InHome_Date
 	, idTarget_Rate_Reasons_LU_TBL_FK
 from [bvt_prod].[Email_Flight_Plan_VW] as A
 	
-	left join (SELECT * FROM [bvt_prod].[Sales_Rate_Start_End_FUN](11)) as B on A.idProgram_Touch_Definitions_TBL_FK=B.idProgram_Touch_Definitions_TBL_FK
-	and InHome_Date between Sales_Rate_Start_Date and b.END_DATE) as SalesRate_Join
+	left join (SELECT * FROM [bvt_prod].[Sales_Rate_Start_End_FUN](11)) as B 
+		on A.idProgram_Touch_Definitions_TBL_FK=B.idProgram_Touch_Definitions_TBL_FK
+		and InHome_Date between Sales_Rate_Start_Date and b.END_DATE
+--Adds Manual Rate/Sales Adjustment by KPI type		
+	left join bvt_prod.Target_Rate_Adjustment_Manual_TBL
+		on idFlight_Plan_Records=Target_Rate_Adjustment_Manual_TBL.idFlight_Plan_Records_FK 
+		and B.idkpi_type_FK=Target_Rate_Adjustment_Manual_TBL.idkpi_types_FK
+--Adds Manual Sales Adjustment by KPI Type and Product Code
+	left join bvt_prod.Target_Sales_Rate_Adjustment_Manual_TBL
+		on idFlight_Plan_Records = Target_Sales_Rate_Adjustment_Manual_TBL.idFlight_Plan_Records_FK 
+		and B.idkpi_type_FK=Target_Sales_Rate_Adjustment_Manual_TBL.idKPI_Types_FK
+		and B.idProduct_LU_TBL_FK = Target_Sales_Rate_Adjustment_Manual_TBL.idProduct_LU_TBL_FK	) as SalesRate_Join
 ---End Join KPI and Flight Plan	
 
 	left join (SELECT * FROM [bvt_prod].[Response_Daily_Start_End_FUN](11)) as B 
