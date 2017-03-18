@@ -1,10 +1,11 @@
-﻿CREATE PROCEDURE [bvt_prod].[Best_View_PR]
+﻿ALTER PROCEDURE [bvt_prod].[Best_View_PR]
 @PROG int	
 AS
 BEGIN 
 SET NOCOUNT ON
-/*Temporary Declarations for Testing*/
-
+/*Temporary Declarations for Testing
+DECLARE @PROG INT
+set @PROG = 4--*/
 ------Section 1 Subselecting Tables - into temps---------
 
 -------Section 1.1 - Flightplan Selection	
@@ -24,6 +25,32 @@ IF OBJECT_ID('tempdb.dbo.#flightplan', 'U') IS NOT NULL
 
 create CLUSTERED index idx_c_flightplan_flightplanid ON #flightplan([idFlight_Plan_Records]);
 ---End Flightplan selection
+-------Touch Definition View--------------------------
+IF OBJECT_ID('tempdb.dbo.#touchdef', 'U') IS NOT NULL
+  DROP TABLE #touchdef; 
+
+SELECT idProgram_Touch_Definitions_TBL
+	, Touch_Name, Program_Name, Tactic, Media, Audience
+	, Creative_Name, Goal, Offer, Campaign_Type, Channel
+	, owner_type_matrix_id_FK, 
+	Program_Touch_Definitions_TBL.Scorecard_group, Scorecard_program_Channel
+INTO #touchdef
+from bvt_prod.Program_Touch_Definitions_TBL
+	left join bvt_prod.Audience_LU_TBL on idAudience_LU_TBL_FK=idAudience_LU_TBL
+	left join bvt_prod.Campaign_Type_LU_TBL on idCampaign_Type_LU_TBL_FK=idCampaign_Type_LU_TBL
+	left join bvt_prod.Creative_LU_TBL on idCreative_LU_TBL_fk=idCreative_LU_TBL
+	left join bvt_prod.Goal_LU_TBL on idGoal_LU_TBL_fk=idGoal_LU_TBL
+	left join bvt_prod.Media_LU_TBL on idMedia_LU_TBL_fk=idMedia_LU_TBL
+	left join bvt_prod.Offer_LU_TBL on idOffer_LU_TBL_fk=idOffer_LU_TBL
+	left join bvt_prod.Program_LU_TBL on idProgram_LU_TBL_fk=idProgram_LU_TBL
+	left join bvt_prod.Tactic_LU_TBL on idTactic_LU_TBL_fk=idTactic_LU_TBL
+	left join bvt_prod.Channel_LU_TBL on idChanel_LU_TBL_FK=idChanel_LU_TBL
+	left Join bvt_processed.Scorecard_Hierarchy on owner_type_matrix_id_FK =  owner_type_matrix_id
+WHERE idProgram_LU_TBL_fk=@PROG;
+
+create clustered index IDX_C_touchdef_id ON #touchdef(idProgram_Touch_Definitions_TBL);
+----------End Touch Def-----------------------------
+
 
 ----Section 1.3 - Target Adjustments
 IF OBJECT_ID('tempdb.dbo.#Trgt_adj', 'U') IS NOT NULL
@@ -94,6 +121,8 @@ select #flightplan.idFlight_Plan_Records
 	, Offer
 	, [owner_type_matrix_id_FK]
 	, channel
+	, Scorecard_Group
+	, Scorecard_Program_Channel
 
 ----Metrics
 	, KPI_Type
@@ -164,19 +193,12 @@ from
 	, b.idkpi_types_FK
 	
   --Code to account for having a TFN or URL or not in flightplan entry and a manual adjustment or not
-	, case when adjustment is null then (case when tfn_ind=-1 and b.idkpi_types_FK=1 then KPI_Rate
+	,case when tfn_ind=-1 and b.idkpi_types_FK=1 then KPI_Rate*isnull(adjustment,1)
 		when TFN_ind=0 and b.idkpi_types_FK=1 then 0
-		when URL_ind=-1 and b.idkpi_types_FK=2 then KPI_Rate
-		when URL_ind=0 and b.idkpi_types_FK=2 then 0
-		else KPI_Rate
-		end)
-	else (case when tfn_ind=-1 and b.idkpi_types_FK=1 then KPI_Rate*adjustment
-		when TFN_ind=0 and b.idkpi_types_FK=1 then 0
-		when URL_ind=-1 and b.idkpi_types_FK=2 then KPI_Rate*adjustment
+		when URL_ind=-1 and b.idkpi_types_FK=2 then KPI_Rate*isnull(adjustment,1)
 		when URL_ind=0 and b.idkpi_types_FK=2 then 0
 		else KPI_Rate*adjustment
-		end) 
-	end as KPI_Rate
+		end as KPI_Rate
 	, InHome_Date
 	, idTarget_Rate_Reasons_LU_TBL_FK
 from #flightplan as A
@@ -275,19 +297,12 @@ from
 	a.idFlight_Plan_Records
 	, a.idProgram_Touch_Definitions_TBL_FK
 	, B.idkpi_type_FK
-	, idProduct_LU_TBL_FK
-	, case when adjustment is null then (case when tfn_ind=-1 and b.idkpi_type_FK=1 then Sales_Rate
+	, B.idProduct_LU_TBL_FK
+	, case when tfn_ind=-1 and b.idkpi_type_FK=1 then Sales_Rate*isnull(adjustment,1)*isnull(Sales_Adjustment,1)
 		when TFN_ind=0 and b.idkpi_type_FK=1 then 0
-		when URL_ind=-1 and b.idkpi_type_FK=2 then Sales_Rate
+		when URL_ind=-1 and b.idkpi_type_FK=2 then Sales_Rate*isnull(adjustment,1)*isnull(Sales_Adjustment,1)
 		when URL_ind=0 and b.idkpi_type_FK=2 then 0
-		else Sales_Rate
-		end)
-	else (case when tfn_ind=-1 and b.idkpi_type_FK=1 then Sales_Rate*adjustment
-		when TFN_ind=0 and b.idkpi_type_FK=1 then 0
-		when URL_ind=-1 and b.idkpi_type_FK=2 then Sales_Rate*adjustment
-		when URL_ind=0 and b.idkpi_type_FK=2 then 0
-		else Sales_Rate*adjustment
-		end) 
+		else Sales_Rate*isnull(adjustment,1)*isnull(Sales_Adjustment,1)
 	end as Sales_Rate
 	, InHome_Date
 	, idTarget_Rate_Reasons_LU_TBL_FK
@@ -296,8 +311,14 @@ from #flightplan as A
 	left join [bvt_processed].[Sales_Rates_Start_End] as B
 		on A.idProgram_Touch_Definitions_TBL_FK=B.idProgram_Touch_Definitions_TBL_FK
 			and InHome_Date between Sales_Rate_Start_Date and b.END_DATE
+	--Adds Manual Rate/Sales Adjustment by KPI type		
 	left join bvt_prod.Target_Rate_Adjustment_Manual_TBL
-		on idFlight_Plan_Records=idFlight_Plan_Records_FK and B.idkpi_type_FK=Target_Rate_Adjustment_Manual_TBL.idkpi_types_FK) as SalesRate_Join
+		on idFlight_Plan_Records=idFlight_Plan_Records_FK and B.idkpi_type_FK=Target_Rate_Adjustment_Manual_TBL.idkpi_types_FK
+	--Adds Manual Sales Adjustment by KPI Type and Product Code
+	left join bvt_prod.Target_Sales_Rate_Adjustment_Manual_TBL
+		on idFlight_Plan_Records = Target_Sales_Rate_Adjustment_Manual_TBL.idFlight_Plan_Records_FK 
+		and B.idkpi_type_FK=Target_Sales_Rate_Adjustment_Manual_TBL.idKPI_Types_FK
+		and B.idProduct_LU_TBL_FK = Target_Sales_Rate_Adjustment_Manual_TBL.idProduct_LU_TBL_FK) as SalesRate_Join
 ---End Join KPI and Flight Plan	
 
 	left join [bvt_processed].[Response_Daily_Start_End] as B 
@@ -342,11 +363,15 @@ left join Dim.Media_Calendar_Daily
 
 left join
 -----Bring in touch definition labels 
-bvt_prod.Touch_Definition_VW as touchdef
+#touchdef as touchdef
 		on #flightplan.idProgram_Touch_Definitions_TBL_FK=idProgram_Touch_Definitions_TBL
 
 where Tactic <> 'Cost'	
 ;
+
+create index IDX_NC_FORECASTTEMP
+ ON #FORECAST([idFlight_Plan_Records], [Calendar_Year], [Calendar_Month]
+  , [media_year] ,[Media_Week] ,[kpi_type] ,[product_code]);
 -------------END SECTION SALES-----------------------------------------------------
 -----END SECTION Forecasting-------------------------------------------------------
 
@@ -386,8 +411,11 @@ create index IDX_NC_actuals_idflightplan_strtdt ON #actuals([idFlight_Plan_Recor
 IF OBJECT_ID('tempdb.dbo.#volumebudget', 'U') IS NOT NULL
   DROP TABLE #volumebudget; 
 --
-select [idFlight_Plan_Records_FK], [Campaign_Name], [iso_week_year] as Media_Year, [mediamonth] as Media_Month, [iso_week] as Media_Week, 
-	[inhome_date], [Touch_Name], [Program_Name], [Tactic], [Media], 
+select [idFlight_Plan_Records_FK], [Campaign_Name], [iso_week_year] as Media_Year
+	, [mediamonth] as Media_Month, [iso_week] as Media_Week
+	,YEAR([Start_Date]) as Calendar_Year
+	,MONTH([Start_Date]) as Calendar_Month
+	,[inhome_date], [Touch_Name], [Program_Name], [Tactic], [Media], 
 	[Campaign_Type], [Audience], [Creative_Name], [Goal], [Offer], [Channel], [Scorecard_Group], [Scorecard_Program_Channel],
 	[KPI_TYPE], [Product_Code], Actual
 into #volumebudget
@@ -415,7 +443,10 @@ from
 		end) as pivotmetrics
 	inner join dim.media_calendar_daily on [Start_Date] = [date]
 	inner join #flightplan on [idFlight_Plan_Records_FK] = [idFlight_Plan_Records]
-	inner join bvt_prod.Touch_Definition_VW on [idProgram_Touch_Definitions_TBL] = [idProgram_Touch_Definitions_TBL_FK]
+	inner join #touchdef on [idProgram_Touch_Definitions_TBL] = [idProgram_Touch_Definitions_TBL_FK]
+create index IDX_NC_VOLUMEBUDGET
+ ON #volumebudget([idFlight_Plan_Records_FK], [Calendar_Year], [Calendar_Month]
+  , [media_year] ,[Media_Week] ,[kpi_type] ,[product_code]);
 ---------End Volume Budget-----------------------------
 ---------Response and Sales Actuals--------------------
 IF OBJECT_ID('tempdb.dbo.#ResponseSales', 'U') IS NOT NULL
@@ -424,11 +455,11 @@ IF OBJECT_ID('tempdb.dbo.#ResponseSales', 'U') IS NOT NULL
 select [idFlight_Plan_Records_FK], [Media_Year], [Media_Week],  [MediaMonth] as Media_Month,
 	[inhome_date], [Touch_Name], [Program_Name], [Tactic], [Media], [Campaign_Name],
 	[Campaign_Type], [Audience], [Creative_Name], [Goal], [Offer], [Channel],
-	[Scorecard_Group], [Scorecard_Program_Channel],
+	[Scorecard_Group], [Scorecard_Program_Channel], [Calendar_Year], [Calendar_Month],
 	[KPI_TYPE], [Product_Code], Actual
 into #ResponseSales
 from
-	(select [idFlight_Plan_Records_FK], [Report_Year] as Media_Year, [Report_Week] as Media_Week
+	(select [idFlight_Plan_Records_FK], [Report_Year] as Media_Year, [Report_Week] as Media_Week,  [Calendar_Year], [Calendar_Month]
 	, case 
 		when kpiproduct='ITP_Dir_Calls' then 'Response'
 		when kpiproduct='ITP_Dir_Clicks' then 'Response'
@@ -471,7 +502,7 @@ UNPIVOT (Actual for kpiproduct in
 			[ITP_Dir_Sales_ON_DSL_REG_N], [ITP_Dir_Sales_ON_DSL_DRY_N], [ITP_Dir_Sales_ON_DSL_IP_N], 
 			[ITP_Dir_Sales_ON_UVRS_HSIA_N], [ITP_Dir_Sales_ON_UVRS_TV_N], [ITP_Dir_Sales_ON_UVRS_BOLT_N], [ITP_Dir_Sales_ON_LOCAL_ACCL_N], 
 			[ITP_Dir_Sales_ON_UVRS_VOIP_N], [ITP_Dir_Sales_ON_DLIFE_N], [ITP_Dir_Sales_ON_CING_WHP_N], [ITP_Dir_Sales_ON_Migrations])) as Actuals
-GROUP BY [idFlight_Plan_Records_FK], [Report_Year], [Report_Week]
+GROUP BY [idFlight_Plan_Records_FK], [Report_Year], [Report_Week], [Calendar_Year], [Calendar_Month]
 
 , case
 	when kpiproduct='ITP_Dir_Calls' then 'Response'
@@ -502,17 +533,199 @@ GROUP BY [idFlight_Plan_Records_FK], [Report_Year], [Report_Week]
 	end 
 	) as actuals 
 	inner join #flightplan on [idFlight_Plan_Records_FK] = [idFlight_Plan_Records]
-	inner join bvt_prod.Touch_Definition_VW on [idProgram_Touch_Definitions_TBL] = [idProgram_Touch_Definitions_TBL_FK]
+	inner join #touchdef on [idProgram_Touch_Definitions_TBL] = [idProgram_Touch_Definitions_TBL_FK]
 	inner join (Select distinct [ISO_week], [ISO_Week_Year], [MediaMonth] from DIM.Media_Calendar_Daily) d
-on [Media_week] = d.[ISO_Week] and [Media_Year] = d.[ISO_Week_Year]
+on [Media_week] = d.[ISO_Week] and [Media_Year] = d.[ISO_Week_Year];
+
+create index IDX_NC_ResponseSales
+ ON #ResponseSales([idFlight_Plan_Records_FK], [Calendar_Year], [Calendar_Month]
+  , [media_year] ,[Media_Week] ,[kpi_type] ,[product_code]);
 ----------------End Actual Response Sales--------------
+
+
 -----------End Section Actuals-------------------------
 
 --------------CV Section--------------------------------
 IF OBJECT_ID('tempdb.dbo.#cv', 'U') IS NOT NULL
   DROP TABLE #cv; 
 --
+select [idFlight_Plan_Records]
+  , [idProgram_Touch_Definitions_TBL_FK]
+  , CV_Combined.[Campaign_Name]
+  , CV_Combined.[InHome_Date]
+  , CV_Combined.[Media_Year]
+  , [Media_Month]
+  , [Media_Week]
+  , [Media_YYYYWW]
+  , [Calendar_Year], [Calendar_Month]
+  , [KPI_TYPE]
+  , CV_Combined.[Product_Code]
+  ,  SUM([forecast]) as Forecast
+  ,	CV_Combined.[Touch_Name]
+  , CV_Combined.[Program_Name]
+  , CV_Combined.[Tactic]
+  , CV_Combined.[Media]
+  , CV_Combined.[Audience]
+  , CV_Combined.[Creative_Name]
+  , CV_Combined.[Goal]
+  , CV_Combined.[Offer]
+  , CV_Combined.[Campaign_Type]
+  , CV_Combined.[Channel]
+  ,	#touchdef.[Scorecard_Group]
+  , #touchdef.[Scorecard_Program_Channel]
+into #cv
+from bvt_cv.CV_Combined
+--left join [bvt_prod].[Program_Touch_Definitions_TBL]
+--	on CV_Combined.[idProgram_Touch_Definitions_TBL_FK]=[Program_Touch_Definitions_TBL].[idProgram_Touch_Definitions_TBL]
+left join [bvt_prod].#touchdef
+	on CV_Combined.[idProgram_Touch_Definitions_TBL_FK]=#touchdef.[idProgram_Touch_Definitions_TBL]
+where CV_Combined.[Program_Name]=(select program_name from bvt_prod.program_LU_TBL where idProgram_LU_TBL=@prog)
+GROUP BY [idFlight_Plan_Records], [idProgram_Touch_Definitions_TBL_FK], CV_Combined.[Campaign_Name], [InHome_Date], 
+	[Media_Year], [Media_Month], [Media_Week], [Media_YYYYWW], [KPI_TYPE], [Product_Code],
+	CV_Combined.[Touch_Name], CV_Combined.[Program_Name], CV_Combined.[Tactic], CV_Combined.[Media]
+	, CV_Combined.[Audience], CV_Combined.[Creative_Name], CV_Combined.[Goal]
+	, CV_Combined.[Offer], CV_Combined.[Campaign_Type], CV_Combined.[Channel],
+	#touchdef.[Scorecard_Group], #touchdef.[Scorecard_Program_Channel], [Calendar_Year], [Calendar_Month];
+create index IDX_NC_CV
+ ON #cv([idFlight_Plan_Records], [Calendar_Year], [Calendar_Month]
+  , [media_year] ,[Media_Week] ,[kpi_type] ,[product_code]);
+----------------END CV Section-----------------------------------------
+-----------------Blending Section--------------------------------------
+/*Combine the Forecast, Actuals, and CV into a single Best View of the
+program selected for output*/
+-----------------------------------------------------------------------
+select
+coalesce(forecast_cv.[idFlight_Plan_Records_FK], #volumebudget.[idFlight_Plan_Records_FK], #ResponseSales.[idFlight_Plan_Records_FK]) as idFlight_Plan_Records_FK,
+		coalesce(forecast_cv.[Campaign_Name], #volumebudget.[Campaign_Name], #ResponseSales.[Campaign_Name]) as Campaign_Name,
+		coalesce(forecast_cv.[InHome_Date], #volumebudget.[InHome_Date], #ResponseSales.[InHome_Date]) as InHome_Date,
+		coalesce(forecast_cv.[Media_Year], #volumebudget.[Media_Year], #ResponseSales.[Media_Year]) as Media_Year,
+		coalesce(forecast_cv.[Media_Week], #volumebudget.[Media_Week], #ResponseSales.[Media_Week]) as Media_Week,
+		coalesce(forecast_cv.[Media_Month], #volumebudget.[Media_Month], #ResponseSales.Media_Month) as Media_Month,
+		coalesce(forecast_cv.[Calendar_Year], #volumebudget.[Calendar_Year], #ResponseSales.[Calendar_Year]) as Calendar_Year,
+		coalesce(forecast_cv.[Calendar_Month], #volumebudget.[Calendar_Month], #ResponseSales.[Calendar_Month]) as Calendar_Month,
+		coalesce(forecast_cv.[Touch_Name], #volumebudget.[Touch_Name], #ResponseSales.[Touch_Name]) as Touch_Name, 
+		coalesce(forecast_cv.[Program_Name], #volumebudget.[Program_Name], #ResponseSales.[Program_Name]) as Program_Name, 
+		coalesce(forecast_cv.[Tactic], #volumebudget.[Tactic], #ResponseSales.[Tactic]) as Tactic, 
+		coalesce(forecast_cv.[Media], #volumebudget.[Media], #ResponseSales.[Media]) as Media,
+		coalesce(forecast_cv.[Campaign_Type], #volumebudget.[Campaign_Type], #ResponseSales.[Campaign_Type]) as Campaign_Type,
+		coalesce(forecast_cv.[Audience], #volumebudget.[Audience], #ResponseSales.[Audience]) as Audience,
+		coalesce(forecast_cv.[Creative_Name], #volumebudget.[Creative_Name], #ResponseSales.[Creative_Name]) as Creative_Name,
+		coalesce(forecast_cv.[Goal], #volumebudget.[Goal],#ResponseSales.[Goal]) as Goal,
+		coalesce(forecast_cv.[Offer], #volumebudget.[Offer], #ResponseSales.[Offer]) as Offer,
+		coalesce(forecast_cv.[Channel], #volumebudget.[Channel], #ResponseSales.[Channel]) as Channel,
+		coalesce(forecast_cv.[Scorecard_Group], #volumebudget.[Scorecard_Group], #ResponseSales.[Scorecard_Group]) as Scorecard_Group,
+		coalesce(forecast_cv.[Scorecard_Program_Channel], #volumebudget.[Scorecard_Program_Channel], #ResponseSales.[Scorecard_Program_Channel]) as Scorecard_Program_Channel,
+		coalesce(forecast_cv.[KPI_Type], #volumebudget.[KPI_Type], #ResponseSales.[KPI_Type]) as KPI_Type,
+		coalesce(forecast_cv.[Product_Code], #volumebudget.[Product_Code],  #ResponseSales.[Product_Code]) as Product_Code
+		,isnull([Forecast],0) as Forecast
+		,isnull([Commitment],0) as Commitment
+		,isnull(coalesce(#volumebudget.[Actual], #ResponseSales.[Actual]),0) as Actual
+-- complex case statement to determine if you should be using forecast or actuals for the best view
 
+--First are these telesales or other metrics as telesales require a lagging
+		,case when coalesce(forecast_cv.[KPI_Type], #volumebudget.[KPI_Type], #ResponseSales.[KPI_Type]) = 'Telesales'
+		--IS the forecast YYYYWW two weeks less than the current report week available 
+			then (case when forecast_cv.[media_YYYYWW] <= (case when DATEPART(weekday,getdate()) <= 5 
+						then (select [ISO_Week_YYYYWW] from dim.media_calendar_daily where [date] = cast(dateadd(wk,-4,getdate()) as date)) 
+						else (select [ISO_Week_YYYYWW] from dim.media_calendar_daily where [date] = cast(dateadd(wk,-3,getdate()) as date)) end)
+					then #ResponseSales.[Actual]
+					when forecast_cv.[media_YYYYWW] is null then #ResponseSales.[Actual]
+					else isnull([Forecast],0)
+					end)
+----END OF TELESALES LAG CONCERNS
+--Non telesale report through current available week
+		when forecast_cv.[media_YYYYWW] <= (case when DATEPART(weekday,getdate()) <= 5 
+						then (select [ISO_Week_YYYYWW] from dim.media_calendar_daily where [date] = cast(dateadd(wk,-2,getdate()) as date)) 
+						else (select [ISO_Week_YYYYWW] from dim.media_calendar_daily where [date] = cast(dateadd(wk,-1,getdate()) as date)) end)
+			then coalesce(#volumebudget.[Actual], #ResponseSales.[Actual])
+
+		when forecast_cv.[media_YYYYWW] is null then coalesce(#volumebudget.[Actual], #ResponseSales.[Actual])
+		else isnull([Forecast],0)
+
+		end as Best_View
+----END OF COMPLEX Best View case statement-------------------------------------------------------------
+		
+FROM	
+
+(SELECT 
+	   Coalesce(forecast.[idFlight_Plan_Records], cv.[idFlight_Plan_Records]) as idFlight_Plan_Records_FK
+      ,Coalesce(forecast.[Campaign_Name], cv.[Campaign_Name]) as Campaign_Name
+      ,coalesce(forecast.[InHome_Date], cv.[InHome_Date]) as InHome_Date
+      ,coalesce(forecast.[Touch_Name], cv.[Touch_Name]) as Touch_Name
+      ,coalesce(forecast.[Program_Name], cv.[Program_Name]) as Program_Name
+      ,coalesce(forecast.[Tactic], cv.[Tactic]) as Tactic
+      ,coalesce(forecast.[Media], cv.[Media]) as Media
+      ,coalesce(forecast.[Campaign_Type], cv.[Campaign_Type]) as Campaign_Type
+      ,coalesce(forecast.[Audience], cv.[Audience]) as Audience
+      ,coalesce(forecast.[Creative_Name], cv.[Creative_Name]) as Creative_Name
+      ,coalesce(forecast.[Goal], cv.[Goal]) as Goal
+      ,coalesce(forecast.[Offer], cv.[Offer]) as Offer
+      ,coalesce(forecast.[Channel], cv.[Channel]) as Channel
+      ,coalesce(forecast.[Scorecard_Group], cv.[Scorecard_Group]) as Scorecard_Group
+      ,coalesce(forecast.[Scorecard_Program_Channel], cv.[Scorecard_Program_Channel]) as Scorecard_Program_Channel
+      ,coalesce(forecast.[KPI_Type], cv.[KPI_Type]) as KPI_Type
+      ,coalesce(forecast.[Product_Code], cv.[Product_Code]) as Product_Code
+	  ,coalesce(forecast.[media_year], cv.[media_year]) as media_year
+	  ,coalesce(forecast.[media_month], cv.[media_month]) as media_month
+	  ,coalesce(forecast.[media_week], cv.[media_week]) as media_week
+	  ,coalesce(forecast.[Media_YYYYWW], cv.[Media_YYYYWW]) as Media_YYYYWW
+	  ,coalesce(forecast.[Calendar_Year], cv.[Calendar_Year]) as Calendar_Year
+	  ,coalesce(forecast.[Calendar_Month], cv.[Calendar_Month]) as Calendar_Month
+      ,sum(forecast.[Forecast]) as Forecast
+	  ,sum(CV.forecast) as Commitment 
+FROM #forecast as forecast
+	FULL JOIN
+	#cv as CV
+	ON forecast.[idFlight_Plan_Records] = cv.[idFlight_Plan_Records] 
+			and forecast.[media_year] = cv.[Media_Year]
+			and forecast.[media_week] = cv.[Media_Week]
+			and forecast.[kpi_type] = cv.[kpi_type]
+			and forecast.[product_code] = cv.[product_code]
+			and forecast.[Calendar_Year] = cv.[Calendar_Year]
+			and forecast.[Calendar_Month] = cv.[Calendar_Month]
+
+group by Coalesce(forecast.[idFlight_Plan_Records], cv.[idFlight_Plan_Records]) 
+      ,Coalesce(forecast.[Campaign_Name], cv.[Campaign_Name]) 
+      ,coalesce(forecast.[InHome_Date], cv.[InHome_Date]) 
+      ,coalesce(forecast.[Touch_Name], cv.[Touch_Name]) 
+      ,coalesce(forecast.[Program_Name], cv.[Program_Name])
+      ,coalesce(forecast.[Tactic], cv.[Tactic]) 
+      ,coalesce(forecast.[Media], cv.[Media])
+      ,coalesce(forecast.[Campaign_Type], cv.[Campaign_Type]) 
+      ,coalesce(forecast.[Audience], cv.[Audience]) 
+      ,coalesce(forecast.[Creative_Name], cv.[Creative_Name]) 
+      ,coalesce(forecast.[Goal], cv.[Goal]) 
+      ,coalesce(forecast.[Offer], cv.[Offer])
+      ,coalesce(forecast.[Channel], cv.[Channel])
+      ,coalesce(forecast.[Scorecard_Group], cv.[Scorecard_Group])
+      ,coalesce(forecast.[Scorecard_Program_Channel], cv.[Scorecard_Program_Channel])
+      ,coalesce(forecast.[KPI_Type], cv.[KPI_Type])
+      ,coalesce(forecast.[Product_Code], cv.[Product_Code])
+	  ,coalesce(forecast.[media_year], cv.[media_year])
+	  ,coalesce(forecast.[media_month], cv.[media_month])
+	  ,coalesce(forecast.[media_week], cv.[media_week])
+	  ,coalesce(forecast.[Media_YYYYWW], cv.[Media_YYYYWW])
+	  ,coalesce(forecast.[Calendar_Year], cv.[Calendar_Year])
+	  ,coalesce(forecast.[Calendar_Month], cv.[Calendar_Month])
+	  ) as forecast_cv
+
+FULL JOIN #volumebudget
+	on forecast_cv.[idFlight_Plan_Records_FK] = #volumebudget.[idFlight_plan_records_FK] 
+	 and forecast_cv.[media_year] = #volumebudget.[media_year]
+	 and forecast_cv.[media_week] = #volumebudget.[media_week] 
+	 and forecast_cv.[KPI_Type] = #volumebudget.[KPI_Type]
+	 and forecast_cv.[Product_Code] = #volumebudget.[Product_Code]
+	 and forecast_cv.[Calendar_Year] = #volumebudget.[Calendar_Year]
+	and forecast_cv.[Calendar_Month] = #volumebudget.[Calendar_Month]
+FULL JOIN #ResponseSales
+	on forecast_cv.[idFlight_Plan_Records_FK] = #ResponseSales.[idFlight_Plan_Records_FK] 
+	 and forecast_cv.[media_year] = #ResponseSales.[media_year]
+	 and forecast_cv.[media_week] = #ResponseSales.[media_week]
+	 and forecast_cv.[KPI_Type] =#ResponseSales.[KPI_Type]
+	 and forecast_cv.[Product_Code] = #ResponseSales.[product_code]
+	 and forecast_cv.[Calendar_Year] = #ResponseSales.[Calendar_Year]
+	 and forecast_cv.[Calendar_Month] = #ResponseSales.[Calendar_Month];
+------------END OF BLENDING BEST VIEW!-----------------------------------
 
 
 SET NOCOUNT OFF

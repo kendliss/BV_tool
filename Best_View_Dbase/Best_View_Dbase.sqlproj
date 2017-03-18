@@ -638,6 +638,7 @@
     <Build Include="bvt_prod\ResponseDailyTrigger.sql" />
     <Build Include="bvt_prod\Stored Procedures\Best_View_PR.sql" />
     <Build Include="bvt_prod\Views\Daily_Response_Curve_ecrwcellid_VW.sql" />
+    <Build Include="bvt_prod\Views\Movers_Best_View_Calendar_VW.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="Best_View_Dbase.refactorlog" />
