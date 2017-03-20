@@ -1,4 +1,6 @@
-﻿CREATE VIEW [bvt_prod].[BM_Best_View_Calendar_VW]
+﻿
+
+ALTER VIEW [bvt_prod].[BM_Best_View_Calendar_VW]
 	AS 
 	select 
 		coalesce(forecast_cv.[idFlight_Plan_Records_FK], actual_volume.[idFlight_Plan_Records_FK], actual_results.[idFlight_Plan_Records_FK]) as idFlight_Plan_Records_FK,
@@ -149,7 +151,7 @@
 			from bvt_processed.Commitment_Views 
 				-----Bring in touch definition labels 
 				left join bvt_prod.Touch_Definition_VW on Commitment_Views.[idProgram_Touch_Definitions_TBL_FK] = Touch_Definition_VW.[idProgram_Touch_Definitions_TBL]
-			where CV_Submission in ('BM Commitment View 2015', 'BM CV 2016 Submission New Program 20160809', 'BM 2017 Submission 20161213') 
+			where CV_Submission in ('BM Commitment View 2015', 'BM CV 2016 Submission New Program 20160809', 'BM 2017 Submission 20170310') 
 			GROUP BY [id_Flight_Plan_Records_FK], [idProgram_Touch_Definitions_TBL_FK], [Campaign_Name], [InHome_Date], 
 			[Media_Year], [Media_Month], [Media_Week], [Calendar_Year], [Calendar_Month], [KPI_TYPE], [Product_Code],
 			[Touch_Name], [Program_Name], [Tactic], [Media], [Audience], [Creative_Name], [Goal], [Offer], [Campaign_Type], [Channel],
