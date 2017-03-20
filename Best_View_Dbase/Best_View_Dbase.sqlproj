@@ -616,6 +616,22 @@
     <Build Include="bvt_prod\Views\BV_SCard_Hierarchy_CallStrategy_VW.sql" />
     <Build Include="bvt_prod\Tables\Target_Rate_Adjustment_Manual_TBL.sql" />
     <Build Include="bvt_prod\Views\BV_SC_Daily.sql" />
+    <Build Include="bvt_prod\Views\Email_Actuals_VW.sql" />
+    <Build Include="bvt_prod\Views\Email_Best_View_Calendar_Pivot_VW.sql" />
+    <Build Include="bvt_prod\Views\Email_Best_View_Calendar_VW.sql" />
+    <Build Include="bvt_prod\Views\Email_Best_View_Forecast_VW.sql" />
+    <Build Include="bvt_prod\Views\Email_Best_View_Pivot_VW.sql" />
+    <Build Include="bvt_prod\Views\Email_Best_View_VW.sql" />
+    <Build Include="bvt_prod\Views\Email_Financial_Budget_Forecast.sql" />
+    <Build Include="bvt_prod\Views\Email_Flight_Plan_VW.sql" />
+    <Build Include="bvt_prod\Views\Email_Flightplan_KPIRate_Daily_VW.sql" />
+    <Build Include="bvt_prod\Views\Email_Flightplan_SalesRate_Daily_VW.sql" />
+    <Build Include="bvt_prod\Views\Email_Flightplan_Volume_Forecast_VW.sql" />
+    <Build Include="bvt_prod\Views\Email_FlightplanKPIForecast.sql" />
+    <Build Include="bvt_prod\Views\Email_FlightplanSalesForecast.sql" />
+    <Build Include="bvt_prod\Stored Procedures\Forecasting_Calculations_PR.sql" />
+    <Build Include="bvt_prod\KPIRatesTrigger.sql" />
+    <Build Include="bvt_prod\Views\BV_Cube_Daily.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="Best_View_Dbase.refactorlog" />
