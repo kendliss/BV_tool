@@ -1,9 +1,10 @@
 ﻿alter PROCEDURE [bvt_prod].[Forecasting_Calculations_PR]
-	@PROG int
+	@PROG int	
 AS
+BEGIN 
+SET NOCOUNT ON
 /*Temporary Declarations for Testing*/
-Declare @PROG int;
-set @PROG=4;
+
 ------Section 1 Subselecting Tables - into temps---------
 
 -------Section 1.1 - Flightplan Selection	
@@ -19,13 +20,11 @@ IF OBJECT_ID('tempdb.dbo.#flightplan', 'U') IS NOT NULL
 			from bvt_prod.Program_Touch_Definitions_TBL
 			WHERE idProgram_LU_TBL_FK=@PROG)
 -------In Home date limitation to prevent excess calculations on old flight plan records
-	and inhome_date>='2016-07-01';
+	and inhome_date>='2016-01-01';
+
+create CLUSTERED index idx_c_flightplan_flightplanid ON #flightplan([idFlight_Plan_Records]);
 ---End Flightplan selection
----Section 1.2 - ResponseDaily
-IF OBJECT_ID('tempdb.dbo.#ResponseDaily', 'U') IS NOT NULL
-  DROP TABLE #ResponseDaily; 
-SELECT * INTO #ResponseDaily FROM [bvt_prod].[Response_Daily_Start_End_FUN](@PROG);
-----------------
+
 ----Section 1.3 - Target Adjustments
 IF OBJECT_ID('tempdb.dbo.#Trgt_adj', 'U') IS NOT NULL
   DROP TABLE #Trgt_adj;
@@ -47,7 +46,7 @@ into #volumes
 	from 
 		(select idFlight_Plan_Records, idProgram_Touch_Definitions_TBL_FK, idVolume_Type_LU_TBL_FK, idTarget_Rate_Reasons_LU_TBL_FK, 
 			inhome_date, ISO_Week_Year , MediaMonth 
-			from bvt_prod.Movers_Flight_Plan_VW left join dim.Media_Calendar_Daily on InHome_Date=Media_Calendar_Daily.Date) as flighting
+			from #flightplan left join dim.Media_Calendar_Daily on InHome_Date=Media_Calendar_Daily.Date) as flighting
 		
 		left join bvt_prod.Flight_Plan_Records_Volume on idFlight_Plan_Records=Flight_Plan_Records_Volume.idFlight_Plan_Records_FK
 		left join bvt_prod.Lead_Volumes on flighting.idProgram_Touch_Definitions_TBL_FK=Lead_Volumes.idProgram_Touch_Definitions_TBL_FK
@@ -61,6 +60,8 @@ into #volumes
 			and InHome_Date between Cpp_start_date and CPP_Start_End.end_date
 Group by idFlight_Plan_Records, idVolume_Type_LU_TBL_FK, Lead_Volumes.Volume, Target_adjustment_start_end.Volume_Adjustment
 	 , Flight_Plan_Records_Volume.Volume, InHome_Date;
+
+CREATE CLUSTERED INDEX IDX_C_volumes_flightplanid ON #volumes(idFlight_Plan_Records);
 ---------------------------------------------------------------------------------
 --End Section 1
 
@@ -177,20 +178,20 @@ from
 	, idTarget_Rate_Reasons_LU_TBL_FK
 from #flightplan as A
 	
-	left join (SELECT * FROM [bvt_prod].[KPI_Rate_Start_End_FUN](@PROG)) as B 
+	left join [bvt_processed].[KPI_Rate_Start_End] as B 
 		on A.idProgram_Touch_Definitions_TBL_FK=B.idProgram_Touch_Definitions_TBL_FK
 			AND InHome_Date between Rate_Start_Date and b.END_DATE
 	left join bvt_prod.Target_Rate_Adjustment_Manual_TBL
 		on idFlight_Plan_Records=idFlight_Plan_Records_FK and B.idkpi_types_FK=Target_Rate_Adjustment_Manual_TBL.idkpi_types_FK) as KPI_Join
 ---End Join KPI and Flight Plan	and Manual Adjustments
 
-	left join #ResponseDaily as B 
+	left join  [bvt_processed].[Response_Daily_Start_End] as B 
 		on KPI_Join.idProgram_Touch_Definitions_TBL_FK=b.idProgram_Touch_Definitions_TBL_FK and KPI_Join.idkpi_types_FK=b.idkpi_type_FK
 		and InHome_Date between daily_Start_Date and b.END_DATE) as Daily_Join
 	
 ---End Join Daily Percentages
 
-	left join (SELECT * FROM [bvt_prod].[Response_Curve_Start_End_FUN](@PROG)) as C
+	left join [bvt_processed].[Response_Curve_Start_End] as C
 		on Daily_Join.idProgram_Touch_Definitions_TBL_FK=c.idProgram_Touch_Definitions_TBL_FK and Daily_Join.idkpi_types_FK=c.idkpi_type_FK
 		and inhome_date between Curve_Start_Date and c.END_DATE
 	left join  dim.Media_Calendar_Daily 
@@ -289,21 +290,21 @@ from
 	, idTarget_Rate_Reasons_LU_TBL_FK
 from #flightplan as A
 	
-	left join (SELECT * FROM [bvt_prod].[Sales_Rate_Start_End_FUN](@PROG)) as B
+	left join [bvt_processed].[Sales_Rates_Start_End] as B
 		on A.idProgram_Touch_Definitions_TBL_FK=B.idProgram_Touch_Definitions_TBL_FK
 			and InHome_Date between Sales_Rate_Start_Date and b.END_DATE
 	left join bvt_prod.Target_Rate_Adjustment_Manual_TBL
 		on idFlight_Plan_Records=idFlight_Plan_Records_FK and B.idkpi_type_FK=Target_Rate_Adjustment_Manual_TBL.idkpi_types_FK) as SalesRate_Join
 ---End Join KPI and Flight Plan	
 
-	left join #ResponseDaily as B 
+	left join [bvt_processed].[Response_Daily_Start_End] as B 
 		on SalesRate_Join.idProgram_Touch_Definitions_TBL_FK=b.idProgram_Touch_Definitions_TBL_FK 
 			and SalesRate_Join.idkpi_type_FK=b.idkpi_type_FK
 		and InHome_Date between daily_Start_Date and b.END_DATE) as Daily_Join
 	
 ---End Join Daily Percentages
 
-	left join (SELECT * FROM [bvt_prod].[Sales_Curve_Start_End_FUN](@PROG)) as C
+	left join [bvt_processed].[Sales_Curve_Start_End] as C
 		on Daily_Join.idProgram_Touch_Definitions_TBL_FK=c.idProgram_Touch_Definitions_TBL_FK and Daily_Join.idkpi_type_FK=c.idkpi_type_FK
 		and inhome_date between Curve_Start_Date and c.END_DATE
 	left join (SELECT * FROM [bvt_prod].[Dropdate_Start_End_FUN](@PROG)) as D
@@ -345,3 +346,5 @@ where Tactic <> 'Cost'
 ;
 -------------END SECTION SALES-----------------------------------------------------
 -----END SECTION Forecasting-------------------------------------------------------
+SET NOCOUNT OFF
+END

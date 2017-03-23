@@ -632,11 +632,19 @@
     <Build Include="bvt_prod\Stored Procedures\Forecasting_Calculations_PR.sql" />
     <Build Include="bvt_prod\KPIRatesTrigger.sql" />
     <Build Include="bvt_prod\Views\BV_Cube_Daily.sql" />
+    <Build Include="bvt_prod\ResponseCurveTrigger.sql" />
+    <Build Include="bvt_prod\SalesRatesTrigger.sql" />
+    <Build Include="bvt_prod\SalesCurveTrigger.sql" />
+    <Build Include="bvt_prod\ResponseDailyTrigger.sql" />
+    <Build Include="bvt_prod\Stored Procedures\Best_View_PR.sql" />
+    <Build Include="bvt_prod\Views\Daily_Response_Curve_ecrwcellid_VW.sql" />
+    <Build Include="bvt_prod\Views\Movers_Best_View_Calendar_VW.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="Best_View_Dbase.refactorlog" />
   </ItemGroup>
   <ItemGroup>
     <None Include="UVLB CV Transforation.sql" />
+    <None Include="bvt_processed\bvt_cv_consolidated.sql" />
   </ItemGroup>
 </Project>

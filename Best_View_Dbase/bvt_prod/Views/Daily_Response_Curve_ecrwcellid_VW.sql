@@ -1,4 +1,4 @@
-﻿ALTER VIEW [bvt_prod].[Daily_Response_Curve_Parentid_VW]
+﻿CREATE VIEW [bvt_prod].[Daily_Response_Curve_ecrwcellid_VW]
 	AS 
 
 ------Acquisition Curves by day by parentid	
@@ -22,7 +22,7 @@
 			on idFlight_Plan_Records=idFlight_Plan_Records_FK
 		inner join [bvt_prod].[External_ID_linkage_TBL]
 			on [idExternal_ID_linkage_TBL]=[idExternal_ID_linkage_TBL_FK]
-	where idSource_system_LU_FK=1 and idSource_Field_Name_LU_FK=1
+ where idSource_system_LU_FK=2 and idSource_Field_Name_LU_FK=2
 	group by source_system_id, idProgram_Touch_Definitions_TBL_FK, InHome_Date) as campaigns
 	
 	left join (SELECT * FROM [bvt_prod].[Response_Daily_Start_End_FUN](8)) as daily
@@ -57,7 +57,7 @@
 			on idFlight_Plan_Records=idFlight_Plan_Records_FK
 		inner join [bvt_prod].[External_ID_linkage_TBL]
 			on [idExternal_ID_linkage_TBL]=[idExternal_ID_linkage_TBL_FK]
-	where idSource_system_LU_FK=1 and idSource_Field_Name_LU_FK=1
+ where idSource_system_LU_FK=2 and idSource_Field_Name_LU_FK=2
 	group by source_system_id, idProgram_Touch_Definitions_TBL_FK, InHome_Date) as campaigns
 	
 	left join (SELECT * FROM [bvt_prod].[Response_Daily_Start_End_FUN](6)) as daily
@@ -127,7 +127,7 @@ union*/
 			on idFlight_Plan_Records=idFlight_Plan_Records_FK
 		inner join [bvt_prod].[External_ID_linkage_TBL]
 			on [idExternal_ID_linkage_TBL]=[idExternal_ID_linkage_TBL_FK]
-		where idSource_system_LU_FK=1 and idSource_Field_Name_LU_FK=1
+	 where idSource_system_LU_FK=2 and idSource_Field_Name_LU_FK=2
 	group by source_system_id, idProgram_Touch_Definitions_TBL_FK, InHome_Date) as campaigns
 	
 	left join (SELECT * FROM [bvt_prod].[Response_Daily_Start_End_FUN](9)) as daily
@@ -163,7 +163,7 @@ UNION
 			on idFlight_Plan_Records=idFlight_Plan_Records_FK
 		inner join [bvt_prod].[External_ID_linkage_TBL]
 			on [idExternal_ID_linkage_TBL]=[idExternal_ID_linkage_TBL_FK]
-	where idSource_system_LU_FK=1 and idSource_Field_Name_LU_FK=1
+ where idSource_system_LU_FK=2 and idSource_Field_Name_LU_FK=2
 	group by source_system_id, idProgram_Touch_Definitions_TBL_FK, InHome_Date) as campaigns
 	
 	left join (SELECT * FROM [bvt_prod].[Response_Daily_Start_End_FUN](4)) as daily
@@ -264,7 +264,7 @@ SELECT
 			on idFlight_Plan_Records=idFlight_Plan_Records_FK
 		inner join [bvt_prod].[External_ID_linkage_TBL]
 			on [idExternal_ID_linkage_TBL]=[idExternal_ID_linkage_TBL_FK]
-	where idSource_system_LU_FK=1 and idSource_Field_Name_LU_FK=1
+ where idSource_system_LU_FK=2 and idSource_Field_Name_LU_FK=2
 	group by source_system_id, idProgram_Touch_Definitions_TBL_FK, InHome_Date) as campaigns
 	
 	left join (SELECT * FROM [bvt_prod].[Response_Daily_Start_End_FUN](11)) as daily
@@ -298,7 +298,7 @@ SELECT
 			on idFlight_Plan_Records=idFlight_Plan_Records_FK
 		inner join [bvt_prod].[External_ID_linkage_TBL]
 			on [idExternal_ID_linkage_TBL]=[idExternal_ID_linkage_TBL_FK]
-	where idSource_system_LU_FK=1 and idSource_Field_Name_LU_FK=1
+ where idSource_system_LU_FK=2 and idSource_Field_Name_LU_FK=2
 	group by source_system_id, idProgram_Touch_Definitions_TBL_FK, InHome_Date) as campaigns
 	
 	left join (SELECT * FROM [bvt_prod].[Response_Daily_Start_End_FUN](12)) as daily
@@ -333,7 +333,7 @@ union
 			on idFlight_Plan_Records=idFlight_Plan_Records_FK
 		inner join [bvt_prod].[External_ID_linkage_TBL]
 			on [idExternal_ID_linkage_TBL]=[idExternal_ID_linkage_TBL_FK]
-	where idSource_system_LU_FK=1 and idSource_Field_Name_LU_FK=1
+ where idSource_system_LU_FK=2 and idSource_Field_Name_LU_FK=2
 	group by source_system_id, idProgram_Touch_Definitions_TBL_FK, InHome_Date) as campaigns
 	
 	left join (SELECT * FROM [bvt_prod].[Response_Daily_Start_End_FUN](7)) as daily
