@@ -167,14 +167,14 @@ WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'Enabler Bill - Bill 
 WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'Enabler Bill - Bill Onsert' AND eCRW_Project_Name LIKE '%Voice%' THEN 1465 -- Enabler Voice Onsert
 WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'Enabler Bill - Bill Onsert' AND eCRW_Project_Name LIKE '%Welcome%' And eCRW_Project_Name NOT LIKE '%GIGA%' THEN 1466 --Enabler Welcome Onsert
 WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'Enabler Bill - Bill Onsert' AND eCRW_Project_Name LIKE '%Giga%' THEN 1468 --Enabler Gigapower Welcome Onsert
-WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'Enabler Bill - Bill Onsert' AND eCRW_Project_Name LIKE '%HSIA%' THEN 1469 --Enabler HSIA Cross Sell Onsert
+WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'Enabler Bill - Bill Onsert' AND (eCRW_Project_Name LIKE '%HSIA%' OR eCRW_Project_Name LIKE '%IPBB%') THEN 1469 --Enabler HSIA Cross Sell Onsert
 --WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'DIRECTV Bill - Bill Onsert' AND eCRW_Project_Name LIKE '%HSIA Cross%' AND eCRW_Project_Name LIKE '%D%TV%' THEN 1470 --DTV HSIA Cross Sell Bill Onsert
 WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'DIRECTV Bill - Bill Onsert' AND eCRW_Project_Name LIKE '%HSIA%' AND eCRW_Project_Name LIKE '%Spanish%' THEN 1538 -- DIRECTV INF IPBB Cross Sell Spanish
-WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'DIRECTV Bill - Bill Onsert' AND eCRW_Project_Name LIKE '%HSIA%' THEN 1537 -- DIRECTV INF IPBB Cross Sell English
+WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'DIRECTV Bill - Bill Onsert' AND (eCRW_Project_Name LIKE '%HSIA%' OR eCRW_Project_Name LIKE '%IPBB%') THEN 1537 -- DIRECTV IPBB Cross Sell
 WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'DIRECTV Bill - Bill Onsert' AND eCRW_Project_Name LIKE '%Wireless%' AND eCRW_Project_Name LIKE '%Spanish%' THEN 1540 --DIRECTV OOF WRLS Spanish Onsert
 WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'DIRECTV Bill - Bill Onsert' AND eCRW_Project_Name LIKE '%Wireless%' THEN 1539 --DIRECTV OOF WRLS Onsert
 WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'Enabler Bill - Bill Onsert' AND eCRW_Project_Name LIKE '%Wireless%' THEN 1554 --Titan WRLS Cross Sell Onsert
-WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'Mobility Bill - Bill Onsert' AND eCRW_Project_Name LIKE '%HSIA%' THEN 1627 --Mobility IPBB Cross Sell Onsert
+WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'Mobility Bill - Bill Onsert' AND (eCRW_Project_Name LIKE '%HSIA%' OR eCRW_Project_Name LIKE '%IPBB%') THEN 1627 --Mobility IPBB Cross Sell Onsert
 When Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'Mobility Bill - Bill Onsert' AND eCRW_Project_Name LIKE '%Add-a-line%' THEN 1628 --Mobility WRLS AAL Cross Sell Onsert
 
 --Bill Media -- RE
