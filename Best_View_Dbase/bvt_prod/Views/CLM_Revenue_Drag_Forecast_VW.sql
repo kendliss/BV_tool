@@ -11,7 +11,7 @@ AS
 		MediaMonth as Media_Month,
 		Media_Year,
 		Media_Week,
-		case when [idDrag_Method_LU_TBL_FK]=1 then [Metric]*[Day_Percent]/7 
+		case when [idDrag_Method_LU_TBL_FK]=1 then [Metric]*[Day_Percent]
 		--	when [idDrag_Method_LU_TBL_FK]=2 then [Metric]*[FV_Calls]
 			else 0
 			end as Drag_Calls
