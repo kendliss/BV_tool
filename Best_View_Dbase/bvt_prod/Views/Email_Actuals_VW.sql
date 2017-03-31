@@ -52,13 +52,13 @@ ALTER VIEW [bvt_prod].[Email_Actuals_VW]
 			from (
 			Select a.eCRW_Project_Name, b.parentID, a.Date, a.[Online Sales]*b.Cell_Percent as Daily_Sales 
 			from bvt_processed.DTV_Now_Sales_by_day a
-			JOIN  bvt_prod.DTV_Now_Sales_App b
+			JOIN  bvt_prod.DTV_Now_Sales_App_VW b
 				on a.eCRW_Cell_ID = b.ecrw_Cell_ID
 			UNION
 			Select a.eCRW_Project_Name, b.parentID, a.Date, a.[Online Sales]*b.Cell_Percent as Daily_Sales from 
 				(Select * from bvt_processed.DTV_Now_Sales_by_day
 				where eCRW_Cell_ID is null) a
-				JOIN  (Select * from bvt_prod.DTV_Now_Sales_App
+				JOIN  (Select * from bvt_prod.DTV_Now_Sales_App_VW
 				where Cell_percent <> 1) b
 				on a.eCRW_Project_Name = b.eCRW_Project_Name
 				where a.eCRW_Cell_ID is null) a
