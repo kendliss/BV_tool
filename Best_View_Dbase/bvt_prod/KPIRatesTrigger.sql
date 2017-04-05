@@ -1,4 +1,4 @@
-﻿CREATE TRIGGER [KPIRatesTrigger]
+﻿ALTER TRIGGER bvt_prod.[KPIRatesTrigger]
 ON bvt_prod.KPI_Rates
 AFTER Insert, Update, Delete
 AS
@@ -65,5 +65,7 @@ INSERT INTO [bvt_processed].[KPI_Rate_Start_End]
 ([idProgram_Touch_Definitions_TBL_FK], [idkpi_types_FK], [KPI_Rate], [Rate_Start_Date], [END_DATE])
 SELECT * from #kpistartend;
 
+--------------Reorg the index on the table-------------
+ALTER INDEX [IDX_NC_KPIRATE_STRT_END] ON [bvt_processed].[KPI_Rate_Start_End] Reorganize;
 
 END
