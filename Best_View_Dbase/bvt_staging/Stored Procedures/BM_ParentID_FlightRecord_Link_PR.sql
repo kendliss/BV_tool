@@ -119,7 +119,7 @@ WHEN Media_Code = 'FPC' AND Scorecard_Program_Channel = 'Mobility Bill - FPC' AN
 WHEN Media_Code = 'FPC' AND Scorecard_Program_Channel = 'Mobility Bill - FPC' AND eCRW_Project_Name LIKE '%Add_a_Line%' THEN 1624 --Mobility WRLS AAL FPC
 
 --Bill Media -- FYI
--- Still Missing: 1485, 1631, 1686
+-- Still Missing: 1485, 1631
 
 WHEN Media_Code = 'FYI' AND Scorecard_Program_Channel = 'Wireline Bill - Bill Message' AND eCRW_Project_Name LIKE '%Wireline%' AND eCRW_Project_Name LIKE '%TV%' AND eCRW_Project_Name LIKE '%Spanish%' THEN 1471 --Wireline TV Cross Sell Spanish Bill Message
 WHEN Media_Code = 'FYI' AND Scorecard_Program_Channel = 'Mobility Bill - Bill Message' AND eCRW_Project_Name LIKE '%Wireless%' AND eCRW_Project_Name LIKE '%TV%' AND eCRW_Project_Name LIKE '%Spanish%' THEN 1472 --Wireless DTV Cross Sell Spanish Bill Message
@@ -144,7 +144,9 @@ WHEN Media_Code = 'FYI' AND Scorecard_Program_Channel = 'Mobility Bill - Bill Me
 WHEN Media_Code = 'FYI' AND Scorecard_Program_Channel = 'Enabler Bill - Bill Message' AND (eCRW_Project_Name LIKE '%_ALL_%' OR eCRW_Project_Name LIKE '%Generic%' OR eCRW_Project_Name LIKE '%Bundles%') AND eCRW_Project_Name LIKE '%Spanish%' THEN 1569 --Enabler Spanish Thank you Bill Message
 WHEN Media_Code = 'FYI' AND Scorecard_Program_Channel = 'Enabler Bill - Bill Message' AND (eCRW_Project_Name LIKE '%_ALL_%' OR eCRW_Project_Name LIKE '%Generic%' OR eCRW_Project_Name LIKE '%Bundles%') THEN 1558 --Enabler Thank you Bill Message
 WHEN Media_Code = 'FYI' AND Scorecard_Program_Channel = 'Mobility Bill - Bill Message' AND eCRW_Project_Name LIKE '%Add-a-line%' THEN 1625 --Wireless WRLS AAL Bill Message
-WHEN Media_Code = 'FYI' and Scorecard_Program_Channel = 'DIRECTV Bill - Bill Message' AND eCRW_Project_Name LIKE '%Wireless%' THEN 1633 -- DirecTV WRLS Cross Sell Bill Message
+WHEN Media_Code = 'FYI' AND Scorecard_Program_Channel = 'DIRECTV Bill - Bill Message' AND eCRW_Project_Name LIKE '%Wireless%' THEN 1633 -- DirecTV WRLS Cross Sell Bill Message
+WHEN Media_Code = 'FYI' AND Scorecard_Program_Channel = 'DIRECTV Bill - Bill Message' AND eCRW_Project_Name LIKE '%Bundle%' THEN 1686 --DIRECTV Bundles Bill Message 
+
 
 -- Bill Media -- OE
 -- Still Missing:
