@@ -655,6 +655,8 @@ coalesce(forecast_cv.[idFlight_Plan_Records_FK], #volumebudget.[idFlight_Plan_Re
 		coalesce(forecast_cv.[Scorecard_Program_Channel], #volumebudget.[Scorecard_Program_Channel], #ResponseSales.[Scorecard_Program_Channel]) as Scorecard_Program_Channel,
 		coalesce(forecast_cv.[KPI_Type], #volumebudget.[KPI_Type], #ResponseSales.[KPI_Type]) as KPI_Type,
 		coalesce(forecast_cv.[Product_Code], #volumebudget.[Product_Code],  #ResponseSales.[Product_Code]) as Product_Code
+		,strategy_eligibility
+		,lead_offer
 		,isnull([Forecast],0) as Forecast
 		,isnull([Commitment],0) as Commitment
 		,isnull(coalesce(#volumebudget.[Actual], #ResponseSales.[Actual]),0) as Actual
@@ -709,6 +711,8 @@ FROM
 	  ,coalesce(forecast.[Media_YYYYWW], cv.[Media_YYYYWW]) as Media_YYYYWW
 	  ,coalesce(forecast.[Calendar_Year], cv.[Calendar_Year]) as Calendar_Year
 	  ,coalesce(forecast.[Calendar_Month], cv.[Calendar_Month]) as Calendar_Month
+	  ,forecast.Strategy_Eligibility
+      ,forecast.Lead_Offer
       ,sum(forecast.[Forecast]) as Forecast
 	  ,sum(CV.forecast) as Commitment 
 FROM #forecast as forecast
@@ -739,6 +743,8 @@ group by Coalesce(forecast.[idFlight_Plan_Records], cv.[idFlight_Plan_Records])
       ,coalesce(forecast.[Scorecard_Program_Channel], cv.[Scorecard_Program_Channel])
       ,coalesce(forecast.[KPI_Type], cv.[KPI_Type])
       ,coalesce(forecast.[Product_Code], cv.[Product_Code])
+	  ,forecast.Strategy_Eligibility
+      ,forecast.Lead_Offer
 	  ,coalesce(forecast.[media_year], cv.[media_year])
 	  ,coalesce(forecast.[media_month], cv.[media_month])
 	  ,coalesce(forecast.[media_week], cv.[media_week])
