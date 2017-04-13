@@ -370,10 +370,10 @@ left join
 		on #flightplan.idProgram_Touch_Definitions_TBL_FK=idProgram_Touch_Definitions_TBL
 left join
 bvt_prod.Strategy_Eligibility_LU_TBL strat
-	on FPR.Strategy_Eligibility_LU_TBL_FK = strat.idStrategy_Eligibility_LU_TBL
+	on #flightplan.Strategy_Eligibility_LU_TBL_FK = strat.idStrategy_Eligibility_LU_TBL
 left join
 bvt_prod.Lead_Offer_LU_TBL lead
-	on FPR.Lead_Offer_LU_TBL_FK = lead.idLead_Offer_LU_TBL
+	on #flightplan.Lead_Offer_LU_TBL_FK = lead.idLead_Offer_LU_TBL
 where Tactic <> 'Cost'	
 ;
 
@@ -421,13 +421,13 @@ select IR_Campaign_Data_Weekly_MAIN_2012_Sbset.Parentid, idFlight_Plan_Records_F
 			from (
 			Select a.eCRW_Project_Name, b.parentID, a.Date, a.[Online Sales]*b.Cell_Percent as Daily_Sales 
 			from bvt_processed.DTV_Now_Sales_by_day a
-			JOIN  bvt_prod.DTV_Now_Sales_App b
+			JOIN  bvt_prod.DTV_Now_Sales_App_VW b
 				on a.eCRW_Cell_ID = b.ecrw_Cell_ID
 			UNION
 			Select a.eCRW_Project_Name, b.parentID, a.Date, a.[Online Sales]*b.Cell_Percent as Daily_Sales from 
 				(Select * from bvt_processed.DTV_Now_Sales_by_day
 				where eCRW_Cell_ID is null) a
-				JOIN  (Select * from bvt_prod.DTV_Now_Sales_App
+				JOIN  (Select * from bvt_prod.DTV_Now_Sales_App_VW
 				where Cell_percent <> 1) b
 				on a.eCRW_Project_Name = b.eCRW_Project_Name
 				where a.eCRW_Cell_ID is null) a
