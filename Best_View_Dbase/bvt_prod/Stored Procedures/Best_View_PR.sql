@@ -99,6 +99,8 @@ IF OBJECT_ID('tempdb.dbo.#forecast', 'U') IS NOT NULL
 select #flightplan.idFlight_Plan_Records
 	, #flightplan.Campaign_Name
 	, #flightplan.InHome_Date
+	, strat.Strategy_Eligibility
+	, lead.Lead_Offer
 	
 ---Media_Calendar_Info
 	, Media_Calendar_Daily.ISO_Week_Year as Media_Year
@@ -123,6 +125,7 @@ select #flightplan.idFlight_Plan_Records
 	, channel
 	, Scorecard_Group
 	, Scorecard_Program_Channel
+
 
 ----Metrics
 	, KPI_Type
@@ -365,7 +368,12 @@ left join
 -----Bring in touch definition labels 
 #touchdef as touchdef
 		on #flightplan.idProgram_Touch_Definitions_TBL_FK=idProgram_Touch_Definitions_TBL
-
+left join
+bvt_prod.Strategy_Eligibility_LU_TBL strat
+	on FPR.Strategy_Eligibility_LU_TBL_FK = strat.idStrategy_Eligibility_LU_TBL
+left join
+bvt_prod.Lead_Offer_LU_TBL lead
+	on FPR.Lead_Offer_LU_TBL_FK = lead.idLead_Offer_LU_TBL
 where Tactic <> 'Cost'	
 ;
 
