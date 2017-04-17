@@ -4,7 +4,10 @@
 ------Acquisition Curves by day by parentid	
 	SELECT 
 		parentid
-		, DATEADD(day,Day_of_Week,DATEADD(week,curve.Week_ID,InHome_Date)) as Forecast_DayDate
+		, case when day_of_week=datepart(WEEKDAY,inhome_date) then DATEADD(week,curve.Week_ID,InHome_Date)
+			when day_of_week<datepart(WEEKDAY,inhome_date) then DATEADD(day,7-datepart(WEEKDAY,inhome_date)+Day_of_Week,DATEADD(week,curve.Week_ID,InHome_Date))
+			else DATEADD(day,Day_of_Week-datepart(WEEKDAY,inhome_date),DATEADD(week,curve.Week_ID,InHome_Date))
+			end as Forecast_DayDate
 		, daily_perc.idKPI_TYPE_fk
 		, Day_Percent*week_percent as response_percent 
 		, daily_perc.idProgram_Touch_Definitions_TBL_FK
@@ -39,7 +42,10 @@
 ------X Sell Curves by day by parentid
 	SELECT 
 		parentid
-		, DATEADD(day,Day_of_Week,DATEADD(week,curve.Week_ID,InHome_Date)) as Forecast_DayDate
+		, case when day_of_week=datepart(WEEKDAY,inhome_date) then DATEADD(week,curve.Week_ID,InHome_Date)
+			when day_of_week<datepart(WEEKDAY,inhome_date) then DATEADD(day,7-datepart(WEEKDAY,inhome_date)+Day_of_Week,DATEADD(week,curve.Week_ID,InHome_Date))
+			else DATEADD(day,Day_of_Week-datepart(WEEKDAY,inhome_date),DATEADD(week,curve.Week_ID,InHome_Date))
+			end as Forecast_DayDate
 		, daily_perc.idKPI_TYPE_fk
 		, Day_Percent*week_percent as response_percent 
 		, daily_perc.idProgram_Touch_Definitions_TBL_FK
@@ -109,7 +115,10 @@ union*/
 ----------Revenue Curves by day by parentid----------------------
 	SELECT 
 		parentid
-		, DATEADD(day,curve.Week_ID,InHome_Date) as Forecast_DayDate
+		, case when day_of_week=datepart(WEEKDAY,inhome_date) then DATEADD(week,curve.Week_ID,InHome_Date)
+			when day_of_week<datepart(WEEKDAY,inhome_date) then DATEADD(day,7-datepart(WEEKDAY,inhome_date)+Day_of_Week,DATEADD(week,curve.Week_ID,InHome_Date))
+			else DATEADD(day,Day_of_Week-datepart(WEEKDAY,inhome_date),DATEADD(week,curve.Week_ID,InHome_Date))
+			end as Forecast_DayDate
 		, daily_perc.idKPI_TYPE_fk
 		, Day_Percent*week_percent as response_percent 
 		, daily_perc.idProgram_Touch_Definitions_TBL_FK
@@ -145,7 +154,10 @@ UNION
 -------------------Movers Curves by day by parentid-----------------------
 	SELECT 
 		parentid
-		, DATEADD(day,Day_of_Week,DATEADD(week,curve.Week_ID-1,InHome_Date)) as Forecast_DayDate
+		, case when day_of_week=datepart(WEEKDAY,inhome_date) then DATEADD(week,curve.Week_ID,InHome_Date)
+			when day_of_week<datepart(WEEKDAY,inhome_date) then DATEADD(day,7-datepart(WEEKDAY,inhome_date)+Day_of_Week,DATEADD(week,curve.Week_ID,InHome_Date))
+			else DATEADD(day,Day_of_Week-datepart(WEEKDAY,inhome_date),DATEADD(week,curve.Week_ID,InHome_Date))
+			end as Forecast_DayDate
 		, daily_perc.idKPI_TYPE_fk
 		, Day_Percent*week_percent as response_percent 
 		, daily_perc.idProgram_Touch_Definitions_TBL_FK
@@ -246,7 +258,10 @@ SELECT
 ------Email Curves by day by parentid
 	SELECT 
 		parentid
-		, DATEADD(day,Day_of_Week,DATEADD(week,curve.Week_ID,InHome_Date)) as Forecast_DayDate
+		, case when day_of_week=datepart(WEEKDAY,inhome_date) then DATEADD(week,curve.Week_ID,InHome_Date)
+			when day_of_week<datepart(WEEKDAY,inhome_date) then DATEADD(day,7-datepart(WEEKDAY,inhome_date)+Day_of_Week,DATEADD(week,curve.Week_ID,InHome_Date))
+			else DATEADD(day,Day_of_Week-datepart(WEEKDAY,inhome_date),DATEADD(week,curve.Week_ID,InHome_Date))
+			end as Forecast_DayDate
 		, daily_perc.idKPI_TYPE_fk
 		, Day_Percent*week_percent as response_percent 
 		, daily_perc.idProgram_Touch_Definitions_TBL_FK
@@ -280,7 +295,10 @@ SELECT
 ------Mig Curves by day by parentid
 	SELECT 
 		parentid
-		, DATEADD(day,Day_of_Week,DATEADD(week,curve.Week_ID,InHome_Date)) as Forecast_DayDate
+		, case when day_of_week=datepart(WEEKDAY,inhome_date) then DATEADD(week,curve.Week_ID,InHome_Date)
+			when day_of_week<datepart(WEEKDAY,inhome_date) then DATEADD(day,7-datepart(WEEKDAY,inhome_date)+Day_of_Week,DATEADD(week,curve.Week_ID,InHome_Date))
+			else DATEADD(day,Day_of_Week-datepart(WEEKDAY,inhome_date),DATEADD(week,curve.Week_ID,InHome_Date))
+			end as Forecast_DayDate
 		, daily_perc.idKPI_TYPE_fk
 		, Day_Percent*week_percent as response_percent 
 		, daily_perc.idProgram_Touch_Definitions_TBL_FK
@@ -315,7 +333,10 @@ union
 ------CSBM Curves by day by parentid
 	SELECT 
 		parentid
-		, DATEADD(day,Day_of_Week,DATEADD(week,curve.Week_ID,InHome_Date)) as Forecast_DayDate
+		, case when day_of_week=datepart(WEEKDAY,inhome_date) then DATEADD(week,curve.Week_ID,InHome_Date)
+			when day_of_week<datepart(WEEKDAY,inhome_date) then DATEADD(day,7-datepart(WEEKDAY,inhome_date)+Day_of_Week,DATEADD(week,curve.Week_ID,InHome_Date))
+			else DATEADD(day,Day_of_Week-datepart(WEEKDAY,inhome_date),DATEADD(week,curve.Week_ID,InHome_Date))
+			end as Forecast_DayDate
 		, daily_perc.idKPI_TYPE_fk
 		, Day_Percent*week_percent as response_percent 
 		, daily_perc.idProgram_Touch_Definitions_TBL_FK
