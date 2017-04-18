@@ -43,21 +43,30 @@ from
 (select 
 	a.idFlight_Plan_Records
 	, a.idProgram_Touch_Definitions_TBL_FK
-	, idkpi_types_FK
+	, b.idkpi_types_FK
 	
   --Code to account for having a TFN or URL or not in flightplan entry
-	, case when tfn_ind=-1 and idkpi_types_FK=1 then KPI_Rate
-		when TFN_ind=0 and idkpi_types_FK=1 then 0
-		when URL_ind=-1 and idkpi_types_FK=2 then KPI_Rate
-		when URL_ind=0 and idkpi_types_FK=2 then 0
+	, case when adjustment is null then (case when tfn_ind=-1 and b.idkpi_types_FK=1 then KPI_Rate
+		when TFN_ind=0 and b.idkpi_types_FK=1 then 0
+		when URL_ind=-1 and b.idkpi_types_FK=2 then KPI_Rate
+		when URL_ind=0 and b.idkpi_types_FK=2 then 0
 		else KPI_Rate
-		end as KPI_Rate
+		end)
+	else (case when tfn_ind=-1 and b.idkpi_types_FK=1 then KPI_Rate*adjustment
+		when TFN_ind=0 and b.idkpi_types_FK=1 then 0
+		when URL_ind=-1 and b.idkpi_types_FK=2 then KPI_Rate*adjustment
+		when URL_ind=0 and b.idkpi_types_FK=2 then 0
+		else KPI_Rate*adjustment
+		end) 
+	end as KPI_Rate
 	, InHome_Date
 	, idTarget_Rate_Reasons_LU_TBL_FK
 from [bvt_prod].[BM_Flight_Plan_VW] as A
 	
 	left join (SELECT * FROM [bvt_prod].[KPI_Rate_Start_End_FUN](7)) as B on A.idProgram_Touch_Definitions_TBL_FK=B.idProgram_Touch_Definitions_TBL_FK
-	AND InHome_Date between Rate_Start_Date and b.END_DATE) as KPI_Join
+	AND InHome_Date between Rate_Start_Date and b.END_DATE
+		left join bvt_prod.Target_Rate_Adjustment_Manual_TBL
+		on idFlight_Plan_Records=idFlight_Plan_Records_FK and B.idkpi_types_FK=Target_Rate_Adjustment_Manual_TBL.idkpi_types_FK) as KPI_Join
 ---End Join KPI and Flight Plan	
 
 	left join (SELECT * FROM [bvt_prod].[Response_Daily_Start_End_FUN](7)) as B 

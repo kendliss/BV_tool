@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE [bvt_prod].[Best_View_Pivoted_PR]
+﻿ALTER PROCEDURE [bvt_prod].[Best_View_Pivoted_PR]
 @PROG int	
 AS
 BEGIN 
@@ -522,8 +522,8 @@ from
 		when kpiproduct like '%CTECH%' then 'ConnecTech'
 		when kpiproduct like '%DLIFE%' then 'Digital Life'
 		when kpiproduct like '%WHP%' then 'WRLS Home'
+		when kpiproduct like '%DTVNow%' then 'DTV Now'
 		end as Product_Code
-
 , sum(Actuals.[Actual]) as Actual
 
 from #actuals
@@ -538,7 +538,7 @@ UNPIVOT (Actual for kpiproduct in
 			[ITP_Dir_Sales_ON_CING_VOICE_N], [ITP_Dir_Sales_ON_CING_FAMILY_N], [ITP_Dir_Sales_ON_CING_DATA_N], [ITP_Dir_Sales_ON_DISH_N], 
 			[ITP_Dir_Sales_ON_DSL_REG_N], [ITP_Dir_Sales_ON_DSL_DRY_N], [ITP_Dir_Sales_ON_DSL_IP_N], [ITP_Dir_Sales_ON_UVRS_HSIAG_N],
 			[ITP_Dir_Sales_ON_UVRS_HSIA_N], [ITP_Dir_Sales_ON_UVRS_TV_N], [ITP_Dir_Sales_ON_UVRS_BOLT_N], [ITP_Dir_Sales_ON_LOCAL_ACCL_N], 
-			[ITP_Dir_Sales_ON_UVRS_VOIP_N], [ITP_Dir_Sales_ON_DLIFE_N], [ITP_Dir_Sales_ON_CING_WHP_N], [ITP_Dir_Sales_ON_Migrations])) as Actuals
+			[ITP_Dir_Sales_ON_UVRS_VOIP_N], [ITP_Dir_Sales_ON_DLIFE_N], [ITP_Dir_Sales_ON_CING_WHP_N], [ITP_Dir_Sales_ON_Migrations], [ITP_Dir_Sales_ON_DTVNOW_N])) as Actuals
 GROUP BY [idFlight_Plan_Records_FK], [Report_Year], [Report_Week], [Calendar_Year], [Calendar_Month]
 
 , case
@@ -568,6 +568,7 @@ GROUP BY [idFlight_Plan_Records_FK], [Report_Year], [Report_Week], [Calendar_Yea
 	when kpiproduct like '%CTECH%' then 'ConnecTech'
 	when kpiproduct like '%DLIFE%' then 'Digital Life'
 	when kpiproduct like '%WHP%' then 'WRLS Home'
+	when kpiproduct like '%DTVNow%' then 'DTV Now'
 	end 
 	) as actuals 
 	inner join #flightplan on [idFlight_Plan_Records_FK] = [idFlight_Plan_Records]
@@ -776,7 +777,7 @@ FULL JOIN #ResponseSales
 Select
 	[idFlight_Plan_Records_FK], [Campaign_Name], [InHome_Date], [Strategy_Eligibility], [Lead_Offer], [Media_Year], [Media_Week], [Media_Month], [Touch_Name]
 	, [Program_Name], [Tactic], [Media], [Campaign_Type], [Audience], [Creative_Name], [Goal], [Offer], [Channel], [Scorecard_Group], [Scorecard_Program_Channel]
-	, CONVERT(VARCHAR(6),InHome_Date,112) AS Start_Month, M_Schedule,
+	, CONVERT(VARCHAR(6),InHome_Date,112) AS Start_Month, M_Schedule, [Calendar_Year], [Calendar_Month],
 sum(isnull([Call_CV], 0)) as [Call_CV], 
 sum(isnull([Online_CV], 0)) as [Online_CV], 
 sum(isnull([Online_sales_Access Line_CV], 0)) as [Online_sales_Access Line_CV], 
@@ -855,6 +856,7 @@ sum(isnull([Online_sales_WRLS Family_AV], 0)) as [Online_sales_WRLS Family_AV],
 sum(isnull([Online_sales_WRLS Voice_AV], 0)) as [Online_sales_WRLS Voice_AV],
 sum(isnull([Online_sales_WRLS Home_AV], 0)) as [Online_sales_WRLS Home_AV], 
 sum(isnull([Online_sales_Digital Life_AV], 0)) as [Online_sales_Digital Life_AV],
+sum(isnull([Online_Sales_DTV Now_AV],0)) as [Online_sales_DTV Now_AV],
 sum(isnull([Telesales_Access Line_AV], 0)) as [Telesales_Access Line_AV], 
 sum(isnull([Telesales_DSL_AV], 0)) as [Telesales_DSL_AV], 
 sum(isnull([Telesales_DSL Direct_AV], 0)) as [Telesales_DSL Direct_AV], 
@@ -901,17 +903,203 @@ sum(isnull([Telesales_WRLS Voice_BV], 0)) as [Telesales_WRLS Voice_BV],
 sum(isnull([Telesales_WRLS Home_BV], 0)) as [Telesales_WRLS Home_BV], 
 sum(isnull([Telesales_Digital Life_BV], 0)) as [Telesales_Digital Life_BV], 
 sum(isnull([Volume_BV], 0)) as [Volume_BV],
-sum(isnull([Online_sales_Access Line_CV], 0))+ sum(isnull([Online_sales_DSL_CV], 0))+ sum(isnull([Online_sales_DSL Direct_CV], 0))+ sum(isnull([Online_sales_HSIA_CV], 0))+ sum(isnull([Online_sales_Fiber_CV], 0))+ sum(isnull([Online_sales_IPDSL_CV], 0))+ sum(isnull([Online_sales_DirecTV_CV], 0))+ sum(isnull([Online_sales_UVTV_CV], 0))+ sum(isnull([Online_sales_VoIP_CV], 0))+ sum(isnull([Online_sales_WRLS Data_CV], 0))+ sum(isnull([Online_sales_WRLS Family_CV], 0))+ sum(isnull([Online_sales_WRLS Voice_CV], 0))+ sum(isnull([Online_sales_WRLS Home_CV], 0))+ sum(isnull([Online_sales_Digital Life_CV], 0)) as Online_Strat_CV,
-sum(isnull([Online_sales_Access Line_BV], 0))+ sum(isnull([Online_sales_DSL_BV], 0))+ sum(isnull([Online_sales_DSL Direct_BV], 0))+ sum(isnull([Online_sales_HSIA_BV], 0))+ sum(isnull([Online_sales_Fiber_BV], 0))+ sum(isnull([Online_sales_IPDSL_BV], 0))+ sum(isnull([Online_sales_DirecTV_BV], 0))+ sum(isnull([Online_sales_UVTV_BV], 0))+ sum(isnull([Online_sales_VoIP_BV], 0))+ sum(isnull([Online_sales_WRLS Data_BV], 0))+ sum(isnull([Online_sales_WRLS Family_BV], 0))+ sum(isnull([Online_sales_WRLS Voice_BV], 0))+ sum(isnull([Online_sales_WRLS Home_BV], 0))+ sum(isnull([Online_sales_Digital Life_BV], 0)) as Online_Strat_BV,
-sum(isnull([Online_sales_Access Line_FV], 0))+ sum(isnull([Online_sales_DSL_FV], 0))+ sum(isnull([Online_sales_DSL Direct_FV], 0))+ sum(isnull([Online_sales_HSIA_FV], 0))+ sum(isnull([Online_sales_Fiber_FV], 0))+ sum(isnull([Online_sales_IPDSL_FV], 0))+ sum(isnull([Online_sales_DirecTV_FV], 0))+ sum(isnull([Online_sales_UVTV_FV], 0))+ sum(isnull([Online_sales_VoIP_FV], 0))+ sum(isnull([Online_sales_WRLS Data_FV], 0))+ sum(isnull([Online_sales_WRLS Family_FV], 0))+ sum(isnull([Online_sales_WRLS Voice_FV], 0))+ sum(isnull([Online_sales_WRLS Home_FV], 0))+ sum(isnull([Online_sales_Digital Life_FV], 0)) as Online_Strat_FV,
-sum(isnull([Online_sales_Access Line_AV], 0))+ sum(isnull([Online_sales_DSL_AV], 0))+ sum(isnull([Online_sales_DSL Direct_AV], 0))+ sum(isnull([Online_sales_HSIA_AV], 0))+ sum(isnull([Online_sales_Fiber_AV], 0))+ sum(isnull([Online_sales_IPDSL_AV], 0))+ sum(isnull([Online_sales_DirecTV_AV], 0))+ sum(isnull([Online_sales_UVTV_AV], 0))+ sum(isnull([Online_sales_VoIP_AV], 0))+ sum(isnull([Online_sales_WRLS Data_AV], 0))+ sum(isnull([Online_sales_WRLS Family_AV], 0))+ sum(isnull([Online_sales_WRLS Voice_AV], 0))+ sum(isnull([Online_sales_WRLS Home_AV], 0))+ sum(isnull([Online_sales_Digital Life_BV], 0)) as Online_Strat_AV,
-sum(isnull([Telesales_Access Line_CV], 0))+ sum(isnull([Telesales_DSL_CV], 0))+ sum(isnull([Telesales_DSL Direct_CV], 0))+ sum(isnull([Telesales_HSIA_CV], 0))+ sum(isnull([Telesales_Fiber_CV], 0))+ sum(isnull([Telesales_IPDSL_CV], 0))+ sum(isnull([Telesales_DirecTV_CV], 0))+ sum(isnull([Telesales_UVTV_CV], 0))+ sum(isnull([Telesales_VoIP_CV], 0))+ sum(isnull([Telesales_WRLS Data_CV], 0))+ sum(isnull([Telesales_WRLS Family_CV], 0))+ sum(isnull([Telesales_WRLS Voice_CV], 0))+ sum(isnull([Telesales_WRLS Home_CV], 0))+ sum(isnull([Telesales_Digital Life_CV], 0)) as Telesales_Strat_CV,
-sum(isnull([Telesales_Access Line_BV], 0))+ sum(isnull([Telesales_DSL_BV], 0))+ sum(isnull([Telesales_DSL Direct_BV], 0))+ sum(isnull([Telesales_HSIA_BV], 0))+ sum(isnull([Telesales_Fiber_BV], 0))+ sum(isnull([Telesales_IPDSL_BV], 0))+ sum(isnull([Telesales_DirecTV_BV], 0))+ sum(isnull([Telesales_UVTV_BV], 0))+ sum(isnull([Telesales_VoIP_BV], 0))+ sum(isnull([Telesales_WRLS Data_BV], 0))+ sum(isnull([Telesales_WRLS Family_BV], 0))+ sum(isnull([Telesales_WRLS Voice_BV], 0))+ sum(isnull([Telesales_WRLS Home_BV], 0))+ sum(isnull([Telesales_Digital Life_BV], 0)) as Telesales_Strat_BV,
-sum(isnull([Telesales_Access Line_FV], 0))+ sum(isnull([Telesales_DSL_FV], 0))+ sum(isnull([Telesales_DSL Direct_FV], 0))+ sum(isnull([Telesales_HSIA_FV], 0))+ sum(isnull([Telesales_Fiber_FV], 0))+ sum(isnull([Telesales_IPDSL_FV], 0))+ sum(isnull([Telesales_DirecTV_FV], 0))+ sum(isnull([Telesales_UVTV_FV], 0))+ sum(isnull([Telesales_VoIP_FV], 0))+ sum(isnull([Telesales_WRLS Data_FV], 0))+ sum(isnull([Telesales_WRLS Family_FV], 0))+ sum(isnull([Telesales_WRLS Voice_FV], 0))+ sum(isnull([Telesales_WRLS Home_FV], 0))+ sum(isnull([Telesales_Digital Life_FV], 0)) as Telesales_Strat_FV,
-sum(isnull([Telesales_Access Line_AV], 0))+ sum(isnull([Telesales_DSL_AV], 0))+ sum(isnull([Telesales_DSL Direct_AV], 0))+ sum(isnull([Telesales_HSIA_AV], 0))+ sum(isnull([Telesales_Fiber_AV], 0))+ sum(isnull([Telesales_IPDSL_AV], 0))+ sum(isnull([Telesales_DirecTV_AV], 0))+ sum(isnull([Telesales_UVTV_AV], 0))+ sum(isnull([Telesales_VoIP_AV], 0))+ sum(isnull([Telesales_WRLS Data_AV], 0))+ sum(isnull([Telesales_WRLS Family_AV], 0))+ sum(isnull([Telesales_WRLS Voice_AV], 0))+ sum(isnull([Telesales_WRLS Home_AV], 0))+ sum(isnull([Telesales_Digital Life_AV], 0)) as Telesales_Strat_AV
+sum(isnull([Online_sales_Access Line_CV], 0))+ sum(isnull([Online_sales_DSL_CV], 0))+ sum(isnull([Online_sales_DSL Direct_CV], 0))+ sum(isnull([Online_sales_HSIA_CV], 0))+ sum(isnull([Online_sales_Fiber_CV], 0))+ sum(isnull([Online_sales_IPDSL_CV], 0))+ sum(isnull([Online_sales_DirecTV_CV], 0))+ sum(isnull([Online_sales_UVTV_CV], 0))+ sum(isnull([Online_sales_VoIP_CV], 0))+ sum(isnull([Online_sales_WRLS Data_CV], 0))+ sum(isnull([Online_sales_WRLS Family_CV], 0))+ sum(isnull([Online_sales_WRLS Voice_CV], 0))+ sum(isnull([Online_sales_WRLS Home_CV], 0))+ sum(isnull([Online_sales_Digital Life_CV], 0)) as Online_Total_CV,
+sum(isnull([Online_sales_Access Line_BV], 0))+ sum(isnull([Online_sales_DSL_BV], 0))+ sum(isnull([Online_sales_DSL Direct_BV], 0))+ sum(isnull([Online_sales_HSIA_BV], 0))+ sum(isnull([Online_sales_Fiber_BV], 0))+ sum(isnull([Online_sales_IPDSL_BV], 0))+ sum(isnull([Online_sales_DirecTV_BV], 0))+ sum(isnull([Online_sales_UVTV_BV], 0))+ sum(isnull([Online_sales_VoIP_BV], 0))+ sum(isnull([Online_sales_WRLS Data_BV], 0))+ sum(isnull([Online_sales_WRLS Family_BV], 0))+ sum(isnull([Online_sales_WRLS Voice_BV], 0))+ sum(isnull([Online_sales_WRLS Home_BV], 0))+ sum(isnull([Online_sales_Digital Life_BV], 0)) as Online_Total_BV,
+sum(isnull([Online_sales_Access Line_FV], 0))+ sum(isnull([Online_sales_DSL_FV], 0))+ sum(isnull([Online_sales_DSL Direct_FV], 0))+ sum(isnull([Online_sales_HSIA_FV], 0))+ sum(isnull([Online_sales_Fiber_FV], 0))+ sum(isnull([Online_sales_IPDSL_FV], 0))+ sum(isnull([Online_sales_DirecTV_FV], 0))+ sum(isnull([Online_sales_UVTV_FV], 0))+ sum(isnull([Online_sales_VoIP_FV], 0))+ sum(isnull([Online_sales_WRLS Data_FV], 0))+ sum(isnull([Online_sales_WRLS Family_FV], 0))+ sum(isnull([Online_sales_WRLS Voice_FV], 0))+ sum(isnull([Online_sales_WRLS Home_FV], 0))+ sum(isnull([Online_sales_Digital Life_FV], 0)) as Online_Total_FV,
+sum(isnull([Online_sales_Access Line_AV], 0))+ sum(isnull([Online_sales_DSL_AV], 0))+ sum(isnull([Online_sales_DSL Direct_AV], 0))+ sum(isnull([Online_sales_HSIA_AV], 0))+ sum(isnull([Online_sales_Fiber_AV], 0))+ sum(isnull([Online_sales_IPDSL_AV], 0))+ sum(isnull([Online_sales_DirecTV_AV], 0))+ sum(isnull([Online_sales_UVTV_AV], 0))+ sum(isnull([Online_sales_VoIP_AV], 0))+ sum(isnull([Online_sales_WRLS Data_AV], 0))+ sum(isnull([Online_sales_WRLS Family_AV], 0))+ sum(isnull([Online_sales_WRLS Voice_AV], 0))+ sum(isnull([Online_sales_WRLS Home_AV], 0))+ sum(isnull([Online_sales_Digital Life_BV], 0))+ sum(isnull([Online_Sales_DTV Now_AV],0)) as Online_Total_AV,
+sum(isnull([Telesales_Access Line_CV], 0))+ sum(isnull([Telesales_DSL_CV], 0))+ sum(isnull([Telesales_DSL Direct_CV], 0))+ sum(isnull([Telesales_HSIA_CV], 0))+ sum(isnull([Telesales_Fiber_CV], 0))+ sum(isnull([Telesales_IPDSL_CV], 0))+ sum(isnull([Telesales_DirecTV_CV], 0))+ sum(isnull([Telesales_UVTV_CV], 0))+ sum(isnull([Telesales_VoIP_CV], 0))+ sum(isnull([Telesales_WRLS Data_CV], 0))+ sum(isnull([Telesales_WRLS Family_CV], 0))+ sum(isnull([Telesales_WRLS Voice_CV], 0))+ sum(isnull([Telesales_WRLS Home_CV], 0))+ sum(isnull([Telesales_Digital Life_CV], 0)) as Telesales_Total_CV,
+sum(isnull([Telesales_Access Line_BV], 0))+ sum(isnull([Telesales_DSL_BV], 0))+ sum(isnull([Telesales_DSL Direct_BV], 0))+ sum(isnull([Telesales_HSIA_BV], 0))+ sum(isnull([Telesales_Fiber_BV], 0))+ sum(isnull([Telesales_IPDSL_BV], 0))+ sum(isnull([Telesales_DirecTV_BV], 0))+ sum(isnull([Telesales_UVTV_BV], 0))+ sum(isnull([Telesales_VoIP_BV], 0))+ sum(isnull([Telesales_WRLS Data_BV], 0))+ sum(isnull([Telesales_WRLS Family_BV], 0))+ sum(isnull([Telesales_WRLS Voice_BV], 0))+ sum(isnull([Telesales_WRLS Home_BV], 0))+ sum(isnull([Telesales_Digital Life_BV], 0)) as Telesales_Total_BV,
+sum(isnull([Telesales_Access Line_FV], 0))+ sum(isnull([Telesales_DSL_FV], 0))+ sum(isnull([Telesales_DSL Direct_FV], 0))+ sum(isnull([Telesales_HSIA_FV], 0))+ sum(isnull([Telesales_Fiber_FV], 0))+ sum(isnull([Telesales_IPDSL_FV], 0))+ sum(isnull([Telesales_DirecTV_FV], 0))+ sum(isnull([Telesales_UVTV_FV], 0))+ sum(isnull([Telesales_VoIP_FV], 0))+ sum(isnull([Telesales_WRLS Data_FV], 0))+ sum(isnull([Telesales_WRLS Family_FV], 0))+ sum(isnull([Telesales_WRLS Voice_FV], 0))+ sum(isnull([Telesales_WRLS Home_FV], 0))+ sum(isnull([Telesales_Digital Life_FV], 0)) as Telesales_Total_FV,
+sum(isnull([Telesales_Access Line_AV], 0))+ sum(isnull([Telesales_DSL_AV], 0))+ sum(isnull([Telesales_DSL Direct_AV], 0))+ sum(isnull([Telesales_HSIA_AV], 0))+ sum(isnull([Telesales_Fiber_AV], 0))+ sum(isnull([Telesales_IPDSL_AV], 0))+ sum(isnull([Telesales_DirecTV_AV], 0))+ sum(isnull([Telesales_UVTV_AV], 0))+ sum(isnull([Telesales_VoIP_AV], 0))+ sum(isnull([Telesales_WRLS Data_AV], 0))+ sum(isnull([Telesales_WRLS Family_AV], 0))+ sum(isnull([Telesales_WRLS Voice_AV], 0))+ sum(isnull([Telesales_WRLS Home_AV], 0))+ sum(isnull([Telesales_Digital Life_AV], 0)) as Telesales_Total_AV,
+sum(isnull([Online_sales_HSIA_CV], 0))+ sum(isnull([Online_sales_Fiber_CV], 0))+ sum(isnull([Online_sales_IPDSL_CV], 0))+ sum(isnull([Online_sales_DirecTV_CV], 0))+ sum(isnull([Online_sales_UVTV_CV], 0))+ sum(isnull([Online_sales_VoIP_CV], 0))+ sum(isnull([Online_sales_WRLS Data_CV], 0))+ sum(isnull([Online_sales_WRLS Family_CV], 0))+ sum(isnull([Online_sales_WRLS Voice_CV], 0)) as Online_SC_Strat_CV,
+sum(isnull([Online_sales_HSIA_BV], 0))+ sum(isnull([Online_sales_Fiber_BV], 0))+ sum(isnull([Online_sales_IPDSL_BV], 0))+ sum(isnull([Online_sales_DirecTV_BV], 0))+ sum(isnull([Online_sales_UVTV_BV], 0))+ sum(isnull([Online_sales_VoIP_BV], 0))+ sum(isnull([Online_sales_WRLS Data_BV], 0))+ sum(isnull([Online_sales_WRLS Family_BV], 0))+ sum(isnull([Online_sales_WRLS Voice_BV], 0)) as Online_SC_Strat_BV,
+sum(isnull([Online_sales_HSIA_FV], 0))+ sum(isnull([Online_sales_Fiber_FV], 0))+ sum(isnull([Online_sales_IPDSL_FV], 0))+ sum(isnull([Online_sales_DirecTV_FV], 0))+ sum(isnull([Online_sales_UVTV_FV], 0))+ sum(isnull([Online_sales_VoIP_FV], 0))+ sum(isnull([Online_sales_WRLS Data_FV], 0))+ sum(isnull([Online_sales_WRLS Family_FV], 0))+ sum(isnull([Online_sales_WRLS Voice_FV], 0)) as Online_SC_Strat_FV,
+sum(isnull([Online_sales_HSIA_AV], 0))+ sum(isnull([Online_sales_Fiber_AV], 0))+ sum(isnull([Online_sales_IPDSL_AV], 0))+ sum(isnull([Online_sales_DirecTV_AV], 0))+ sum(isnull([Online_sales_UVTV_AV], 0))+ sum(isnull([Online_sales_VoIP_AV], 0))+ sum(isnull([Online_sales_WRLS Data_AV], 0))+ sum(isnull([Online_sales_WRLS Family_AV], 0))+ sum(isnull([Online_sales_WRLS Voice_AV], 0)) as Online_SC_Strat_AV,
+sum(isnull([Telesales_HSIA_CV], 0))+ sum(isnull([Telesales_Fiber_CV], 0))+ sum(isnull([Telesales_IPDSL_CV], 0))+ sum(isnull([Telesales_DirecTV_CV], 0))+ sum(isnull([Telesales_UVTV_CV], 0))+ sum(isnull([Telesales_VoIP_CV], 0))+ sum(isnull([Telesales_WRLS Data_CV], 0))+ sum(isnull([Telesales_WRLS Family_CV], 0))+ sum(isnull([Telesales_WRLS Voice_CV], 0)) as Telesales_SC_Strat_CV,
+sum(isnull([Telesales_HSIA_BV], 0))+ sum(isnull([Telesales_Fiber_BV], 0))+ sum(isnull([Telesales_IPDSL_BV], 0))+ sum(isnull([Telesales_DirecTV_BV], 0))+ sum(isnull([Telesales_UVTV_BV], 0))+ sum(isnull([Telesales_VoIP_BV], 0))+ sum(isnull([Telesales_WRLS Data_BV], 0))+ sum(isnull([Telesales_WRLS Family_BV], 0))+ sum(isnull([Telesales_WRLS Voice_BV], 0)) as Telesales_SC_Strat_BV,
+sum(isnull([Telesales_HSIA_FV], 0))+ sum(isnull([Telesales_Fiber_FV], 0))+ sum(isnull([Telesales_IPDSL_FV], 0))+ sum(isnull([Telesales_DirecTV_FV], 0))+ sum(isnull([Telesales_UVTV_FV], 0))+ sum(isnull([Telesales_VoIP_FV], 0))+ sum(isnull([Telesales_WRLS Data_FV], 0))+ sum(isnull([Telesales_WRLS Family_FV], 0))+ sum(isnull([Telesales_WRLS Voice_FV], 0)) as Telesales_SC_Strat_FV,
+sum(isnull([Telesales_HSIA_AV], 0))+ sum(isnull([Telesales_Fiber_AV], 0))+ sum(isnull([Telesales_IPDSL_AV], 0))+ sum(isnull([Telesales_DirecTV_AV], 0))+ sum(isnull([Telesales_UVTV_AV], 0))+ sum(isnull([Telesales_VoIP_AV], 0))+ sum(isnull([Telesales_WRLS Data_AV], 0))+ sum(isnull([Telesales_WRLS Family_AV], 0))+ sum(isnull([Telesales_WRLS Voice_AV], 0)) as Telesales_SC_Strat_AV,
+
+------------------------------BEGINS EDITS---------------------------------------------------------------
+--Total Sales
+sum(isnull([Online_sales_Access Line_CV], 0))+ sum(isnull([Online_sales_DSL_CV], 0))+ sum(isnull([Online_sales_DSL Direct_CV], 0))+ sum(isnull([Online_sales_HSIA_CV], 0))+ sum(isnull([Online_sales_Fiber_CV], 0))+ sum(isnull([Online_sales_IPDSL_CV], 0))+ sum(isnull([Online_sales_DirecTV_CV], 0))+ sum(isnull([Online_sales_UVTV_CV], 0))+ sum(isnull([Online_sales_VoIP_CV], 0))+ sum(isnull([Online_sales_WRLS Data_CV], 0))+ sum(isnull([Online_sales_WRLS Family_CV], 0))+ sum(isnull([Online_sales_WRLS Voice_CV], 0))+ sum(isnull([Online_sales_WRLS Home_CV], 0))+ sum(isnull([Online_sales_Digital Life_CV], 0))+
+sum(isnull([Telesales_Access Line_CV], 0))+ sum(isnull([Telesales_DSL_CV], 0))+ sum(isnull([Telesales_DSL Direct_CV], 0))+ sum(isnull([Telesales_HSIA_CV], 0))+ sum(isnull([Telesales_Fiber_CV], 0))+ sum(isnull([Telesales_IPDSL_CV], 0))+ sum(isnull([Telesales_DirecTV_CV], 0))+ sum(isnull([Telesales_UVTV_CV], 0))+ sum(isnull([Telesales_VoIP_CV], 0))+ sum(isnull([Telesales_WRLS Data_CV], 0))+ sum(isnull([Telesales_WRLS Family_CV], 0))+ sum(isnull([Telesales_WRLS Voice_CV], 0))+ sum(isnull([Telesales_WRLS Home_CV], 0))+ sum(isnull([Telesales_Digital Life_CV], 0)) as Total_Sales_CV,
+
+sum(isnull([Online_sales_Access Line_BV], 0))+ sum(isnull([Online_sales_DSL_BV], 0))+ sum(isnull([Online_sales_DSL Direct_BV], 0))+ sum(isnull([Online_sales_HSIA_BV], 0))+ sum(isnull([Online_sales_Fiber_BV], 0))+ sum(isnull([Online_sales_IPDSL_BV], 0))+ sum(isnull([Online_sales_DirecTV_BV], 0))+ sum(isnull([Online_sales_UVTV_BV], 0))+ sum(isnull([Online_sales_VoIP_BV], 0))+ sum(isnull([Online_sales_WRLS Data_BV], 0))+ sum(isnull([Online_sales_WRLS Family_BV], 0))+ sum(isnull([Online_sales_WRLS Voice_BV], 0))+ sum(isnull([Online_sales_WRLS Home_BV], 0))+ sum(isnull([Online_sales_Digital Life_BV], 0))+
+sum(isnull([Telesales_Access Line_BV], 0))+ sum(isnull([Telesales_DSL_BV], 0))+ sum(isnull([Telesales_DSL Direct_BV], 0))+ sum(isnull([Telesales_HSIA_BV], 0))+ sum(isnull([Telesales_Fiber_BV], 0))+ sum(isnull([Telesales_IPDSL_BV], 0))+ sum(isnull([Telesales_DirecTV_BV], 0))+ sum(isnull([Telesales_UVTV_BV], 0))+ sum(isnull([Telesales_VoIP_BV], 0))+ sum(isnull([Telesales_WRLS Data_BV], 0))+ sum(isnull([Telesales_WRLS Family_BV], 0))+ sum(isnull([Telesales_WRLS Voice_BV], 0))+ sum(isnull([Telesales_WRLS Home_BV], 0))+ sum(isnull([Telesales_Digital Life_BV], 0)) as Total_Sales_BV,
+
+sum(isnull([Online_sales_Access Line_FV], 0))+ sum(isnull([Online_sales_DSL_FV], 0))+ sum(isnull([Online_sales_DSL Direct_FV], 0))+ sum(isnull([Online_sales_HSIA_FV], 0))+ sum(isnull([Online_sales_Fiber_FV], 0))+ sum(isnull([Online_sales_IPDSL_FV], 0))+ sum(isnull([Online_sales_DirecTV_FV], 0))+ sum(isnull([Online_sales_UVTV_FV], 0))+ sum(isnull([Online_sales_VoIP_FV], 0))+ sum(isnull([Online_sales_WRLS Data_FV], 0))+ sum(isnull([Online_sales_WRLS Family_FV], 0))+ sum(isnull([Online_sales_WRLS Voice_FV], 0))+ sum(isnull([Online_sales_WRLS Home_FV], 0))+ sum(isnull([Online_sales_Digital Life_FV], 0))+
+sum(isnull([Telesales_Access Line_FV], 0))+ sum(isnull([Telesales_DSL_FV], 0))+ sum(isnull([Telesales_DSL Direct_FV], 0))+ sum(isnull([Telesales_HSIA_FV], 0))+ sum(isnull([Telesales_Fiber_FV], 0))+ sum(isnull([Telesales_IPDSL_FV], 0))+ sum(isnull([Telesales_DirecTV_FV], 0))+ sum(isnull([Telesales_UVTV_FV], 0))+ sum(isnull([Telesales_VoIP_FV], 0))+ sum(isnull([Telesales_WRLS Data_FV], 0))+ sum(isnull([Telesales_WRLS Family_FV], 0))+ sum(isnull([Telesales_WRLS Voice_FV], 0))+ sum(isnull([Telesales_WRLS Home_FV], 0))+ sum(isnull([Telesales_Digital Life_FV], 0)) as Total_Sales_FV,
+
+sum(isnull([Online_sales_Access Line_AV], 0))+ sum(isnull([Online_sales_DSL_AV], 0))+ sum(isnull([Online_sales_DSL Direct_AV], 0))+ sum(isnull([Online_sales_HSIA_AV], 0))+ sum(isnull([Online_sales_Fiber_AV], 0))+ sum(isnull([Online_sales_IPDSL_AV], 0))+ sum(isnull([Online_sales_DirecTV_AV], 0))+ sum(isnull([Online_sales_UVTV_AV], 0))+ sum(isnull([Online_sales_VoIP_AV], 0))+ sum(isnull([Online_sales_WRLS Data_AV], 0))+ sum(isnull([Online_sales_WRLS Family_AV], 0))+ sum(isnull([Online_sales_WRLS Voice_AV], 0))+ sum(isnull([Online_sales_WRLS Home_AV], 0))+ sum(isnull([Online_sales_Digital Life_AV], 0))+
+sum(isnull([Telesales_Access Line_AV], 0))+ sum(isnull([Telesales_DSL_AV], 0))+ sum(isnull([Telesales_DSL Direct_AV], 0))+ sum(isnull([Telesales_HSIA_AV], 0))+ sum(isnull([Telesales_Fiber_AV], 0))+ sum(isnull([Telesales_IPDSL_AV], 0))+ sum(isnull([Telesales_DirecTV_AV], 0))+ sum(isnull([Telesales_UVTV_AV], 0))+ sum(isnull([Telesales_VoIP_AV], 0))+ sum(isnull([Telesales_WRLS Data_AV], 0))+ sum(isnull([Telesales_WRLS Family_AV], 0))+ sum(isnull([Telesales_WRLS Voice_AV], 0))+ sum(isnull([Telesales_WRLS Home_AV], 0))+ sum(isnull([Telesales_Digital Life_AV], 0))+ sum(isnull([Online_Sales_DTV Now_AV],0)) as Total_Sales_AV,
+
+sum(isnull([Online_sales_HSIA_CV], 0))+ sum(isnull([Online_sales_Fiber_CV], 0))+ sum(isnull([Online_sales_IPDSL_CV], 0))+ sum(isnull([Online_sales_DirecTV_CV], 0))+ sum(isnull([Online_sales_UVTV_CV], 0))+ sum(isnull([Online_sales_VoIP_CV], 0))+ sum(isnull([Online_sales_WRLS Data_CV], 0))+ sum(isnull([Online_sales_WRLS Family_CV], 0))+ sum(isnull([Online_sales_WRLS Voice_CV], 0))+
+sum(isnull([Telesales_HSIA_CV], 0))+ sum(isnull([Telesales_Fiber_CV], 0))+ sum(isnull([Telesales_IPDSL_CV], 0))+ sum(isnull([Telesales_DirecTV_CV], 0))+ sum(isnull([Telesales_UVTV_CV], 0))+ sum(isnull([Telesales_VoIP_CV], 0))+ sum(isnull([Telesales_WRLS Data_CV], 0))+ sum(isnull([Telesales_WRLS Family_CV], 0))+ sum(isnull([Telesales_WRLS Voice_CV], 0)) as Total_SC_Strat_Sales_CV,
+
+sum(isnull([Online_sales_HSIA_BV], 0))+ sum(isnull([Online_sales_Fiber_BV], 0))+ sum(isnull([Online_sales_IPDSL_BV], 0))+ sum(isnull([Online_sales_DirecTV_BV], 0))+ sum(isnull([Online_sales_UVTV_BV], 0))+ sum(isnull([Online_sales_VoIP_BV], 0))+ sum(isnull([Online_sales_WRLS Data_BV], 0))+ sum(isnull([Online_sales_WRLS Family_BV], 0))+ sum(isnull([Online_sales_WRLS Voice_BV], 0))+
+sum(isnull([Telesales_HSIA_BV], 0))+ sum(isnull([Telesales_Fiber_BV], 0))+ sum(isnull([Telesales_IPDSL_BV], 0))+ sum(isnull([Telesales_DirecTV_BV], 0))+ sum(isnull([Telesales_UVTV_BV], 0))+ sum(isnull([Telesales_VoIP_BV], 0))+ sum(isnull([Telesales_WRLS Data_BV], 0))+ sum(isnull([Telesales_WRLS Family_BV], 0))+ sum(isnull([Telesales_WRLS Voice_BV], 0)) as Total_SC_Strat_Sales_BV,
+
+sum(isnull([Online_sales_HSIA_FV], 0))+ sum(isnull([Online_sales_Fiber_FV], 0))+ sum(isnull([Online_sales_IPDSL_FV], 0))+ sum(isnull([Online_sales_DirecTV_FV], 0))+ sum(isnull([Online_sales_UVTV_FV], 0))+ sum(isnull([Online_sales_VoIP_FV], 0))+ sum(isnull([Online_sales_WRLS Data_FV], 0))+ sum(isnull([Online_sales_WRLS Family_FV], 0))+ sum(isnull([Online_sales_WRLS Voice_FV], 0))+
+sum(isnull([Telesales_HSIA_FV], 0))+ sum(isnull([Telesales_Fiber_FV], 0))+ sum(isnull([Telesales_IPDSL_FV], 0))+ sum(isnull([Telesales_DirecTV_FV], 0))+ sum(isnull([Telesales_UVTV_FV], 0))+ sum(isnull([Telesales_VoIP_FV], 0))+ sum(isnull([Telesales_WRLS Data_FV], 0))+ sum(isnull([Telesales_WRLS Family_FV], 0))+ sum(isnull([Telesales_WRLS Voice_FV], 0)) as Total_SC_Strat_Sales_FV,
+
+sum(isnull([Online_sales_HSIA_AV], 0))+ sum(isnull([Online_sales_Fiber_AV], 0))+ sum(isnull([Online_sales_IPDSL_AV], 0))+ sum(isnull([Online_sales_DirecTV_AV], 0))+ sum(isnull([Online_sales_UVTV_AV], 0))+ sum(isnull([Online_sales_VoIP_AV], 0))+ sum(isnull([Online_sales_WRLS Data_AV], 0))+ sum(isnull([Online_sales_WRLS Family_AV], 0))+ sum(isnull([Online_sales_WRLS Voice_AV], 0))+
+sum(isnull([Telesales_HSIA_AV], 0))+ sum(isnull([Telesales_Fiber_AV], 0))+ sum(isnull([Telesales_IPDSL_AV], 0))+ sum(isnull([Telesales_DirecTV_AV], 0))+ sum(isnull([Telesales_UVTV_AV], 0))+ sum(isnull([Telesales_VoIP_AV], 0))+ sum(isnull([Telesales_WRLS Data_AV], 0))+ sum(isnull([Telesales_WRLS Family_AV], 0))+ sum(isnull([Telesales_WRLS Voice_AV], 0)) as Total_SC_Strat_Sales_AV,
+
+--Total Sales by Product (AV)
+SUM(ISNULL([Telesales_Access Line_AV], 0))+ SUM(ISNULL([Online_Sales_Access Line_AV], 0)) AS Total_Sales_Access_Line_AV,
+SUM(ISNULL([Telesales_DSL_AV], 0))+ SUM(ISNULL([Online_Sales_DSL_AV], 0)) AS Total_Sales_DSL_AV,
+SUM(ISNULL([Telesales_DSL Direct_AV], 0))+ SUM(ISNULL([Online_Sales_DSL Direct_AV], 0)) AS Total_Sales_DSL_Direct_AV,
+SUM(ISNULL([Telesales_HSIA_AV], 0))+ SUM(ISNULL([Online_Sales_HSIA_AV], 0)) AS Total_Sales_HSIA_AV,
+SUM(ISNULL([Telesales_Fiber_AV], 0))+ SUM(ISNULL([Online_Sales_Fiber_AV], 0)) AS Total_Sales_Fiber_AV,
+SUM(ISNULL([Telesales_IPDSL_AV], 0))+ SUM(ISNULL([Online_Sales_IPDSL_AV], 0)) AS Total_Sales_IPDSL_AV,
+SUM(ISNULL([Telesales_DirecTV_AV], 0))+ SUM(ISNULL([Online_Sales_DirecTV_AV], 0)) AS Total_Sales_DirecTV_AV,
+SUM(ISNULL([Telesales_UVTV_AV], 0))+ SUM(ISNULL([Online_Sales_UVTV_AV], 0)) AS Total_Sales_UVTV_AV,
+SUM(ISNULL([Telesales_VoIP_AV], 0))+ SUM(ISNULL([Online_Sales_VoIP_AV], 0)) AS Total_Sales_VoIP_AV,
+SUM(ISNULL([Telesales_WRLS Data_AV], 0))+ SUM(ISNULL([Online_Sales_WRLS Data_AV], 0)) AS Total_Sales_WRLS_Data_AV,
+SUM(ISNULL([Telesales_WRLS Family_AV], 0))+ SUM(ISNULL([Online_Sales_WRLS Family_AV], 0)) AS Total_Sales_WRLS_Family_AV,
+SUM(ISNULL([Telesales_WRLS Voice_AV], 0))+ SUM(ISNULL([Online_Sales_WRLS Voice_AV], 0)) AS Total_Sales_WRLS_Voice_AV,
+SUM(ISNULL([Telesales_WRLS Home_AV], 0))+ SUM(ISNULL([Online_Sales_WRLS Home_AV], 0)) AS Total_Sales_WRLS_Home_AV,
+SUM(ISNULL([Telesales_Digital Life_AV], 0))+ SUM(ISNULL([Online_Sales_Digital Life_AV], 0)) AS Total_Sales_Digital_Life_AV,
+
+--Total Sales by Product (BV)
+SUM(ISNULL([Telesales_Access Line_BV], 0))+ SUM(ISNULL([Online_Sales_Access Line_BV], 0)) AS Total_Sales_Access_Line_BV,
+SUM(ISNULL([Telesales_DSL_BV], 0))+ SUM(ISNULL([Online_Sales_DSL_BV], 0)) AS Total_Sales_DSL_BV,
+SUM(ISNULL([Telesales_DSL Direct_BV], 0))+ SUM(ISNULL([Online_Sales_DSL Direct_BV], 0)) AS Total_Sales_DSL_Direct_BV,
+SUM(ISNULL([Telesales_HSIA_BV], 0))+ SUM(ISNULL([Online_Sales_HSIA_BV], 0)) AS Total_Sales_HSIA_BV,
+SUM(ISNULL([Telesales_Fiber_BV], 0))+ SUM(ISNULL([Online_Sales_Fiber_BV], 0)) AS Total_Sales_Fiber_BV,
+SUM(ISNULL([Telesales_IPDSL_BV], 0))+ SUM(ISNULL([Online_Sales_IPDSL_BV], 0)) AS Total_Sales_IPDSL_BV,
+SUM(ISNULL([Telesales_DirecTV_BV], 0))+ SUM(ISNULL([Online_Sales_DirecTV_BV], 0)) AS Total_Sales_DirecTV_BV,
+SUM(ISNULL([Telesales_UVTV_BV], 0))+ SUM(ISNULL([Online_Sales_UVTV_BV], 0)) AS Total_Sales_UVTV_BV,
+SUM(ISNULL([Telesales_VoIP_BV], 0))+ SUM(ISNULL([Online_Sales_VoIP_BV], 0)) AS Total_Sales_VoIP_BV,
+SUM(ISNULL([Telesales_WRLS Data_BV], 0))+ SUM(ISNULL([Online_Sales_WRLS Data_BV], 0)) AS Total_Sales_WRLS_Data_BV,
+SUM(ISNULL([Telesales_WRLS Family_BV], 0))+ SUM(ISNULL([Online_Sales_WRLS Family_BV], 0)) AS Total_Sales_WRLS_Family_BV,
+SUM(ISNULL([Telesales_WRLS Voice_BV], 0))+ SUM(ISNULL([Online_Sales_WRLS Voice_BV], 0)) AS Total_Sales_WRLS_Voice_BV,
+SUM(ISNULL([Telesales_WRLS Home_BV], 0))+ SUM(ISNULL([Online_Sales_WRLS Home_BV], 0)) AS Total_Sales_WRLS_Home_BV,
+SUM(ISNULL([Telesales_Digital Life_BV], 0))+ SUM(ISNULL([Online_Sales_Digital Life_BV], 0)) AS Total_Sales_Digital_Life_BV,
+
+--Total Sales by Product (CV)
+SUM(ISNULL([Telesales_Access Line_CV], 0))+ SUM(ISNULL([Online_Sales_Access Line_CV], 0)) AS Total_Sales_Access_Line_CV,
+SUM(ISNULL([Telesales_DSL_CV], 0))+ SUM(ISNULL([Online_Sales_DSL_CV], 0)) AS Total_Sales_DSL_CV,
+SUM(ISNULL([Telesales_DSL Direct_CV], 0))+ SUM(ISNULL([Online_Sales_DSL Direct_CV], 0)) AS Total_Sales_DSL_Direct_CV,
+SUM(ISNULL([Telesales_HSIA_CV], 0))+ SUM(ISNULL([Online_Sales_HSIA_CV], 0)) AS Total_Sales_HSIA_CV,
+SUM(ISNULL([Telesales_Fiber_CV], 0))+ SUM(ISNULL([Online_Sales_Fiber_CV], 0)) AS Total_Sales_Fiber_CV,
+SUM(ISNULL([Telesales_IPDSL_CV], 0))+ SUM(ISNULL([Online_Sales_IPDSL_CV], 0)) AS Total_Sales_IPDSL_CV,
+SUM(ISNULL([Telesales_DirecTV_CV], 0))+ SUM(ISNULL([Online_Sales_DirecTV_CV], 0)) AS Total_Sales_DirecTV_CV,
+SUM(ISNULL([Telesales_UVTV_CV], 0))+ SUM(ISNULL([Online_Sales_UVTV_CV], 0)) AS Total_Sales_UVTV_CV,
+SUM(ISNULL([Telesales_VoIP_CV], 0))+ SUM(ISNULL([Online_Sales_VoIP_CV], 0)) AS Total_Sales_VoIP_CV,
+SUM(ISNULL([Telesales_WRLS Data_CV], 0))+ SUM(ISNULL([Online_Sales_WRLS Data_CV], 0)) AS Total_Sales_WRLS_Data_CV,
+SUM(ISNULL([Telesales_WRLS Family_CV], 0))+ SUM(ISNULL([Online_Sales_WRLS Family_CV], 0)) AS Total_Sales_WRLS_Family_CV,
+SUM(ISNULL([Telesales_WRLS Voice_CV], 0))+ SUM(ISNULL([Online_Sales_WRLS Voice_CV], 0)) AS Total_Sales_WRLS_Voice_CV,
+SUM(ISNULL([Telesales_WRLS Home_CV], 0))+ SUM(ISNULL([Online_Sales_WRLS Home_CV], 0)) AS Total_Sales_WRLS_Home_CV,
+SUM(ISNULL([Telesales_Digital Life_CV], 0))+ SUM(ISNULL([Online_Sales_Digital Life_CV], 0)) AS Total_Sales_Digital_Life_CV,
+
+--Total Sales by Product (FV)
+SUM(ISNULL([Telesales_Access Line_FV], 0))+ SUM(ISNULL([Online_Sales_Access Line_FV], 0)) AS Total_Sales_Access_Line_FV,
+SUM(ISNULL([Telesales_DSL_FV], 0))+ SUM(ISNULL([Online_Sales_DSL_FV], 0)) AS Total_Sales_DSL_FV,
+SUM(ISNULL([Telesales_DSL Direct_FV], 0))+ SUM(ISNULL([Online_Sales_DSL Direct_FV], 0)) AS Total_Sales_DSL_Direct_FV,
+SUM(ISNULL([Telesales_HSIA_FV], 0))+ SUM(ISNULL([Online_Sales_HSIA_FV], 0)) AS Total_Sales_HSIA_FV,
+SUM(ISNULL([Telesales_Fiber_FV], 0))+ SUM(ISNULL([Online_Sales_Fiber_FV], 0)) AS Total_Sales_Fiber_FV,
+SUM(ISNULL([Telesales_IPDSL_FV], 0))+ SUM(ISNULL([Online_Sales_IPDSL_FV], 0)) AS Total_Sales_IPDSL_FV,
+SUM(ISNULL([Telesales_DirecTV_FV], 0))+ SUM(ISNULL([Online_Sales_DirecTV_FV], 0)) AS Total_Sales_DirecTV_FV,
+SUM(ISNULL([Telesales_UVTV_FV], 0))+ SUM(ISNULL([Online_Sales_UVTV_FV], 0)) AS Total_Sales_UVTV_FV,
+SUM(ISNULL([Telesales_VoIP_FV], 0))+ SUM(ISNULL([Online_Sales_VoIP_FV], 0)) AS Total_Sales_VoIP_FV,
+SUM(ISNULL([Telesales_WRLS Data_FV], 0))+ SUM(ISNULL([Online_Sales_WRLS Data_FV], 0)) AS Total_Sales_WRLS_Data_FV,
+SUM(ISNULL([Telesales_WRLS Family_FV], 0))+ SUM(ISNULL([Online_Sales_WRLS Family_FV], 0)) AS Total_Sales_WRLS_Family_FV,
+SUM(ISNULL([Telesales_WRLS Voice_FV], 0))+ SUM(ISNULL([Online_Sales_WRLS Voice_FV], 0)) AS Total_Sales_WRLS_Voice_FV,
+SUM(ISNULL([Telesales_WRLS Home_FV], 0))+ SUM(ISNULL([Online_Sales_WRLS Home_FV], 0)) AS Total_Sales_WRLS_Home_FV,
+SUM(ISNULL([Telesales_Digital Life_FV], 0))+ SUM(ISNULL([Online_Sales_Digital Life_FV], 0)) AS Total_Sales_Digital_Life_FV,
+
+
+
+--TV Sales
+SUM(ISNULL([Telesales_DirecTV_AV],0))+SUM(ISNULL([Telesales_UVTV_AV],0)) AS Telesales_Comb_TV_AV,
+SUM(ISNULL([Online_Sales_DirecTV_AV],0))+SUM(ISNULL([Online_Sales_UVTV_AV],0)) AS Online_Sales_Comb_TV_AV,
+SUM(ISNULL([Telesales_DirecTV_AV],0))+SUM(ISNULL([Telesales_UVTV_AV],0))+SUM(ISNULL([Online_Sales_DirecTV_AV],0))+SUM(ISNULL([Online_Sales_UVTV_AV],0)) AS Total_Sales_Comb_TV_AV,
+SUM(ISNULL([Telesales_DirecTV_BV],0))+SUM(ISNULL([Telesales_UVTV_BV],0)) AS Telesales_Comb_TV_BV,
+SUM(ISNULL([Online_Sales_DirecTV_BV],0))+SUM(ISNULL([Online_Sales_UVTV_BV],0)) AS Online_Sales_Comb_TV_BV,
+SUM(ISNULL([Telesales_DirecTV_BV],0))+SUM(ISNULL([Telesales_UVTV_BV],0))+SUM(ISNULL([Online_Sales_DirecTV_BV],0))+SUM(ISNULL([Online_Sales_UVTV_BV],0)) AS Total_Sales_Comb_TV_BV,    
+SUM(ISNULL([Telesales_DirecTV_CV],0))+SUM(ISNULL([Telesales_UVTV_CV],0)) AS Telesales_Comb_TV_CV,
+SUM(ISNULL([Online_Sales_DirecTV_CV],0))+SUM(ISNULL([Online_Sales_UVTV_CV],0)) AS Online_Sales_Comb_TV_CV,
+SUM(ISNULL([Telesales_DirecTV_CV],0))+SUM(ISNULL([Telesales_UVTV_CV],0))+SUM(ISNULL([Online_Sales_DirecTV_CV],0))+SUM(ISNULL([Online_Sales_UVTV_CV],0)) AS Total_Sales_Comb_TV_CV,
+SUM(ISNULL([Telesales_DirecTV_FV],0))+SUM(ISNULL([Telesales_UVTV_FV],0)) AS Telesales_Comb_TV_FV,
+SUM(ISNULL([Online_Sales_DirecTV_FV],0))+SUM(ISNULL([Online_Sales_UVTV_FV],0)) AS Online_Sales_Comb_TV_FV,
+SUM(ISNULL([Telesales_DirecTV_FV],0))+SUM(ISNULL([Telesales_UVTV_FV],0))+SUM(ISNULL([Online_Sales_DirecTV_FV],0))+SUM(ISNULL([Online_Sales_UVTV_FV],0)) AS Total_Sales_Comb_TV_FV,
+
+--BB Sales
+SUM(ISNULL([Telesales_Fiber_AV],0))+SUM(ISNULL([Telesales_IPDSL_AV],0))+SUM(ISNULL([Telesales_HSIA_AV],0)) AS Telesales_Comb_BB_AV,
+SUM(ISNULL([Online_Sales_Fiber_AV],0))+SUM(ISNULL([Online_Sales_IPDSL_AV],0))+SUM(ISNULL([Online_Sales_HSIA_AV],0)) AS Online_Sales_Comb_BB_AV,
+SUM(ISNULL([Telesales_Fiber_AV],0))+SUM(ISNULL([Telesales_IPDSL_AV],0))+SUM(ISNULL([Telesales_HSIA_AV],0))+SUM(ISNULL([Online_Sales_Fiber_AV],0))+SUM(ISNULL([Online_Sales_IPDSL_AV],0))+SUM(ISNULL([Online_Sales_HSIA_AV],0)) AS Total_Sales_Comb_BB_AV,
+SUM(ISNULL([Telesales_Fiber_BV],0))+SUM(ISNULL([Telesales_IPDSL_BV],0))+SUM(ISNULL([Telesales_HSIA_BV],0)) AS Telesales_Comb_BB_BV,
+SUM(ISNULL([Online_Sales_Fiber_BV],0))+SUM(ISNULL([Online_Sales_IPDSL_BV],0))+SUM(ISNULL([Online_Sales_HSIA_BV],0)) AS Online_Sales_Comb_BB_BV,
+SUM(ISNULL([Telesales_Fiber_BV],0))+SUM(ISNULL([Telesales_IPDSL_BV],0))+SUM(ISNULL([Telesales_HSIA_BV],0))+SUM(ISNULL([Online_Sales_Fiber_BV],0))+SUM(ISNULL([Online_Sales_IPDSL_BV],0))+SUM(ISNULL([Online_Sales_HSIA_BV],0)) AS Total_Sales_Comb_BB_BV,
+SUM(ISNULL([Telesales_Fiber_CV],0))+SUM(ISNULL([Telesales_IPDSL_CV],0))+SUM(ISNULL([Telesales_HSIA_CV],0)) AS Telesales_Comb_BB_CV,
+SUM(ISNULL([Online_Sales_Fiber_CV],0))+SUM(ISNULL([Online_Sales_IPDSL_CV],0))+SUM(ISNULL([Online_Sales_HSIA_CV],0)) AS Online_Sales_Comb_BB_CV,
+SUM(ISNULL([Telesales_Fiber_CV],0))+SUM(ISNULL([Telesales_IPDSL_CV],0))+SUM(ISNULL([Telesales_HSIA_CV],0))+SUM(ISNULL([Online_Sales_Fiber_CV],0))+SUM(ISNULL([Online_Sales_IPDSL_CV],0))+SUM(ISNULL([Online_Sales_HSIA_CV],0)) AS Total_Sales_Comb_BB_CV,
+SUM(ISNULL([Telesales_Fiber_FV],0))+SUM(ISNULL([Telesales_IPDSL_FV],0))+SUM(ISNULL([Telesales_HSIA_FV],0)) AS Telesales_Comb_BB_FV,
+SUM(ISNULL([Online_Sales_Fiber_FV],0))+SUM(ISNULL([Online_Sales_IPDSL_FV],0))+SUM(ISNULL([Online_Sales_HSIA_FV],0)) AS Online_Sales_Comb_BB_FV,
+SUM(ISNULL([Telesales_Fiber_FV],0))+SUM(ISNULL([Telesales_IPDSL_FV],0))+SUM(ISNULL([Telesales_HSIA_FV],0))+SUM(ISNULL([Online_Sales_Fiber_FV],0))+SUM(ISNULL([Online_Sales_IPDSL_FV],0))+SUM(ISNULL([Online_Sales_HSIA_FV],0)) AS Total_Sales_Comb_BB_FV,
+
+--WRLS Sales
+SUM(ISNULL([Telesales_WRLS Voice_AV],0))+SUM(ISNULL([Telesales_WRLS Data_AV],0))+SUM(ISNULL([Telesales_WRLS Family_AV],0)) AS Telesales_Comb_WRLS_AV,
+SUM(ISNULL([Online_Sales_WRLS Voice_AV],0))+SUM(ISNULL([Online_Sales_WRLS Data_AV],0))+SUM(ISNULL([Online_Sales_WRLS Family_AV],0)) AS Online_Sales_Comb_WRLS_AV,
+SUM(ISNULL([Telesales_WRLS Voice_AV],0))+SUM(ISNULL([Telesales_WRLS Data_AV],0))+SUM(ISNULL([Telesales_WRLS Family_AV],0))+SUM(ISNULL([Online_Sales_WRLS Voice_AV],0))+SUM(ISNULL([Online_Sales_WRLS Data_AV],0))+SUM(ISNULL([Online_Sales_WRLS Family_AV],0)) AS Total_Sales_Comb_WRLS_AV,
+SUM(ISNULL([Telesales_WRLS Voice_BV],0))+SUM(ISNULL([Telesales_WRLS Data_BV],0))+SUM(ISNULL([Telesales_WRLS Family_BV],0)) AS Telesales_Comb_WRLS_BV,
+SUM(ISNULL([Online_Sales_WRLS Voice_BV],0))+SUM(ISNULL([Online_Sales_WRLS Data_BV],0))+SUM(ISNULL([Online_Sales_WRLS Family_BV],0)) AS Online_Sales_Comb_WRLS_BV,
+SUM(ISNULL([Telesales_WRLS Voice_BV],0))+SUM(ISNULL([Telesales_WRLS Data_BV],0))+SUM(ISNULL([Telesales_WRLS Family_BV],0))+SUM(ISNULL([Online_Sales_WRLS Voice_BV],0))+SUM(ISNULL([Online_Sales_WRLS Data_BV],0))+SUM(ISNULL([Online_Sales_WRLS Family_BV],0)) AS Total_Sales_Comb_WRLS_BV,
+SUM(ISNULL([Telesales_WRLS Voice_CV],0))+SUM(ISNULL([Telesales_WRLS Data_CV],0))+SUM(ISNULL([Telesales_WRLS Family_CV],0)) AS Telesales_Comb_WRLS_CV,
+SUM(ISNULL([Online_Sales_WRLS Voice_CV],0))+SUM(ISNULL([Online_Sales_WRLS Data_CV],0))+SUM(ISNULL([Online_Sales_WRLS Family_CV],0)) AS Online_Sales_Comb_WRLS_CV,
+SUM(ISNULL([Telesales_WRLS Voice_CV],0))+SUM(ISNULL([Telesales_WRLS Data_CV],0))+SUM(ISNULL([Telesales_WRLS Family_CV],0))+SUM(ISNULL([Online_Sales_WRLS Voice_CV],0))+SUM(ISNULL([Online_Sales_WRLS Data_CV],0))+SUM(ISNULL([Online_Sales_WRLS Family_CV],0)) AS Total_Sales_Comb_WRLS_CV,
+SUM(ISNULL([Telesales_WRLS Voice_FV],0))+SUM(ISNULL([Telesales_WRLS Data_FV],0))+SUM(ISNULL([Telesales_WRLS Family_FV],0)) AS Telesales_Comb_WRLS_FV,
+SUM(ISNULL([Online_Sales_WRLS Voice_FV],0))+SUM(ISNULL([Online_Sales_WRLS Data_FV],0))+SUM(ISNULL([Online_Sales_WRLS Family_FV],0)) AS Online_Sales_Comb_WRLS_FV,
+SUM(ISNULL([Telesales_WRLS Voice_FV],0))+SUM(ISNULL([Telesales_WRLS Data_FV],0))+SUM(ISNULL([Telesales_WRLS Family_FV],0))+SUM(ISNULL([Online_Sales_WRLS Voice_FV],0))+SUM(ISNULL([Online_Sales_WRLS Data_FV],0))+SUM(ISNULL([Online_Sales_WRLS Family_FV],0)) AS Total_Sales_Comb_WRLS_FV,
+
+--Voice Sales
+SUM(ISNULL([Telesales_VoIP_AV],0))+SUM(ISNULL([Telesales_Access Line_AV],0)) AS Telesales_Comb_Voice_AV,
+SUM(ISNULL([Online_Sales_VoIP_AV],0))+SUM(ISNULL([Online_Sales_Access Line_AV],0)) AS Online_Sales_Comb_Voice_AV,
+SUM(ISNULL([Telesales_VoIP_AV],0))+SUM(ISNULL([Telesales_Access Line_AV],0))+SUM(ISNULL([Online_Sales_VoIP_AV],0))+SUM(ISNULL([Online_Sales_Access Line_AV],0)) AS Total_Sales_Comb_Voice_AV,
+SUM(ISNULL([Telesales_VoIP_BV],0))+SUM(ISNULL([Telesales_Access Line_BV],0)) AS Telesales_Comb_Voice_BV,
+SUM(ISNULL([Online_Sales_VoIP_BV],0))+SUM(ISNULL([Online_Sales_Access Line_BV],0)) AS Online_Sales_Comb_Voice_BV,
+SUM(ISNULL([Telesales_VoIP_BV],0))+SUM(ISNULL([Telesales_Access Line_BV],0))+SUM(ISNULL([Online_Sales_VoIP_BV],0))+SUM(ISNULL([Online_Sales_Access Line_BV],0)) AS Total_Sales_Comb_Voice_BV,      
+SUM(ISNULL([Telesales_VoIP_CV],0))+SUM(ISNULL([Telesales_Access Line_CV],0)) AS Telesales_Comb_Voice_CV,
+SUM(ISNULL([Online_Sales_VoIP_CV],0))+SUM(ISNULL([Online_Sales_Access Line_CV],0)) AS Online_Sales_Comb_Voice_CV,
+SUM(ISNULL([Telesales_VoIP_CV],0))+SUM(ISNULL([Telesales_Access Line_CV],0))+SUM(ISNULL([Online_Sales_VoIP_CV],0))+SUM(ISNULL([Online_Sales_Access Line_CV],0)) AS Total_Sales_Comb_Voice_CV,
+SUM(ISNULL([Telesales_VoIP_FV],0))+SUM(ISNULL([Telesales_Access Line_FV],0)) AS Telesales_Comb_Voice_FV,
+SUM(ISNULL([Online_Sales_VoIP_FV],0))+SUM(ISNULL([Online_Sales_Access Line_FV],0)) AS Online_Sales_Comb_Voice_FV,
+SUM(ISNULL([Telesales_VoIP_FV],0))+SUM(ISNULL([Telesales_Access Line_FV],0))+SUM(ISNULL([Online_Sales_VoIP_FV],0))+SUM(ISNULL([Online_Sales_Access Line_FV],0)) AS Total_Sales_Comb_Voice_FV,
+
+--DSL Sales
+SUM(ISNULL([Telesales_DSL_AV],0))+SUM(ISNULL([Telesales_DSL Direct_AV],0)) AS Telesales_Comb_DSL_AV,
+SUM(ISNULL([Online_Sales_DSL_AV],0))+SUM(ISNULL([Online_Sales_DSL Direct_AV],0)) AS Online_Sales_Comb_DSL_AV,
+SUM(ISNULL([Telesales_DSL_AV],0))+SUM(ISNULL([Telesales_DSL Direct_AV],0))+SUM(ISNULL([Online_Sales_DSL_AV],0))+SUM(ISNULL([Online_Sales_DSL Direct_AV],0)) AS Total_Sales_Comb_DSL_AV,
+SUM(ISNULL([Telesales_DSL_BV],0))+SUM(ISNULL([Telesales_DSL Direct_BV],0)) AS Telesales_Comb_DSL_BV,
+SUM(ISNULL([Online_Sales_DSL_BV],0))+SUM(ISNULL([Online_Sales_DSL Direct_BV],0)) AS Online_Sales_Comb_DSL_BV,
+SUM(ISNULL([Telesales_DSL_BV],0))+SUM(ISNULL([Telesales_DSL Direct_BV],0))+SUM(ISNULL([Online_Sales_DSL_BV],0))+SUM(ISNULL([Online_Sales_DSL Direct_BV],0)) AS Total_Sales_Comb_DSL_BV,      
+SUM(ISNULL([Telesales_DSL_CV],0))+SUM(ISNULL([Telesales_DSL Direct_CV],0)) AS Telesales_Comb_DSL_CV,
+SUM(ISNULL([Online_Sales_DSL_CV],0))+SUM(ISNULL([Online_Sales_DSL Direct_CV],0)) AS Online_Sales_Comb_DSL_CV,
+SUM(ISNULL([Telesales_DSL_CV],0))+SUM(ISNULL([Telesales_DSL Direct_CV],0))+SUM(ISNULL([Online_Sales_DSL_CV],0))+SUM(ISNULL([Online_Sales_DSL Direct_CV],0)) AS Total_Sales_Comb_DSL_CV,
+SUM(ISNULL([Telesales_DSL_FV],0))+SUM(ISNULL([Telesales_DSL Direct_FV],0)) AS Telesales_Comb_DSL_FV,
+SUM(ISNULL([Online_Sales_DSL_FV],0))+SUM(ISNULL([Online_Sales_DSL Direct_FV],0)) AS Online_Sales_Comb_DSL_FV,
+SUM(ISNULL([Telesales_DSL_FV],0))+SUM(ISNULL([Telesales_DSL Direct_FV],0))+SUM(ISNULL([Online_Sales_DSL_FV],0))+SUM(ISNULL([Online_Sales_DSL Direct_FV],0)) AS Total_Sales_Comb_DSL_FV,
+
+--Other Sales
+SUM(ISNULL([Telesales_Access Line_AV],0))+SUM(ISNULL([Telesales_DSL_AV],0))+SUM(ISNULL([Telesales_DSL Direct_AV],0))+SUM(ISNULL([Telesales_Digital Life_AV],0)) AS Telesales_Comb_Other_AV,
+SUM(ISNULL([Online_sales_Access Line_AV],0))+SUM(ISNULL([Online_sales_DSL_AV],0))+SUM(ISNULL([Online_sales_DSL Direct_AV],0))+SUM(ISNULL([Online_sales_Digital Life_AV],0)) AS Online_Sales_Comb_Other_AV,
+SUM(ISNULL([Telesales_Access Line_AV],0))+SUM(ISNULL([Telesales_DSL_AV],0))+SUM(ISNULL([Telesales_DSL Direct_AV],0))+SUM(ISNULL([Telesales_Digital Life_AV],0))+SUM(ISNULL([Online_sales_Access Line_AV],0))+SUM(ISNULL([Online_sales_DSL_AV],0))+SUM(ISNULL([Online_sales_DSL Direct_AV],0))+SUM(ISNULL([Online_sales_Digital Life_AV],0)) AS Total_Sales_Comb_Other_AV,
+SUM(ISNULL([Telesales_Access Line_BV],0))+SUM(ISNULL([Telesales_DSL_BV],0))+SUM(ISNULL([Telesales_DSL Direct_BV],0))+SUM(ISNULL([Telesales_Digital Life_BV],0)) AS Telesales_Comb_Other_BV,
+SUM(ISNULL([Online_sales_Access Line_BV],0))+SUM(ISNULL([Online_sales_DSL_BV],0))+SUM(ISNULL([Online_sales_DSL Direct_BV],0))+SUM(ISNULL([Online_sales_Digital Life_BV],0)) AS Online_Sales_Comb_Other_BV,
+SUM(ISNULL([Telesales_Access Line_BV],0))+SUM(ISNULL([Telesales_DSL_BV],0))+SUM(ISNULL([Telesales_DSL Direct_BV],0))+SUM(ISNULL([Telesales_Digital Life_BV],0))+SUM(ISNULL([Online_sales_Access Line_BV],0))+SUM(ISNULL([Online_sales_DSL_BV],0))+SUM(ISNULL([Online_sales_DSL Direct_BV],0))+SUM(ISNULL([Online_sales_Digital Life_BV],0)) AS Total_Sales_Comb_Other_BV,
+SUM(ISNULL([Telesales_Access Line_CV],0))+SUM(ISNULL([Telesales_DSL_CV],0))+SUM(ISNULL([Telesales_DSL Direct_CV],0))+SUM(ISNULL([Telesales_Digital Life_CV],0)) AS Telesales_Comb_Other_CV,
+SUM(ISNULL([Online_sales_Access Line_CV],0))+SUM(ISNULL([Online_sales_DSL_CV],0))+SUM(ISNULL([Online_sales_DSL Direct_CV],0))+SUM(ISNULL([Online_sales_Digital Life_CV],0)) AS Online_Sales_Comb_Other_CV,
+SUM(ISNULL([Telesales_Access Line_CV],0))+SUM(ISNULL([Telesales_DSL_CV],0))+SUM(ISNULL([Telesales_DSL Direct_CV],0))+SUM(ISNULL([Telesales_Digital Life_CV],0))+SUM(ISNULL([Online_sales_Access Line_CV],0))+SUM(ISNULL([Online_sales_DSL_CV],0))+SUM(ISNULL([Online_sales_DSL Direct_CV],0))+SUM(ISNULL([Online_sales_Digital Life_CV],0)) AS Total_Sales_Comb_Other_CV,
+SUM(ISNULL([Telesales_Access Line_FV],0))+SUM(ISNULL([Telesales_DSL_FV],0))+SUM(ISNULL([Telesales_DSL Direct_FV],0))+SUM(ISNULL([Telesales_Digital Life_FV],0)) AS Telesales_Comb_Other_FV,
+SUM(ISNULL([Online_sales_Access Line_FV],0))+SUM(ISNULL([Online_sales_DSL_FV],0))+SUM(ISNULL([Online_sales_DSL Direct_FV],0))+SUM(ISNULL([Online_sales_Digital Life_FV],0)) AS Online_Sales_Comb_Other_FV,
+SUM(ISNULL([Telesales_Access Line_FV],0))+SUM(ISNULL([Telesales_DSL_FV],0))+SUM(ISNULL([Telesales_DSL Direct_FV],0))+SUM(ISNULL([Telesales_Digital Life_FV],0))+SUM(ISNULL([Online_sales_Access Line_FV],0))+SUM(ISNULL([Online_sales_DSL_FV],0))+SUM(ISNULL([Online_sales_DSL Direct_FV],0))+SUM(ISNULL([Online_sales_Digital Life_FV],0)) AS Total_Sales_Comb_Other_FV
+
+----------------------------END New Edits--------------------------------
 	FROM
 		(SELECT  
-	[idFlight_Plan_Records_FK], [Campaign_Name], [InHome_Date], [Strategy_Eligibility], [Lead_Offer], [Media_Year], [Media_Week], [Media_Month], [Touch_Name]
+	[idFlight_Plan_Records_FK], [Campaign_Name], [InHome_Date], [Strategy_Eligibility], [Lead_Offer], [Media_Year], [Media_Week], [Media_Month], [Calendar_Month], [Calendar_Year], [Touch_Name]
 	, [Program_Name], [Tactic], [Media], [Campaign_Type], [Audience], [Creative_Name], [Goal], [Offer], [Channel], [Scorecard_Group], [Scorecard_Program_Channel]
 	, [Forecast], [Commitment], [Actual], [Best_View]
 	,Case when kpi_type in ('Response','Volume','Budget') then Product_Code+'_CV'
@@ -1009,6 +1197,7 @@ sum(isnull([Telesales_Access Line_AV], 0))+ sum(isnull([Telesales_DSL_AV], 0))+ 
 [Online_sales_WRLS Voice_AV],
 [Online_sales_WRLS Home_AV],
 [Online_sales_Digital Life_AV], 
+[Online_Sales_DTV Now_AV], 
 [Telesales_Access Line_AV], 
 [Telesales_DSL_AV], 
 [Telesales_DSL Direct_AV], 
@@ -1059,7 +1248,7 @@ sum(isnull([Telesales_Access Line_AV], 0))+ sum(isnull([Telesales_DSL_AV], 0))+ 
 
 group by [idFlight_Plan_Records_FK], [Campaign_Name], [InHome_Date], [Strategy_Eligibility], [Lead_Offer], [Media_Year], [Media_Week], [Media_Month], [Touch_Name]
 , [Program_Name], [Tactic], [Media], [Campaign_Type], [Audience], [Creative_Name], [Goal], [Offer], [Channel], [Scorecard_Group], 
-[Scorecard_Program_Channel], CONVERT(VARCHAR(6),InHome_Date,112), M_Schedule
+[Scorecard_Program_Channel], CONVERT(VARCHAR(6),InHome_Date,112), M_Schedule, [Calendar_Year], [Calendar_Month]
 ;
 ---------------End of Pivot work---------------------------------------------
 

@@ -11,11 +11,6 @@ select idFlight_Plan_Records
 	, idProduct_LU_TBL_FK
 	, Day_of_Week
 	, Sales_Rate_Daily
-
-/*Seasonality and target rate adjusted version below - commented out with no seasonality adjustment or target rate adjusted added above
-	, case when ResponseByDay.idTarget_Rate_Reasons_LU_TBL_FK is null then Sales_rate_Daily*Seasonality_Adj
-		else Sales_rate_Daily*Seasonality_Adj*Rate_Adjustment_Factor end as Sales_rate_Daily
-*/
 	, Forecast_DayDate
 
 from
@@ -25,9 +20,9 @@ from
 	, Daily_Join.idkpi_type_FK
 	, idProduct_LU_TBL_FK
 	, Daily_Join.Day_of_Week
-	, Salesrate_Daily*week_percent/7 as Sales_Rate_Daily
-	--, DATEADD(day,c.week_id-1,InHome_Date) as Forecast_DayDate
-	, DATEADD(day,c.Week_ID,InHome_Date) as Forecast_DayDate
+	, Salesrate_Daily*week_percent as Sales_Rate_Daily
+	, DATEADD(week,c.Week_ID,InHome_Date) as Forecast_Week_Date
+	, DATEADD(day,Day_of_Week,DATEADD(week,c.Week_ID,InHome_Date)) as Forecast_DayDate
 	, ISO_week
 	, ISO_Week_Year
 	, MediaMonth
