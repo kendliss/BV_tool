@@ -1,18 +1,16 @@
-﻿ALTER PROCEDURE [bvt_prod].[Best_View_PR]
+﻿ALTER PROCEDURE [bvt_prod].[Best_View_ID_Version_PR]
 @PROG int	
 AS
 BEGIN 
 SET NOCOUNT ON
 /*Temporary Declarations for Testing
 DECLARE @PROG INT
-set @PROG = 4
---*/
+set @PROG = 4--*/
 ------Section 1 Subselecting Tables - into temps---------
 
 -------Section 1.1 - Flightplan Selection	
 --Select the appropriate Flight Plan
 --Check and delete temp	
-
 IF OBJECT_ID('tempdb.dbo.#flightplan', 'U') IS NOT NULL
   DROP TABLE #flightplan; 
 
@@ -52,49 +50,6 @@ WHERE idProgram_LU_TBL_fk=@PROG;
 
 create clustered index IDX_C_touchdef_id ON #touchdef(idProgram_Touch_Definitions_TBL);
 ----------End Touch Def-----------------------------
---/*Inserting the start/end procs until triggers are fixed
---KPI Start End
-delete [bvt_processed].[KPI_Rate_Start_End]
-where [idProgram_Touch_Definitions_TBL_FK] in 
-(select idProgram_Touch_Definitions_TBL from #touchdef);
-insert into bvt_processed.KPI_Rate_Start_End
-select * from bvt_prod.KPI_Rate_Start_End_VW
-where idProgram_Touch_Definitions_TBL_FK in (select idProgram_Touch_Definitions_TBL from #touchdef);
---Response Curve Start End
-delete [bvt_processed].[Response_Curve_Start_End]
-where [idProgram_Touch_Definitions_TBL_FK] in 
-(select idProgram_Touch_Definitions_TBL from #touchdef);
-insert into [bvt_processed].[Response_Curve_Start_End]
-select * from [bvt_prod].[Response_Curve_Start_End_VW]
-where idProgram_Touch_Definitions_TBL_FK in (select idProgram_Touch_Definitions_TBL from #touchdef);
---Response Daily Start End
-delete [bvt_processed].[Response_Daily_Start_End]
-where [idProgram_Touch_Definitions_TBL_FK] in 
-(select idProgram_Touch_Definitions_TBL from #touchdef);
-insert into [bvt_processed].[Response_Daily_Start_End]
-select * from [bvt_prod].[Response_Daily_Start_End_VW]
-where idProgram_Touch_Definitions_TBL_FK in (select idProgram_Touch_Definitions_TBL from #touchdef);
---Sales Curve Start End
-delete [bvt_processed].[Sales_Curve_Start_End]
-where [idProgram_Touch_Definitions_TBL_FK] in 
-(select idProgram_Touch_Definitions_TBL from #touchdef);
-insert into [bvt_processed].[Sales_Curve_Start_End]
-select * from [bvt_prod].[Sales_Curve_Start_End_VW]
-where idProgram_Touch_Definitions_TBL_FK in (select idProgram_Touch_Definitions_TBL from #touchdef);
---Sales Rates Start End
-delete [bvt_processed].[Sales_Rates_Start_End]
-where [idProgram_Touch_Definitions_TBL_FK] in 
-(select idProgram_Touch_Definitions_TBL from #touchdef);
-insert into [bvt_processed].[Sales_Rates_Start_End]
-select * from [bvt_prod].[Sales_Rates_Start_End_VW]
-where idProgram_Touch_Definitions_TBL_FK in (select idProgram_Touch_Definitions_TBL from #touchdef);
---Target Adjustment Start End
-delete [bvt_processed].[Target_Adjustment_Start_End]
-where [idProgram_Touch_Definitions_TBL_FK] in 
-(select idProgram_Touch_Definitions_TBL from #touchdef);
-insert into [bvt_processed].[Target_Adjustment_Start_End]
-select * from [bvt_prod].[Target_Adjustment_Start_End_VW]
-where idProgram_Touch_Definitions_TBL_FK in (select idProgram_Touch_Definitions_TBL from #touchdef);
 
 
 ----Section 1.3 - Target Adjustments
@@ -157,7 +112,7 @@ select #flightplan.idFlight_Plan_Records
 
 ---Touch Lookup Tables
 	, idProgram_Touch_Definitions_TBL_FK
-	, Touch_Name
+/*	, Touch_Name
 	, Program_Name
 	, Tactic
 	, Media
@@ -170,10 +125,10 @@ select #flightplan.idFlight_Plan_Records
 	, channel
 	, Scorecard_Group
 	, Scorecard_Program_Channel
-
+*/
 
 ----Metrics
-	, KPI_Type
+	, KPI_TYPE
 	, Product_Code
 	, Forecast_DayDate
 	, [Forecast]
@@ -185,8 +140,8 @@ left join
 (select * from 
 ---
 ((select idFlight_Plan_Records
-	, 'Response' as KPI_Type
-	, KPI_Type as Product_Code
+	, idkpi_types_FK as KPI_TYPE
+	, null as Product_Code
 	, Forecast_DayDate
 	, KPI_Forecast as Forecast
 
@@ -278,17 +233,14 @@ from #flightplan as A
 		and responsebyday.inhome_date between Adj_Start_Date and end_date) as kpi
 inner join #volumes
 		on kpi.idFlight_Plan_Records=#volumes.idFlight_Plan_Records) kpiforecast
-left join bvt_prod.KPI_Types
-		on kpiforecast.idkpi_types_FK=KPI_Types.idKPI_Types)
+)
 ---------End Section KPI Rates--------------------------------------------------
 ---------Begin Section Sales Rates
 union 
 
 (select idFlight_Plan_Records
-	, case when idkpi_type_FK=1 then 'Telesales'
-		when idkpi_type_FK=2 then 'Online_sales'
-		else 'CHECK' end as KPI_Type 
-	, Product_Code
+	, idKPI_Type_FK as kpi_type
+	, idProduct_LU_TBL_FK as product_code
 	, Forecast_DayDate
 	, Sales_Forecast as Forecast
 
@@ -393,12 +345,11 @@ from #flightplan as A
 		and responsebyday.inhome_date between Adj_Start_Date and end_date) sales
 inner join #volumes
 on sales.idFlight_Plan_Records=#volumes.idFlight_Plan_Records) salesforecast
-left join bvt_prod.Product_LU_TBL
-		on salesforecast.idProduct_LU_TBL_FK=Product_LU_TBL.idProduct_LU_TBL)
+)
 UNION
 (select idFlight_Plan_Records
-	, 'Volume' as KPI_Type
-	, 'Volume' as Product_Code
+	, 4 as kpi_type
+	, NULL as product_code
 	, Drop_Date as Forecast_DayDate
 	, Volume as Forecast
 from #volumes)) as metricsa) as metrics
@@ -496,18 +447,15 @@ select [idFlight_Plan_Records_FK], [Campaign_Name], [iso_week_year] as Media_Yea
 	, [mediamonth] as Media_Month, [iso_week] as Media_Week
 	,YEAR([Start_Date]) as Calendar_Year
 	,MONTH([Start_Date]) as Calendar_Month
-	,[inhome_date], [Touch_Name], [Program_Name], [Tactic], [Media], 
-	[Campaign_Type], [Audience], [Creative_Name], [Goal], [Offer], [Channel], [Scorecard_Group], [Scorecard_Program_Channel],
-	[KPI_TYPE], [Product_Code], Actual
+	,[inhome_date]
+	,[KPI_TYPE], [Product_Code], Actual
 into #volumebudget
 from 
 	(select [idFlight_Plan_Records_FK], [Start_Date]
-	, case when kpiproduct='CTD_Quantity' then 'Volume'
-		when kpiproduct='CTD_Budget' then 'Budget'
+	, case when kpiproduct='CTD_Quantity' then 4
+		when kpiproduct='CTD_Budget' then 5
 		end as KPI_type
-	, case when kpiproduct='CTD_Quantity' then 'Volume'
-		when kpiproduct='CTD_Budget' then 'Budget'
-		end as Product_Code
+	, NULL as Product_Code
 	, sum(Actuals.[Actual]) as Actual
 	from (select [idFlight_Plan_Records_FK], [Start_Date], [CTD_Quantity], [CTD_Budget]
 			from #actuals 
@@ -516,15 +464,11 @@ from
 	UNPIVOT (Actual for kpiproduct in 
 			([CTD_Quantity], [CTD_Budget])) as Actuals
 	GROUP BY idFlight_Plan_Records_FK, Start_Date
-	, case when kpiproduct='CTD_Quantity' then 'Volume'
-		when kpiproduct='CTD_Budget' then 'Budget'
-		end 
-	, case when kpiproduct='CTD_Quantity' then 'Volume'
-		when kpiproduct='CTD_Budget' then 'Budget'
+	, case when kpiproduct='CTD_Quantity' then 4
+		when kpiproduct='CTD_Budget' then 5
 		end) as pivotmetrics
 	inner join dim.media_calendar_daily on [Start_Date] = [date]
 	inner join #flightplan on [idFlight_Plan_Records_FK] = [idFlight_Plan_Records]
-	inner join #touchdef on [idProgram_Touch_Definitions_TBL] = [idProgram_Touch_Definitions_TBL_FK]
 create index IDX_NC_VOLUMEBUDGET
  ON #volumebudget([idFlight_Plan_Records_FK], [Calendar_Year], [Calendar_Month]
   , [media_year] ,[Media_Week] ,[kpi_type] ,[product_code]);
@@ -533,40 +477,38 @@ create index IDX_NC_VOLUMEBUDGET
 IF OBJECT_ID('tempdb.dbo.#ResponseSales', 'U') IS NOT NULL
   DROP TABLE #ResponseSales; 
 --
-select [idFlight_Plan_Records_FK], [Media_Year], [Media_Week],  [MediaMonth] as Media_Month,
-	[inhome_date], [Touch_Name], [Program_Name], [Tactic], [Media], [Campaign_Name],
-	[Campaign_Type], [Audience], [Creative_Name], [Goal], [Offer], [Channel],
-	[Scorecard_Group], [Scorecard_Program_Channel], [Calendar_Year], [Calendar_Month],
-	[KPI_TYPE], [Product_Code], Actual
+select [idFlight_Plan_Records_FK], [Media_Year], [Media_Week], [MediaMonth] as Media_Month
+	, [inhome_date], [Calendar_Year], [Calendar_Month]
+	, [KPI_TYPE], [Product_Code], Actual
 into #ResponseSales
 from
 	(select [idFlight_Plan_Records_FK], [Report_Year] as Media_Year, [Report_Week] as Media_Week,  [Calendar_Year], [Calendar_Month]
 	, case 
-		when kpiproduct='ITP_Dir_Calls' then 'Response'
-		when kpiproduct='ITP_Dir_Clicks' then 'Response'
-		when kpiproduct like '%Sales_TS%' then 'Telesales'
-		when kpiproduct like '%Sales_ON%' then 'Online_sales'
+		when kpiproduct='ITP_Dir_Calls' then 1
+		when kpiproduct='ITP_Dir_Clicks' then 2
+		when kpiproduct like '%Sales_TS%' then 1
+		when kpiproduct like '%Sales_ON%' then 2
 		end as KPI_type
 	, case
-		when kpiproduct='ITP_Dir_Calls' then 'Call'
-		when kpiproduct='ITP_Dir_Clicks' then 'Online'
-		when kpiproduct like '%CING_VOICE%' then 'WRLS Voice'
-		when kpiproduct like '%CING_FAMILY%' then 'WRLS Family'
-		when kpiproduct like '%CING_DATA%' then 'WRLS Data'
-		when kpiproduct like '%DISH%' then 'DirecTV'
-		when kpiproduct like '%DSL_DRY%' then 'DSL Direct'
-		when kpiproduct like '%DSL_REG%' then 'DSL'
-		when kpiproduct like '%HSIAG%' then 'Fiber'
-		when kpiproduct like '%HSIA%' then 'HSIA'
-		when kpiproduct like '%DSL_IP%' then 'IPDSL'
-		when kpiproduct like '%UVRS_TV%' then 'UVTV'
-		when kpiproduct like '%VOIP%' then 'VoIP' 
-		when kpiproduct like '%ACCL%' then 'Access Line'
-		when kpiproduct like '%BOLT%' then 'Bolt ons'
-		when kpiproduct like '%Migrations%' then 'Upgrades'
-		when kpiproduct like '%CTECH%' then 'ConnecTech'
-		when kpiproduct like '%DLIFE%' then 'Digital Life'
-		when kpiproduct like '%WHP%' then 'WRLS Home'
+		when kpiproduct='ITP_Dir_Calls' then NULL
+		when kpiproduct='ITP_Dir_Clicks' then NULL
+		when kpiproduct like '%CING_VOICE%' then 9
+		when kpiproduct like '%CING_FAMILY%' then 10
+		when kpiproduct like '%CING_DATA%' then 11
+		when kpiproduct like '%DISH%' then 8
+		when kpiproduct like '%DSL_DRY%' then 3
+		when kpiproduct like '%DSL_REG%' then 2
+		when kpiproduct like '%HSIAG%' then 17
+		when kpiproduct like '%HSIA%' then 5
+		when kpiproduct like '%DSL_IP%' then 4
+		when kpiproduct like '%UVRS_TV%' then 6
+		when kpiproduct like '%VOIP%' then 7 
+		when kpiproduct like '%ACCL%' then 1
+		when kpiproduct like '%BOLT%' then 15
+		when kpiproduct like '%Migrations%' then 16
+		when kpiproduct like '%CTECH%' then 13
+		when kpiproduct like '%DLIFE%' then 14
+		when kpiproduct like '%WHP%' then 12
 		end as Product_Code
 
 , sum(Actuals.[Actual]) as Actual
@@ -586,37 +528,35 @@ UNPIVOT (Actual for kpiproduct in
 			[ITP_Dir_Sales_ON_UVRS_VOIP_N], [ITP_Dir_Sales_ON_DLIFE_N], [ITP_Dir_Sales_ON_CING_WHP_N], [ITP_Dir_Sales_ON_Migrations])) as Actuals
 GROUP BY [idFlight_Plan_Records_FK], [Report_Year], [Report_Week], [Calendar_Year], [Calendar_Month]
 
-, case
-	when kpiproduct='ITP_Dir_Calls' then 'Response'
-	when kpiproduct='ITP_Dir_Clicks' then 'Response'
-	when kpiproduct like '%Sales_TS%' then 'Telesales'
-	when kpiproduct like '%Sales_ON%' then 'Online_sales'
-	end 
-
 , case 
-	when kpiproduct='ITP_Dir_Calls' then 'Call'
-	when kpiproduct='ITP_Dir_Clicks' then 'Online'
-	when kpiproduct like '%CING_VOICE%' then 'WRLS Voice'
-	when kpiproduct like '%CING_FAMILY%' then 'WRLS Family'
-	when kpiproduct like '%CING_DATA%' then 'WRLS Data'
-	when kpiproduct like '%DISH%' then 'DirecTV'
-	when kpiproduct like '%DSL_DRY%' then 'DSL Direct'
-	when kpiproduct like '%DSL_REG%' then 'DSL'
-	when kpiproduct like '%HSIAG%' then 'Fiber'
-	when kpiproduct like '%HSIA%' then 'HSIA'
-	when kpiproduct like '%DSL_IP%' then 'IPDSL'
-	when kpiproduct like '%UVRS_TV%' then 'UVTV'
-	when kpiproduct like '%VOIP%' then 'VoIP' 
-	when kpiproduct like '%ACCL%' then 'Access Line'
-	when kpiproduct like '%BOLT%' then 'Bolt ons'
-	when kpiproduct like '%Migrations%' then 'Upgrades'
-	when kpiproduct like '%CTECH%' then 'ConnecTech'
-	when kpiproduct like '%DLIFE%' then 'Digital Life'
-	when kpiproduct like '%WHP%' then 'WRLS Home'
-	end 
+		when kpiproduct='ITP_Dir_Calls' then 1
+		when kpiproduct='ITP_Dir_Clicks' then 2
+		when kpiproduct like '%Sales_TS%' then 1
+		when kpiproduct like '%Sales_ON%' then 2
+		end 
+	, case
+		when kpiproduct='ITP_Dir_Calls' then NULL
+		when kpiproduct='ITP_Dir_Clicks' then NULL
+		when kpiproduct like '%CING_VOICE%' then 9
+		when kpiproduct like '%CING_FAMILY%' then 10
+		when kpiproduct like '%CING_DATA%' then 11
+		when kpiproduct like '%DISH%' then 8
+		when kpiproduct like '%DSL_DRY%' then 3
+		when kpiproduct like '%DSL_REG%' then 2
+		when kpiproduct like '%HSIAG%' then 17
+		when kpiproduct like '%HSIA%' then 5
+		when kpiproduct like '%DSL_IP%' then 4
+		when kpiproduct like '%UVRS_TV%' then 6
+		when kpiproduct like '%VOIP%' then 7 
+		when kpiproduct like '%ACCL%' then 1
+		when kpiproduct like '%BOLT%' then 15
+		when kpiproduct like '%Migrations%' then 16
+		when kpiproduct like '%CTECH%' then 13
+		when kpiproduct like '%DLIFE%' then 14
+		when kpiproduct like '%WHP%' then 12
+		end
 	) as actuals 
 	inner join #flightplan on [idFlight_Plan_Records_FK] = [idFlight_Plan_Records]
-	inner join #touchdef on [idProgram_Touch_Definitions_TBL] = [idProgram_Touch_Definitions_TBL_FK]
 	inner join (Select distinct [ISO_week], [ISO_Week_Year], [MediaMonth] from DIM.Media_Calendar_Daily) d
 on [Media_week] = d.[ISO_Week] and [Media_Year] = d.[ISO_Week_Year];
 
@@ -641,34 +581,39 @@ select [idFlight_Plan_Records]
   , [Media_Week]
   , [Media_YYYYWW]
   , [Calendar_Year], [Calendar_Month]
-  , [KPI_TYPE]
-  , CV_Combined.[Product_Code]
+  , case when [KPI_TYPE]='Response' and CV_Combined.[Product_Code]='Call' then 1
+	when [KPI_TYPE]='Response' and CV_Combined.[Product_Code]='Online' then 2
+	when [KPI_TYPE]='Telesales' then 1
+	when [KPI_TYPE]='Online_Sales' then 2
+	when [KPI_TYPE]='Volume' then 4
+	else NULL end as KPI_TYPE
+  , case when CV_Combined.[Product_Code]='Access Line' then 1
+	 when CV_Combined.[Product_Code]='Bolt ons' then 15
+	 when CV_Combined.[Product_Code]='ConnecTech' then 13
+	 when CV_Combined.[Product_Code]='Digital Life' then 14
+	 when CV_Combined.[Product_Code]='DIRECTV' then 8
+	 when CV_Combined.[Product_Code]='DSL' then 2
+	 when CV_Combined.[Product_Code]='DSL Direct' then 3
+	 when CV_Combined.[Product_Code]='Fiber' then 17
+	 when CV_Combined.[Product_Code]='HSIA' then 5
+	 when CV_Combined.[Product_Code]='IPDSL' then 4
+	 when CV_Combined.[Product_Code]='Upgrades' then 16
+	 when CV_Combined.[Product_Code]='UVTV' then 6
+	 when CV_Combined.[Product_Code]='VoIP' then 7
+	 when CV_Combined.[Product_Code]='WRLS Data' then 11
+	 when CV_Combined.[Product_Code]='WRLS Family' then 10
+	 when CV_Combined.[Product_Code]='WRLS Home' then 12
+	 when CV_Combined.[Product_Code]='WRLS Voice' then 9
+	else null end as Product_Code
   ,  SUM([forecast]) as Forecast
-  ,	CV_Combined.[Touch_Name]
-  , CV_Combined.[Program_Name]
-  , CV_Combined.[Tactic]
-  , CV_Combined.[Media]
-  , CV_Combined.[Audience]
-  , CV_Combined.[Creative_Name]
-  , CV_Combined.[Goal]
-  , CV_Combined.[Offer]
-  , CV_Combined.[Campaign_Type]
-  , CV_Combined.[Channel]
-  ,	#touchdef.[Scorecard_Group]
-  , #touchdef.[Scorecard_Program_Channel]
 into #cv
 from bvt_cv.CV_Combined
 --left join [bvt_prod].[Program_Touch_Definitions_TBL]
 --	on CV_Combined.[idProgram_Touch_Definitions_TBL_FK]=[Program_Touch_Definitions_TBL].[idProgram_Touch_Definitions_TBL]
-left join [bvt_prod].#touchdef
-	on CV_Combined.[idProgram_Touch_Definitions_TBL_FK]=#touchdef.[idProgram_Touch_Definitions_TBL]
 where CV_Combined.[Program_Name]=(select program_name from bvt_prod.program_LU_TBL where idProgram_LU_TBL=@prog)
 GROUP BY [idFlight_Plan_Records], [idProgram_Touch_Definitions_TBL_FK], CV_Combined.[Campaign_Name], [InHome_Date], 
 	[Media_Year], [Media_Month], [Media_Week], [Media_YYYYWW], [KPI_TYPE], [Product_Code],
-	CV_Combined.[Touch_Name], CV_Combined.[Program_Name], CV_Combined.[Tactic], CV_Combined.[Media]
-	, CV_Combined.[Audience], CV_Combined.[Creative_Name], CV_Combined.[Goal]
-	, CV_Combined.[Offer], CV_Combined.[Campaign_Type], CV_Combined.[Channel],
-	#touchdef.[Scorecard_Group], #touchdef.[Scorecard_Program_Channel], [Calendar_Year], [Calendar_Month];
+ [Calendar_Year], [Calendar_Month];
 create index IDX_NC_CV
  ON #cv([idFlight_Plan_Records], [Calendar_Year], [Calendar_Month]
   , [media_year] ,[Media_Week] ,[kpi_type] ,[product_code]);
@@ -686,18 +631,6 @@ coalesce(forecast_cv.[idFlight_Plan_Records_FK], #volumebudget.[idFlight_Plan_Re
 		coalesce(forecast_cv.[Media_Month], #volumebudget.[Media_Month], #ResponseSales.Media_Month) as Media_Month,
 		coalesce(forecast_cv.[Calendar_Year], #volumebudget.[Calendar_Year], #ResponseSales.[Calendar_Year]) as Calendar_Year,
 		coalesce(forecast_cv.[Calendar_Month], #volumebudget.[Calendar_Month], #ResponseSales.[Calendar_Month]) as Calendar_Month,
-		coalesce(forecast_cv.[Touch_Name], #volumebudget.[Touch_Name], #ResponseSales.[Touch_Name]) as Touch_Name, 
-		coalesce(forecast_cv.[Program_Name], #volumebudget.[Program_Name], #ResponseSales.[Program_Name]) as Program_Name, 
-		coalesce(forecast_cv.[Tactic], #volumebudget.[Tactic], #ResponseSales.[Tactic]) as Tactic, 
-		coalesce(forecast_cv.[Media], #volumebudget.[Media], #ResponseSales.[Media]) as Media,
-		coalesce(forecast_cv.[Campaign_Type], #volumebudget.[Campaign_Type], #ResponseSales.[Campaign_Type]) as Campaign_Type,
-		coalesce(forecast_cv.[Audience], #volumebudget.[Audience], #ResponseSales.[Audience]) as Audience,
-		coalesce(forecast_cv.[Creative_Name], #volumebudget.[Creative_Name], #ResponseSales.[Creative_Name]) as Creative_Name,
-		coalesce(forecast_cv.[Goal], #volumebudget.[Goal],#ResponseSales.[Goal]) as Goal,
-		coalesce(forecast_cv.[Offer], #volumebudget.[Offer], #ResponseSales.[Offer]) as Offer,
-		coalesce(forecast_cv.[Channel], #volumebudget.[Channel], #ResponseSales.[Channel]) as Channel,
-		coalesce(forecast_cv.[Scorecard_Group], #volumebudget.[Scorecard_Group], #ResponseSales.[Scorecard_Group]) as Scorecard_Group,
-		coalesce(forecast_cv.[Scorecard_Program_Channel], #volumebudget.[Scorecard_Program_Channel], #ResponseSales.[Scorecard_Program_Channel]) as Scorecard_Program_Channel,
 		coalesce(forecast_cv.[KPI_Type], #volumebudget.[KPI_Type], #ResponseSales.[KPI_Type]) as KPI_Type,
 		coalesce(forecast_cv.[Product_Code], #volumebudget.[Product_Code],  #ResponseSales.[Product_Code]) as Product_Code
 		,strategy_eligibility
@@ -736,18 +669,6 @@ FROM
 	   Coalesce(forecast.[idFlight_Plan_Records], cv.[idFlight_Plan_Records]) as idFlight_Plan_Records_FK
       ,Coalesce(forecast.[Campaign_Name], cv.[Campaign_Name]) as Campaign_Name
       ,coalesce(forecast.[InHome_Date], cv.[InHome_Date]) as InHome_Date
-      ,coalesce(forecast.[Touch_Name], cv.[Touch_Name]) as Touch_Name
-      ,coalesce(forecast.[Program_Name], cv.[Program_Name]) as Program_Name
-      ,coalesce(forecast.[Tactic], cv.[Tactic]) as Tactic
-      ,coalesce(forecast.[Media], cv.[Media]) as Media
-      ,coalesce(forecast.[Campaign_Type], cv.[Campaign_Type]) as Campaign_Type
-      ,coalesce(forecast.[Audience], cv.[Audience]) as Audience
-      ,coalesce(forecast.[Creative_Name], cv.[Creative_Name]) as Creative_Name
-      ,coalesce(forecast.[Goal], cv.[Goal]) as Goal
-      ,coalesce(forecast.[Offer], cv.[Offer]) as Offer
-      ,coalesce(forecast.[Channel], cv.[Channel]) as Channel
-      ,coalesce(forecast.[Scorecard_Group], cv.[Scorecard_Group]) as Scorecard_Group
-      ,coalesce(forecast.[Scorecard_Program_Channel], cv.[Scorecard_Program_Channel]) as Scorecard_Program_Channel
       ,coalesce(forecast.[KPI_Type], cv.[KPI_Type]) as KPI_Type
       ,coalesce(forecast.[Product_Code], cv.[Product_Code]) as Product_Code
 	  ,coalesce(forecast.[media_year], cv.[media_year]) as media_year
@@ -774,19 +695,7 @@ FROM #forecast as forecast
 group by Coalesce(forecast.[idFlight_Plan_Records], cv.[idFlight_Plan_Records]) 
       ,Coalesce(forecast.[Campaign_Name], cv.[Campaign_Name]) 
       ,coalesce(forecast.[InHome_Date], cv.[InHome_Date]) 
-      ,coalesce(forecast.[Touch_Name], cv.[Touch_Name]) 
-      ,coalesce(forecast.[Program_Name], cv.[Program_Name])
-      ,coalesce(forecast.[Tactic], cv.[Tactic]) 
-      ,coalesce(forecast.[Media], cv.[Media])
-      ,coalesce(forecast.[Campaign_Type], cv.[Campaign_Type]) 
-      ,coalesce(forecast.[Audience], cv.[Audience]) 
-      ,coalesce(forecast.[Creative_Name], cv.[Creative_Name]) 
-      ,coalesce(forecast.[Goal], cv.[Goal]) 
-      ,coalesce(forecast.[Offer], cv.[Offer])
-      ,coalesce(forecast.[Channel], cv.[Channel])
-      ,coalesce(forecast.[Scorecard_Group], cv.[Scorecard_Group])
-      ,coalesce(forecast.[Scorecard_Program_Channel], cv.[Scorecard_Program_Channel])
-      ,coalesce(forecast.[KPI_Type], cv.[KPI_Type])
+	  ,coalesce(forecast.[KPI_Type], cv.[KPI_Type])
       ,coalesce(forecast.[Product_Code], cv.[Product_Code])
 	  ,forecast.Strategy_Eligibility
       ,forecast.Lead_Offer

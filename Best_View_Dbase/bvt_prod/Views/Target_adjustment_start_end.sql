@@ -2,7 +2,7 @@
 GO
 
 create view 
-bvt_prod.Target_adjustment_start_end
+bvt_prod.Target_adjustment_start_end_vw
 as 	
 WITH T1 AS
 (SELECT Row_Number() OVER(ORDER BY
