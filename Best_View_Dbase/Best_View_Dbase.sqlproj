@@ -641,6 +641,7 @@
     <Build Include="bvt_prod\Views\Movers_Best_View_Calendar_VW.sql" />
     <Build Include="bvt_prod\Stored Procedures\Best_View_Pivoted_PR.sql" />
     <Build Include="bvt_prod\Stored Procedures\Copy of Best_View_PR.sql" />
+    <Build Include="bvt_prod\Stored Procedures\BV_Pivoted_Test_PR.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="Best_View_Dbase.refactorlog" />
