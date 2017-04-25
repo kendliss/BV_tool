@@ -9,7 +9,8 @@ WITH T1 AS
 idProgram_Touch_Definitions_TBL_FK,
 idkpi_type_FK,
 Week_ID,
-Curve_Start_Date
+Curve_Start_Date,
+idProduct_LU_TBL_FK
 ) N, 
 	
 idProgram_Touch_Definitions_TBL_FK,
@@ -17,12 +18,14 @@ idkpi_type_FK,
 Week_ID,
 week_percent,
 Curve_Start_Date,
+idProduct_LU_TBL_FK,
 
 
 ----Build a unique compound ID for lagging-------------
 cast(idProgram_Touch_Definitions_TBL_FK AS varchar)+
 cast(idkpi_type_FK AS varchar)+
-cast(Week_ID as varchar)
+cast(Week_ID as varchar)+
+cast(idProduct_LU_TBL_FK as varchar)
 as unqid
 --------------------------------------------	
 	
@@ -31,13 +34,15 @@ GROUP BY idProgram_Touch_Definitions_TBL_FK,
 idkpi_type_FK,
 Week_ID,
 week_percent,
-Curve_Start_Date)
+Curve_Start_Date,
+idProduct_LU_TBL_FK)
 
 
 SELECT 
 ----------Selecting the Base Data----------------
 idProgram_Touch_Definitions_TBL_FK,
 idkpi_type_FK,
+idProduct_LU_TBL_FK,
 Week_ID,
 week_percent,
 Curve_Start_Date,

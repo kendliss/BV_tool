@@ -217,10 +217,17 @@ from
 	, Daily_Join.Day_of_Week
 	, KPI_Daily*week_percent as KPI_Daily
 --	, DATEADD(week,c.Week_ID,InHome_Date) as Forecast_Week_Date
-	, case when day_of_week=datepart(WEEKDAY,inhome_date) then DATEADD(week,curve.Week_ID,InHome_Date)
-			when day_of_week<datepart(WEEKDAY,inhome_date) then DATEADD(day,7-datepart(WEEKDAY,inhome_date)+Day_of_Week,DATEADD(week,curve.Week_ID,InHome_Date))
-			else DATEADD(day,Day_of_Week-datepart(WEEKDAY,inhome_date),DATEADD(week,curve.Week_ID,InHome_Date))
-			end as Forecast_DayDate	, ISO_week
+	, case when Media='EM' then
+		case when day_of_week=1 then DATEADD(week,c.Week_ID,InHome_Date)
+			else DATEADD(day,day_of_week-1,DATEADD(week,c.Week_ID,Inhome_Date))
+			end
+	  else 
+	    case when day_of_week=datepart(WEEKDAY,inhome_date) then DATEADD(week,c.Week_ID,InHome_Date)
+			when day_of_week<datepart(WEEKDAY,inhome_date) then DATEADD(day,7-datepart(WEEKDAY,inhome_date)+Day_of_Week,DATEADD(week,c.Week_ID,InHome_Date))
+			else DATEADD(day,Day_of_Week-datepart(WEEKDAY,inhome_date),DATEADD(week,c.Week_ID,InHome_Date))
+			end 
+	  end as Forecast_DayDate
+	, ISO_WEEK
 	, ISO_Week_Year
 	, MediaMonth
 	, idTarget_Rate_Reasons_LU_TBL_FK
@@ -270,8 +277,10 @@ from #flightplan as A
 	left join [bvt_processed].[Response_Curve_Start_End] as C
 		on Daily_Join.idProgram_Touch_Definitions_TBL_FK=c.idProgram_Touch_Definitions_TBL_FK and Daily_Join.idkpi_types_FK=c.idkpi_type_FK
 		and inhome_date between Curve_Start_Date and c.END_DATE
-	left join  dim.Media_Calendar_Daily 
-		on Daily_Join.InHome_Date=Media_Calendar_Daily.Date) as ResponseByDay
+	left join dim.Media_Calendar_Daily 
+		on Daily_Join.InHome_Date=Media_Calendar_Daily.Date
+	left join #touchdef
+		on Daily_Join.idProgram_Touch_Definitions_TBL_FK=#touchdef.idProgram_Touch_Definitions_TBL) as ResponseByDay
 ----------End  Weekly Response Curve and Media Calendar		
 	left join bvt_prod.Seasonality_Adjustements as E
 		on ResponseByDay.idProgram_Touch_Definitions_TBL_FK=E.idProgram_Touch_Definitions_TBL_FK and iso_week_year=Media_Year and mediamonth=Media_Month AND ISO_Week=Media_Week
@@ -324,10 +333,17 @@ from
 	, Daily_Join.Day_of_Week
 	, Salesrate_Daily*week_percent as Sales_Rate_Daily
 --	, DATEADD(week,c.Week_ID,InHome_Date) as Forecast_Week_Date
-	, case when day_of_week=datepart(WEEKDAY,inhome_date) then DATEADD(week,curve.Week_ID,InHome_Date)
-			when day_of_week<datepart(WEEKDAY,inhome_date) then DATEADD(day,7-datepart(WEEKDAY,inhome_date)+Day_of_Week,DATEADD(week,curve.Week_ID,InHome_Date))
-			else DATEADD(day,Day_of_Week-datepart(WEEKDAY,inhome_date),DATEADD(week,curve.Week_ID,InHome_Date))
-			end as Forecast_DayDate	, ISO_week
+	, case when Media='EM' then
+		case when day_of_week=1 then DATEADD(week,c.Week_ID,InHome_Date)
+			else DATEADD(day,day_of_week-1,DATEADD(week,c.Week_ID,Inhome_Date))
+			end
+	  else 
+	    case when day_of_week=datepart(WEEKDAY,inhome_date) then DATEADD(week,c.Week_ID,InHome_Date)
+			when day_of_week<datepart(WEEKDAY,inhome_date) then DATEADD(day,7-datepart(WEEKDAY,inhome_date)+Day_of_Week,DATEADD(week,c.Week_ID,InHome_Date))
+			else DATEADD(day,Day_of_Week-datepart(WEEKDAY,inhome_date),DATEADD(week,c.Week_ID,InHome_Date))
+			end 
+	  end as Forecast_DayDate
+	, ISO_week
 	, ISO_Week_Year
 	, MediaMonth
 	, idTarget_Rate_Reasons_LU_TBL_FK
@@ -388,7 +404,9 @@ from #flightplan as A
 		on Daily_Join.idProgram_Touch_Definitions_TBL_FK=d.idProgram_Touch_Definitions_TBL_FK
 		and inhome_date between drop_start_date and d.end_date
 	left join  dim.Media_Calendar_Daily 
-		on Daily_Join.InHome_Date=Media_Calendar_Daily.Date) as ResponseByDay
+		on Daily_Join.InHome_Date=Media_Calendar_Daily.Date
+	left join #touchdef
+		on Daily_Join.idProgram_Touch_Definitions_TBL_FK=#touchdef.idProgram_Touch_Definitions_TBL) as ResponseByDay
 ----------End  Weekly Response Curve and Media Calendar		
 	left join bvt_prod.Seasonality_Adjustements as E
 		on ResponseByDay.idProgram_Touch_Definitions_TBL_FK=E.idProgram_Touch_Definitions_TBL_FK and iso_week_year=Media_Year and mediamonth=Media_Month and ISO_Week = Media_Week
@@ -647,6 +665,7 @@ select [idFlight_Plan_Records]
   , [Media_YYYYWW]
   , [Calendar_Year], [Calendar_Month]
   , [KPI_TYPE]
+  , [Forecast_DayDate]
   , CV_Combined.[Product_Code]
   ,  SUM([forecast]) as Forecast
   ,	CV_Combined.[Touch_Name]
@@ -775,7 +794,7 @@ FROM #forecast as forecast
 			and forecast.[product_code] = cv.[product_code]
 			and forecast.[Calendar_Year] = cv.[Calendar_Year]
 			and forecast.[Calendar_Month] = cv.[Calendar_Month]
-			and forecast.[Forecast_DayDate] = cv.[Forecast_DayDate]
+			and forecast.[Forecast_DayDate] = cv.Forecast_DayDate
 
 group by Coalesce(forecast.[idFlight_Plan_Records], cv.[idFlight_Plan_Records]) 
       ,Coalesce(forecast.[Campaign_Name], cv.[Campaign_Name]) 
