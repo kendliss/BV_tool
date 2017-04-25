@@ -52,7 +52,50 @@ WHERE idProgram_LU_TBL_fk=@PROG;
 create clustered index IDX_C_touchdef_id ON #touchdef(idProgram_Touch_Definitions_TBL);
 
 ----------End Touch Def-----------------------------
-
+--/*Inserting the start/end procs until triggers are fixed
+--KPI Start End
+delete [bvt_processed].[KPI_Rate_Start_End]
+where [idProgram_Touch_Definitions_TBL_FK] in 
+(select idProgram_Touch_Definitions_TBL from #touchdef);
+insert into bvt_processed.KPI_Rate_Start_End
+select * from bvt_prod.KPI_Rate_Start_End_VW
+where idProgram_Touch_Definitions_TBL_FK in (select idProgram_Touch_Definitions_TBL from #touchdef);
+--Response Curve Start End
+delete [bvt_processed].[Response_Curve_Start_End]
+where [idProgram_Touch_Definitions_TBL_FK] in 
+(select idProgram_Touch_Definitions_TBL from #touchdef);
+insert into [bvt_processed].[Response_Curve_Start_End]
+select * from [bvt_prod].[Response_Curve_Start_End_VW]
+where idProgram_Touch_Definitions_TBL_FK in (select idProgram_Touch_Definitions_TBL from #touchdef);
+--Response Daily Start End
+delete [bvt_processed].[Response_Daily_Start_End]
+where [idProgram_Touch_Definitions_TBL_FK] in 
+(select idProgram_Touch_Definitions_TBL from #touchdef);
+insert into [bvt_processed].[Response_Daily_Start_End]
+select * from [bvt_prod].[Response_Daily_Start_End_VW]
+where idProgram_Touch_Definitions_TBL_FK in (select idProgram_Touch_Definitions_TBL from #touchdef);
+--Sales Curve Start End
+delete [bvt_processed].[Sales_Curve_Start_End]
+where [idProgram_Touch_Definitions_TBL_FK] in 
+(select idProgram_Touch_Definitions_TBL from #touchdef);
+insert into [bvt_processed].[Sales_Curve_Start_End]
+select * from [bvt_prod].[Sales_Curve_Start_End_VW]
+where idProgram_Touch_Definitions_TBL_FK in (select idProgram_Touch_Definitions_TBL from #touchdef);
+--Sales Rates Start End
+delete [bvt_processed].[Sales_Rates_Start_End]
+where [idProgram_Touch_Definitions_TBL_FK] in 
+(select idProgram_Touch_Definitions_TBL from #touchdef);
+insert into [bvt_processed].[Sales_Rates_Start_End]
+select * from [bvt_prod].[Sales_Rates_Start_End_VW]
+where idProgram_Touch_Definitions_TBL_FK in (select idProgram_Touch_Definitions_TBL from #touchdef);
+--Target Adjustment Start End
+delete [bvt_processed].[Target_Adjustment_Start_End]
+where [idProgram_Touch_Definitions_TBL_FK] in 
+(select idProgram_Touch_Definitions_TBL from #touchdef);
+insert into [bvt_processed].[Target_Adjustment_Start_End]
+select * from [bvt_prod].[Target_Adjustment_Start_End_VW]
+where idProgram_Touch_Definitions_TBL_FK in (select idProgram_Touch_Definitions_TBL from #touchdef);
+--*/
 
 ----Section 1.3 - Target Adjustments
 IF OBJECT_ID('tempdb.dbo.#Trgt_adj', 'U') IS NOT NULL
