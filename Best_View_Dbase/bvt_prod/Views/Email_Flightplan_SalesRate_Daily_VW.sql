@@ -23,7 +23,7 @@ from
 	, Daily_Join.Day_of_Week
 	, Salesrate_Daily*week_percent as Sales_Rate_Daily
 	, DATEADD(week,c.Week_ID,InHome_Date) as Forecast_Week_Date
-	, DATEADD(day,Day_of_Week,DATEADD(week,c.Week_ID,InHome_Date)) as Forecast_DayDate
+	, DATEADD(day,Day_of_Week-1,DATEADD(week,c.Week_ID,InHome_Date)) as Forecast_DayDate
 	, ISO_week
 	, ISO_Week_Year
 	, MediaMonth

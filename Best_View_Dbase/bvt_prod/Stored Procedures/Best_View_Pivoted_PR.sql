@@ -5,7 +5,7 @@ BEGIN
 SET NOCOUNT ON
 /*Temporary Declarations for Testing
 DECLARE @PROG INT
-set @PROG = 4--*/
+set @PROG = 4*/
 ------Section 1 Subselecting Tables - into temps---------
 
 -------Section 1.1 - Flightplan Selection	
@@ -24,6 +24,7 @@ IF OBJECT_ID('tempdb.dbo.#flightplan', 'U') IS NOT NULL
 	and inhome_date>='2016-01-01';
 
 create CLUSTERED index idx_c_flightplan_flightplanid ON #flightplan([idFlight_Plan_Records]);
+
 ---End Flightplan selection
 -------Touch Definition View--------------------------
 IF OBJECT_ID('tempdb.dbo.#touchdef', 'U') IS NOT NULL
@@ -33,7 +34,7 @@ SELECT idProgram_Touch_Definitions_TBL
 	, Touch_Name, Program_Name, Tactic, Media, Audience
 	, Creative_Name, Goal, Offer, Campaign_Type, Channel
 	, owner_type_matrix_id_FK, 
-	Program_Touch_Definitions_TBL.Scorecard_group, Scorecard_program_Channel
+	SC.Scorecard_group, Scorecard_program_Channel
 INTO #touchdef
 from bvt_prod.Program_Touch_Definitions_TBL
 	left join bvt_prod.Audience_LU_TBL on idAudience_LU_TBL_FK=idAudience_LU_TBL
@@ -45,10 +46,11 @@ from bvt_prod.Program_Touch_Definitions_TBL
 	left join bvt_prod.Program_LU_TBL on idProgram_LU_TBL_fk=idProgram_LU_TBL
 	left join bvt_prod.Tactic_LU_TBL on idTactic_LU_TBL_fk=idTactic_LU_TBL
 	left join bvt_prod.Channel_LU_TBL on idChanel_LU_TBL_FK=idChanel_LU_TBL
-	left Join bvt_processed.Scorecard_Hierarchy on owner_type_matrix_id_FK =  owner_type_matrix_id
+	left Join (Select Distinct ID, scorecard_group, scorecard_program_channel from JAVDB.IREPORT_2015.dbo.WB_00_Reporting_Hierarchy) sc on sc.ID =  owner_type_matrix_id_FK
 WHERE idProgram_LU_TBL_fk=@PROG;
 
 create clustered index IDX_C_touchdef_id ON #touchdef(idProgram_Touch_Definitions_TBL);
+
 ----------End Touch Def-----------------------------
 
 
@@ -196,11 +198,11 @@ from
 	, b.idkpi_types_FK
 	
   --Code to account for having a TFN or URL or not in flightplan entry and a manual adjustment or not
-	,case when tfn_ind=-1 and b.idkpi_types_FK=1 then KPI_Rate*isnull(adjustment,1)
+	,case when tfn_ind=1 and b.idkpi_types_FK=1 then KPI_Rate*isnull(adjustment,1)
 		when TFN_ind=0 and b.idkpi_types_FK=1 then 0
-		when URL_ind=-1 and b.idkpi_types_FK=2 then KPI_Rate*isnull(adjustment,1)
+		when URL_ind=1 and b.idkpi_types_FK=2 then KPI_Rate*isnull(adjustment,1)
 		when URL_ind=0 and b.idkpi_types_FK=2 then 0
-		else KPI_Rate*adjustment
+		else KPI_Rate*isnull(adjustment,1)
 		end as KPI_Rate
 	, InHome_Date
 	, idTarget_Rate_Reasons_LU_TBL_FK
@@ -301,9 +303,9 @@ from
 	, a.idProgram_Touch_Definitions_TBL_FK
 	, B.idkpi_type_FK
 	, B.idProduct_LU_TBL_FK
-	, case when tfn_ind=-1 and b.idkpi_type_FK=1 then Sales_Rate*isnull(adjustment,1)*isnull(Sales_Adjustment,1)
+	, case when tfn_ind=1 and b.idkpi_type_FK=1 then Sales_Rate*isnull(adjustment,1)*isnull(Sales_Adjustment,1)
 		when TFN_ind=0 and b.idkpi_type_FK=1 then 0
-		when URL_ind=-1 and b.idkpi_type_FK=2 then Sales_Rate*isnull(adjustment,1)*isnull(Sales_Adjustment,1)
+		when URL_ind=1 and b.idkpi_type_FK=2 then Sales_Rate*isnull(adjustment,1)*isnull(Sales_Adjustment,1)
 		when URL_ind=0 and b.idkpi_type_FK=2 then 0
 		else Sales_Rate*isnull(adjustment,1)*isnull(Sales_Adjustment,1)
 	end as Sales_Rate
@@ -598,6 +600,7 @@ select [idFlight_Plan_Records]
   , [Media_YYYYWW]
   , [Calendar_Year], [Calendar_Month]
   , [KPI_TYPE]
+  , [Forecast_DayDate]
   , CV_Combined.[Product_Code]
   ,  SUM([forecast]) as Forecast
   ,	CV_Combined.[Touch_Name]
@@ -624,7 +627,7 @@ GROUP BY [idFlight_Plan_Records], [idProgram_Touch_Definitions_TBL_FK], CV_Combi
 	CV_Combined.[Touch_Name], CV_Combined.[Program_Name], CV_Combined.[Tactic], CV_Combined.[Media]
 	, CV_Combined.[Audience], CV_Combined.[Creative_Name], CV_Combined.[Goal]
 	, CV_Combined.[Offer], CV_Combined.[Campaign_Type], CV_Combined.[Channel],
-	#touchdef.[Scorecard_Group], #touchdef.[Scorecard_Program_Channel], [Calendar_Year], [Calendar_Month];
+	#touchdef.[Scorecard_Group], #touchdef.[Scorecard_Program_Channel], [Calendar_Year], [Calendar_Month], [Forecast_DayDate];
 create index IDX_NC_CV
  ON #cv([idFlight_Plan_Records], [Calendar_Year], [Calendar_Month]
   , [media_year] ,[Media_Week] ,[kpi_type] ,[product_code]);
@@ -633,6 +636,10 @@ create index IDX_NC_CV
 /*Combine the Forecast, Actuals, and CV into a single Best View of the
 program selected for output*/
 -----------------------------------------------------------------------
+IF OBJECT_ID('tempdb.dbo.#bestview', 'U') IS NOT NULL
+  DROP TABLE #bestview; 
+
+
 select
 coalesce(forecast_cv.[idFlight_Plan_Records_FK], #volumebudget.[idFlight_Plan_Records_FK], #ResponseSales.[idFlight_Plan_Records_FK]) as idFlight_Plan_Records_FK,
 		coalesce(forecast_cv.[Campaign_Name], #volumebudget.[Campaign_Name], #ResponseSales.[Campaign_Name]) as Campaign_Name,
@@ -726,6 +733,8 @@ FROM #forecast as forecast
 			and forecast.[product_code] = cv.[product_code]
 			and forecast.[Calendar_Year] = cv.[Calendar_Year]
 			and forecast.[Calendar_Month] = cv.[Calendar_Month]
+			and forecast.[Forecast_DayDate] = cv.[Forecast_DayDate]
+
 
 group by Coalesce(forecast.[idFlight_Plan_Records], cv.[idFlight_Plan_Records]) 
       ,Coalesce(forecast.[Campaign_Name], cv.[Campaign_Name]) 
@@ -1254,4 +1263,3 @@ group by [idFlight_Plan_Records_FK], [Campaign_Name], [InHome_Date], [Strategy_E
 
 SET NOCOUNT OFF
 END
-
