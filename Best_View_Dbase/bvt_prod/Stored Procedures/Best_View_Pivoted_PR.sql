@@ -204,8 +204,7 @@ from
 ---KPI daily Rates
 (select idFlight_Plan_Records
 	, responsebyday.idProgram_Touch_Definitions_TBL_FK
-	, idkpi_types_FK
-	, Day_of_Week
+	, responsebyday.idkpi_types_FK
 	, case when ResponseByDay.idTarget_Rate_Reasons_LU_TBL_FK is null then KPI_Daily*Seasonality_Adj
 		else KPI_Daily*Seasonality_Adj*Rate_Adjustment_Factor end as KPI_Daily
 	, Forecast_DayDate
@@ -214,7 +213,6 @@ from
 (select Daily_Join.idFlight_Plan_Records
 	, Daily_Join.idProgram_Touch_Definitions_TBL_FK
 	, Daily_Join.idkpi_types_FK
-	, Daily_Join.Day_of_Week
 	, KPI_Daily*week_percent as KPI_Daily
 --	, DATEADD(week,c.Week_ID,InHome_Date) as Forecast_Week_Date
 	, case when Media='EM' then
@@ -281,7 +279,15 @@ from #flightplan as A
 		on Daily_Join.InHome_Date=Media_Calendar_Daily.Date
 	left join #touchdef
 		on Daily_Join.idProgram_Touch_Definitions_TBL_FK=#touchdef.idProgram_Touch_Definitions_TBL) as ResponseByDay
-----------End  Weekly Response Curve and Media Calendar		
+----------End  Weekly Response Curve and Media Calendar	
+/*Code for seasonality adjustments broken out for response and sales
+	left join bvt_prod.Response_Seasonality as E
+		on ResponseByDay.idProgram_Touch_Definitions_TBL_FK=E.idProgram_Touch_Definitions_TBL_FK 
+		  and ResponseByDay.idkpi_types_FK=E.idkpi_types_FK
+		  and iso_week_year=Media_Year 
+		  and mediamonth=Media_Month 
+		  AND ISO_Week=Media_Week
+*/	
 	left join bvt_prod.Seasonality_Adjustements as E
 		on ResponseByDay.idProgram_Touch_Definitions_TBL_FK=E.idProgram_Touch_Definitions_TBL_FK and iso_week_year=Media_Year and mediamonth=Media_Month AND ISO_Week=Media_Week
 	left join #Trgt_adj as Target_adjustment_start_end
@@ -317,8 +323,8 @@ from
 
 (select idFlight_Plan_Records
 	, responsebyday.idProgram_Touch_Definitions_TBL_FK
-	, idkpi_type_FK
-	, idProduct_LU_TBL_FK
+	, ResponseByDay.idkpi_type_FK
+	, ResponseByDay.idProduct_LU_TBL_FK
 	, Day_of_Week
 	, case when ResponseByDay.idTarget_Rate_Reasons_LU_TBL_FK is null then Sales_rate_Daily*Seasonality_Adj
 		else Sales_rate_Daily*Seasonality_Adj*Rate_Adjustment_Factor end as Sales_rate_Daily
@@ -411,7 +417,16 @@ from #flightplan as A
 		on Daily_Join.InHome_Date=Media_Calendar_Daily.Date
 	left join #touchdef
 		on Daily_Join.idProgram_Touch_Definitions_TBL_FK=#touchdef.idProgram_Touch_Definitions_TBL) as ResponseByDay
-----------End  Weekly Response Curve and Media Calendar		
+----------End  Weekly Response Curve and Media Calendar	
+/*Code for seasonality adjustments broken out for response and sales
+	left join bvt_prod.Sales_Seasonality as E
+		on ResponseByDay.idProgram_Touch_Definitions_TBL_FK=E.idProgram_Touch_Definitions_TBL_FK 
+		  and ResponseByDay.idkpi_types_FK=E.idkpi_types_FK
+		  and ResponseByDay.idProduct_LU_TBL_FK=E.idProduct_LU_TBL_FK
+		  and iso_week_year=Media_Year 
+		  and mediamonth=Media_Month 
+		  AND ISO_Week=Media_Week
+*/		
 	left join bvt_prod.Seasonality_Adjustements as E
 		on ResponseByDay.idProgram_Touch_Definitions_TBL_FK=E.idProgram_Touch_Definitions_TBL_FK and iso_week_year=Media_Year and mediamonth=Media_Month and ISO_Week = Media_Week
 	left join #Trgt_adj  as Target_adjustment_start_end
