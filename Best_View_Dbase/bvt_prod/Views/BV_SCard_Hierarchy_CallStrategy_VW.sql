@@ -1,5 +1,4 @@
-﻿
-ALTER VIEW [bvt_prod].[BV_SCard_Hierarchy_CallStrategy_VW]
+﻿ALTER VIEW [bvt_prod].[BV_SCard_Hierarchy_CallStrategy_VW]
 	AS 
 	
 SELECT

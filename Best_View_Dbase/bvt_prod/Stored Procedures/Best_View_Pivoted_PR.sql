@@ -5,7 +5,8 @@ BEGIN
 SET NOCOUNT ON
 /*Temporary Declarations for Testing
 DECLARE @PROG INT
-set @PROG = 4*/
+set @PROG = 4
+--*/
 ------Section 1 Subselecting Tables - into temps---------
 
 -------Section 1.1 - Flightplan Selection	
@@ -52,7 +53,50 @@ WHERE idProgram_LU_TBL_fk=@PROG;
 create clustered index IDX_C_touchdef_id ON #touchdef(idProgram_Touch_Definitions_TBL);
 
 ----------End Touch Def-----------------------------
-
+--/*Inserting the start/end procs until triggers are fixed
+--KPI Start End
+delete [bvt_processed].[KPI_Rate_Start_End]
+where [idProgram_Touch_Definitions_TBL_FK] in 
+(select idProgram_Touch_Definitions_TBL from #touchdef);
+insert into bvt_processed.KPI_Rate_Start_End
+select * from bvt_prod.KPI_Rate_Start_End_VW
+where idProgram_Touch_Definitions_TBL_FK in (select idProgram_Touch_Definitions_TBL from #touchdef);
+--Response Curve Start End
+delete [bvt_processed].[Response_Curve_Start_End]
+where [idProgram_Touch_Definitions_TBL_FK] in 
+(select idProgram_Touch_Definitions_TBL from #touchdef);
+insert into [bvt_processed].[Response_Curve_Start_End]
+select * from [bvt_prod].[Response_Curve_Start_End_VW]
+where idProgram_Touch_Definitions_TBL_FK in (select idProgram_Touch_Definitions_TBL from #touchdef);
+--Response Daily Start End
+delete [bvt_processed].[Response_Daily_Start_End]
+where [idProgram_Touch_Definitions_TBL_FK] in 
+(select idProgram_Touch_Definitions_TBL from #touchdef);
+insert into [bvt_processed].[Response_Daily_Start_End]
+select * from [bvt_prod].[Response_Daily_Start_End_VW]
+where idProgram_Touch_Definitions_TBL_FK in (select idProgram_Touch_Definitions_TBL from #touchdef);
+--Sales Curve Start End
+delete [bvt_processed].[Sales_Curve_Start_End]
+where [idProgram_Touch_Definitions_TBL_FK] in 
+(select idProgram_Touch_Definitions_TBL from #touchdef);
+insert into [bvt_processed].[Sales_Curve_Start_End]
+select * from [bvt_prod].[Sales_Curve_Start_End_VW]
+where idProgram_Touch_Definitions_TBL_FK in (select idProgram_Touch_Definitions_TBL from #touchdef);
+--Sales Rates Start End
+delete [bvt_processed].[Sales_Rates_Start_End]
+where [idProgram_Touch_Definitions_TBL_FK] in 
+(select idProgram_Touch_Definitions_TBL from #touchdef);
+insert into [bvt_processed].[Sales_Rates_Start_End]
+select * from [bvt_prod].[Sales_Rates_Start_End_VW]
+where idProgram_Touch_Definitions_TBL_FK in (select idProgram_Touch_Definitions_TBL from #touchdef);
+--Target Adjustment Start End
+delete [bvt_processed].[Target_Adjustment_Start_End]
+where [idProgram_Touch_Definitions_TBL_FK] in 
+(select idProgram_Touch_Definitions_TBL from #touchdef);
+insert into [bvt_processed].[Target_Adjustment_Start_End]
+select * from [bvt_prod].[Target_Adjustment_Start_End_VW]
+where idProgram_Touch_Definitions_TBL_FK in (select idProgram_Touch_Definitions_TBL from #touchdef);
+--*/
 
 ----Section 1.3 - Target Adjustments
 IF OBJECT_ID('tempdb.dbo.#Trgt_adj', 'U') IS NOT NULL
@@ -160,8 +204,7 @@ from
 ---KPI daily Rates
 (select idFlight_Plan_Records
 	, responsebyday.idProgram_Touch_Definitions_TBL_FK
-	, idkpi_types_FK
-	, Day_of_Week
+	, responsebyday.idkpi_types_FK
 	, case when ResponseByDay.idTarget_Rate_Reasons_LU_TBL_FK is null then KPI_Daily*Seasonality_Adj
 		else KPI_Daily*Seasonality_Adj*Rate_Adjustment_Factor end as KPI_Daily
 	, Forecast_DayDate
@@ -170,10 +213,18 @@ from
 (select Daily_Join.idFlight_Plan_Records
 	, Daily_Join.idProgram_Touch_Definitions_TBL_FK
 	, Daily_Join.idkpi_types_FK
-	, Daily_Join.Day_of_Week
 	, KPI_Daily*week_percent as KPI_Daily
-	, DATEADD(week,c.Week_ID,InHome_Date) as Forecast_Week_Date
-	, DATEADD(day,Day_of_Week-1,DATEADD(week,c.Week_ID,InHome_Date)) as Forecast_DayDate
+--	, DATEADD(week,c.Week_ID,InHome_Date) as Forecast_Week_Date
+	, case when Media='EM' then
+		case when day_of_week=1 then DATEADD(week,c.Week_ID,InHome_Date)
+			else DATEADD(day,day_of_week-1,DATEADD(week,c.Week_ID,Inhome_Date))
+			end
+	  else 
+	    case when day_of_week=datepart(WEEKDAY,inhome_date) then DATEADD(week,c.Week_ID,InHome_Date)
+			when day_of_week<datepart(WEEKDAY,inhome_date) then DATEADD(day,7-datepart(WEEKDAY,inhome_date)+Day_of_Week,DATEADD(week,c.Week_ID,InHome_Date))
+			else DATEADD(day,Day_of_Week-datepart(WEEKDAY,inhome_date),DATEADD(week,c.Week_ID,InHome_Date))
+			end 
+	  end as Forecast_DayDate
 	, ISO_week
 	, ISO_Week_Year
 	, MediaMonth
@@ -225,8 +276,18 @@ from #flightplan as A
 		on Daily_Join.idProgram_Touch_Definitions_TBL_FK=c.idProgram_Touch_Definitions_TBL_FK and Daily_Join.idkpi_types_FK=c.idkpi_type_FK
 		and inhome_date between Curve_Start_Date and c.END_DATE
 	left join  dim.Media_Calendar_Daily 
-		on Daily_Join.InHome_Date=Media_Calendar_Daily.Date) as ResponseByDay
-----------End  Weekly Response Curve and Media Calendar		
+		on Daily_Join.InHome_Date=Media_Calendar_Daily.Date
+	left join #touchdef
+		on Daily_Join.idProgram_Touch_Definitions_TBL_FK=#touchdef.idProgram_Touch_Definitions_TBL) as ResponseByDay
+----------End  Weekly Response Curve and Media Calendar	
+/*Code for seasonality adjustments broken out for response and sales
+	left join bvt_prod.Response_Seasonality as E
+		on ResponseByDay.idProgram_Touch_Definitions_TBL_FK=E.idProgram_Touch_Definitions_TBL_FK 
+		  and ResponseByDay.idkpi_types_FK=E.idkpi_types_FK
+		  and iso_week_year=Media_Year 
+		  and mediamonth=Media_Month 
+		  AND ISO_Week=Media_Week
+*/	
 	left join bvt_prod.Seasonality_Adjustements as E
 		on ResponseByDay.idProgram_Touch_Definitions_TBL_FK=E.idProgram_Touch_Definitions_TBL_FK and iso_week_year=Media_Year and mediamonth=Media_Month AND ISO_Week=Media_Week
 	left join #Trgt_adj as Target_adjustment_start_end
@@ -262,8 +323,8 @@ from
 
 (select idFlight_Plan_Records
 	, responsebyday.idProgram_Touch_Definitions_TBL_FK
-	, idkpi_type_FK
-	, idProduct_LU_TBL_FK
+	, ResponseByDay.idkpi_type_FK
+	, ResponseByDay.idProduct_LU_TBL_FK
 	, Day_of_Week
 	, case when ResponseByDay.idTarget_Rate_Reasons_LU_TBL_FK is null then Sales_rate_Daily*Seasonality_Adj
 		else Sales_rate_Daily*Seasonality_Adj*Rate_Adjustment_Factor end as Sales_rate_Daily
@@ -274,11 +335,20 @@ from
 (select Daily_Join.idFlight_Plan_Records
 	, Daily_Join.idProgram_Touch_Definitions_TBL_FK
 	, Daily_Join.idkpi_type_FK
-	, idProduct_LU_TBL_FK
+	, Daily_Join.idProduct_LU_TBL_FK
 	, Daily_Join.Day_of_Week
 	, Salesrate_Daily*week_percent as Sales_Rate_Daily
-	, DATEADD(week,c.Week_ID,InHome_Date) as Forecast_Week_Date
-	, DATEADD(day,Day_of_Week-1,DATEADD(week,c.Week_ID,InHome_Date)) as Forecast_DayDate
+--	, DATEADD(week,c.Week_ID,InHome_Date) as Forecast_Week_Date
+	, case when Media='EM' then
+		case when day_of_week=1 then DATEADD(week,c.Week_ID,InHome_Date)
+			else DATEADD(day,day_of_week-1,DATEADD(week,c.Week_ID,Inhome_Date))
+			end
+	  else 
+	    case when day_of_week=datepart(WEEKDAY,inhome_date) then DATEADD(week,c.Week_ID,InHome_Date)
+			when day_of_week<datepart(WEEKDAY,inhome_date) then DATEADD(day,7-datepart(WEEKDAY,inhome_date)+Day_of_Week,DATEADD(week,c.Week_ID,InHome_Date))
+			else DATEADD(day,Day_of_Week-datepart(WEEKDAY,inhome_date),DATEADD(week,c.Week_ID,InHome_Date))
+			end 
+	  end as Forecast_DayDate
 	, ISO_week
 	, ISO_Week_Year
 	, MediaMonth
@@ -336,12 +406,27 @@ from #flightplan as A
 	left join [bvt_processed].[Sales_Curve_Start_End] as C
 		on Daily_Join.idProgram_Touch_Definitions_TBL_FK=c.idProgram_Touch_Definitions_TBL_FK and Daily_Join.idkpi_type_FK=c.idkpi_type_FK
 		and inhome_date between Curve_Start_Date and c.END_DATE
+		and Case when c.idProduct_LU_TBL_FK is not null 
+		       then c.idProduct_LU_TBL_FK
+			   else Daily_Join.idProduct_LU_TBL_FK
+			   end = Daily_Join.idProduct_LU_TBL_FK
 	left join (SELECT * FROM [bvt_prod].[Dropdate_Start_End_FUN](@PROG)) as D
 		on Daily_Join.idProgram_Touch_Definitions_TBL_FK=d.idProgram_Touch_Definitions_TBL_FK
 		and inhome_date between drop_start_date and d.end_date
 	left join  dim.Media_Calendar_Daily 
-		on Daily_Join.InHome_Date=Media_Calendar_Daily.Date) as ResponseByDay
-----------End  Weekly Response Curve and Media Calendar		
+		on Daily_Join.InHome_Date=Media_Calendar_Daily.Date
+	left join #touchdef
+		on Daily_Join.idProgram_Touch_Definitions_TBL_FK=#touchdef.idProgram_Touch_Definitions_TBL) as ResponseByDay
+----------End  Weekly Response Curve and Media Calendar	
+/*Code for seasonality adjustments broken out for response and sales
+	left join bvt_prod.Sales_Seasonality as E
+		on ResponseByDay.idProgram_Touch_Definitions_TBL_FK=E.idProgram_Touch_Definitions_TBL_FK 
+		  and ResponseByDay.idkpi_types_FK=E.idkpi_types_FK
+		  and ResponseByDay.idProduct_LU_TBL_FK=E.idProduct_LU_TBL_FK
+		  and iso_week_year=Media_Year 
+		  and mediamonth=Media_Month 
+		  AND ISO_Week=Media_Week
+*/		
 	left join bvt_prod.Seasonality_Adjustements as E
 		on ResponseByDay.idProgram_Touch_Definitions_TBL_FK=E.idProgram_Touch_Definitions_TBL_FK and iso_week_year=Media_Year and mediamonth=Media_Month and ISO_Week = Media_Week
 	left join #Trgt_adj  as Target_adjustment_start_end
@@ -617,8 +702,6 @@ select [idFlight_Plan_Records]
   , #touchdef.[Scorecard_Program_Channel]
 into #cv
 from bvt_cv.CV_Combined
---left join [bvt_prod].[Program_Touch_Definitions_TBL]
---	on CV_Combined.[idProgram_Touch_Definitions_TBL_FK]=[Program_Touch_Definitions_TBL].[idProgram_Touch_Definitions_TBL]
 left join [bvt_prod].#touchdef
 	on CV_Combined.[idProgram_Touch_Definitions_TBL_FK]=#touchdef.[idProgram_Touch_Definitions_TBL]
 where CV_Combined.[Program_Name]=(select program_name from bvt_prod.program_LU_TBL where idProgram_LU_TBL=@prog)
