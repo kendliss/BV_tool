@@ -145,8 +145,6 @@ IF OBJECT_ID('tempdb.dbo.#forecast', 'U') IS NOT NULL
 select #flightplan.idFlight_Plan_Records
 	, #flightplan.Campaign_Name
 	, #flightplan.InHome_Date
-	, strat.Strategy_Eligibility
-	, lead.Lead_Offer
 	
 ---Media_Calendar_Info
 	, Media_Calendar_Daily.ISO_Week_Year as Media_Year
@@ -455,12 +453,6 @@ left join
 -----Bring in touch definition labels 
 #touchdef as touchdef
 		on #flightplan.idProgram_Touch_Definitions_TBL_FK=idProgram_Touch_Definitions_TBL
-left join
-bvt_prod.Strategy_Eligibility_LU_TBL strat
-	on #flightplan.Strategy_Eligibility_LU_TBL_FK = strat.idStrategy_Eligibility_LU_TBL
-left join
-bvt_prod.Lead_Offer_LU_TBL lead
-	on #flightplan.Lead_Offer_LU_TBL_FK = lead.idLead_Offer_LU_TBL
 where Tactic <> 'Cost'	
 ;
 
@@ -779,21 +771,21 @@ into #bestview
 FROM	
 
 (SELECT 
-	   Coalesce(forecast.[idFlight_Plan_Records], cv.[idFlight_Plan_Records]) as idFlight_Plan_Records_FK
-      ,Coalesce(forecast.[Campaign_Name], cv.[Campaign_Name]) as Campaign_Name
-      ,coalesce(forecast.[InHome_Date], cv.[InHome_Date]) as InHome_Date
-      ,coalesce(forecast.[Touch_Name], cv.[Touch_Name]) as Touch_Name
-      ,coalesce(forecast.[Program_Name], cv.[Program_Name]) as Program_Name
-      ,coalesce(forecast.[Tactic], cv.[Tactic]) as Tactic
-      ,coalesce(forecast.[Media], cv.[Media]) as Media
-      ,coalesce(forecast.[Campaign_Type], cv.[Campaign_Type]) as Campaign_Type
-      ,coalesce(forecast.[Audience], cv.[Audience]) as Audience
-      ,coalesce(forecast.[Creative_Name], cv.[Creative_Name]) as Creative_Name
-      ,coalesce(forecast.[Goal], cv.[Goal]) as Goal
-      ,coalesce(forecast.[Offer], cv.[Offer]) as Offer
-      ,coalesce(forecast.[Channel], cv.[Channel]) as Channel
-      ,coalesce(forecast.[Scorecard_Group], cv.[Scorecard_Group]) as Scorecard_Group
-      ,coalesce(forecast.[Scorecard_Program_Channel], cv.[Scorecard_Program_Channel]) as Scorecard_Program_Channel
+	   Coalesce(#flightplan.idFlight_Plan_Records, forecast.[idFlight_Plan_Records], cv.[idFlight_Plan_Records]) as idFlight_Plan_Records_FK
+      ,Coalesce(#flightplan.Campaign_Name, forecast.[Campaign_Name], cv.[Campaign_Name]) as Campaign_Name
+      ,coalesce(#flightplan.InHome_Date, forecast.[InHome_Date], cv.[InHome_Date]) as InHome_Date
+      ,coalesce(#touchdef.Touch_Name, forecast.[Touch_Name], cv.[Touch_Name]) as Touch_Name
+      ,coalesce(#touchdef.Program_Name, forecast.[Program_Name], cv.[Program_Name]) as Program_Name
+      ,coalesce(#touchdef.Tactic, forecast.[Tactic], cv.[Tactic]) as Tactic
+      ,coalesce(#touchdef.Media, forecast.[Media], cv.[Media]) as Media
+      ,coalesce(#touchdef.Campaign_Type, forecast.[Campaign_Type], cv.[Campaign_Type]) as Campaign_Type
+      ,coalesce(#touchdef.Audience, forecast.[Audience], cv.[Audience]) as Audience
+      ,coalesce(#touchdef.Creative_Name, forecast.[Creative_Name], cv.[Creative_Name]) as Creative_Name
+      ,coalesce(#touchdef.Goal, forecast.[Goal], cv.[Goal]) as Goal
+      ,coalesce(#touchdef.Offer, forecast.[Offer], cv.[Offer]) as Offer
+      ,coalesce(#touchdef.Channel, forecast.[Channel], cv.[Channel]) as Channel
+      ,coalesce(#touchdef.Scorecard_Group, forecast.[Scorecard_Group], cv.[Scorecard_Group]) as Scorecard_Group
+      ,coalesce(#touchdef.Scorecard_Program_Channel, forecast.[Scorecard_Program_Channel], cv.[Scorecard_Program_Channel]) as Scorecard_Program_Channel
       ,coalesce(forecast.[KPI_Type], cv.[KPI_Type]) as KPI_Type
       ,coalesce(forecast.[Product_Code], cv.[Product_Code]) as Product_Code
 	  ,coalesce(forecast.[media_year], cv.[media_year]) as media_year
@@ -802,10 +794,10 @@ FROM
 	  ,coalesce(forecast.[Media_YYYYWW], cv.[Media_YYYYWW]) as Media_YYYYWW
 	  ,coalesce(forecast.[Calendar_Year], cv.[Calendar_Year]) as Calendar_Year
 	  ,coalesce(forecast.[Calendar_Month], cv.[Calendar_Month]) as Calendar_Month
-	  ,forecast.Strategy_Eligibility
-      ,forecast.Lead_Offer
-      ,sum(forecast.[Forecast]) as Forecast
-	  ,sum(CV.forecast) as Commitment 
+	  ,strategy_eligibility
+	  ,lead_offer
+      ,sum(isnull(forecast.[Forecast],0)) as Forecast
+	  ,sum(isnull(CV.forecast,0)) as Commitment 
 FROM #forecast as forecast
 	FULL JOIN
 	#cv as CV
@@ -816,34 +808,42 @@ FROM #forecast as forecast
 			and forecast.[product_code] = cv.[product_code]
 			and forecast.[Calendar_Year] = cv.[Calendar_Year]
 			and forecast.[Calendar_Month] = cv.[Calendar_Month]
-			and forecast.[Forecast_DayDate] = cv.[Forecast_DayDate]
-
-
-group by Coalesce(forecast.[idFlight_Plan_Records], cv.[idFlight_Plan_Records]) 
-      ,Coalesce(forecast.[Campaign_Name], cv.[Campaign_Name]) 
-      ,coalesce(forecast.[InHome_Date], cv.[InHome_Date]) 
-      ,coalesce(forecast.[Touch_Name], cv.[Touch_Name]) 
-      ,coalesce(forecast.[Program_Name], cv.[Program_Name])
-      ,coalesce(forecast.[Tactic], cv.[Tactic]) 
-      ,coalesce(forecast.[Media], cv.[Media])
-      ,coalesce(forecast.[Campaign_Type], cv.[Campaign_Type]) 
-      ,coalesce(forecast.[Audience], cv.[Audience]) 
-      ,coalesce(forecast.[Creative_Name], cv.[Creative_Name]) 
-      ,coalesce(forecast.[Goal], cv.[Goal]) 
-      ,coalesce(forecast.[Offer], cv.[Offer])
-      ,coalesce(forecast.[Channel], cv.[Channel])
-      ,coalesce(forecast.[Scorecard_Group], cv.[Scorecard_Group])
-      ,coalesce(forecast.[Scorecard_Program_Channel], cv.[Scorecard_Program_Channel])
+			and forecast.[Forecast_DayDate] = cv.Forecast_DayDate
+	LEFT JOIN #flightplan
+	on Coalesce(forecast.idFlight_Plan_Records, cv.idFLight_Plan_Records) = #flightplan.idFlight_Plan_Records
+	LEFT JOIN #touchdef
+	on #flightplan.idProgram_Touch_Definitions_TBL_FK = #touchdef.idProgram_Touch_Definitions_TBL
+	left join
+	bvt_prod.Strategy_Eligibility_LU_TBL strat
+	on #flightplan.Strategy_Eligibility_LU_TBL_FK = strat.idStrategy_Eligibility_LU_TBL
+	left join
+	bvt_prod.Lead_Offer_LU_TBL lead
+	on #flightplan.Lead_Offer_LU_TBL_FK = lead.idLead_Offer_LU_TBL
+group by 	   Coalesce(#flightplan.idFlight_Plan_Records, forecast.[idFlight_Plan_Records], cv.[idFlight_Plan_Records])
+      ,Coalesce(#flightplan.Campaign_Name, forecast.[Campaign_Name], cv.[Campaign_Name])
+      ,coalesce(#flightplan.InHome_Date, forecast.[InHome_Date], cv.[InHome_Date])
+      ,coalesce(#touchdef.Touch_Name, forecast.[Touch_Name], cv.[Touch_Name])
+      ,coalesce(#touchdef.Program_Name, forecast.[Program_Name], cv.[Program_Name])
+      ,coalesce(#touchdef.Tactic, forecast.[Tactic], cv.[Tactic])
+      ,coalesce(#touchdef.Media, forecast.[Media], cv.[Media])
+      ,coalesce(#touchdef.Campaign_Type, forecast.[Campaign_Type], cv.[Campaign_Type])
+      ,coalesce(#touchdef.Audience, forecast.[Audience], cv.[Audience])
+      ,coalesce(#touchdef.Creative_Name, forecast.[Creative_Name], cv.[Creative_Name])
+      ,coalesce(#touchdef.Goal, forecast.[Goal], cv.[Goal])
+      ,coalesce(#touchdef.Offer, forecast.[Offer], cv.[Offer])
+      ,coalesce(#touchdef.Channel, forecast.[Channel], cv.[Channel])
+      ,coalesce(#touchdef.Scorecard_Group, forecast.[Scorecard_Group], cv.[Scorecard_Group])
+      ,coalesce(#touchdef.Scorecard_Program_Channel, forecast.[Scorecard_Program_Channel], cv.[Scorecard_Program_Channel])
       ,coalesce(forecast.[KPI_Type], cv.[KPI_Type])
       ,coalesce(forecast.[Product_Code], cv.[Product_Code])
-	  ,forecast.Strategy_Eligibility
-      ,forecast.Lead_Offer
 	  ,coalesce(forecast.[media_year], cv.[media_year])
 	  ,coalesce(forecast.[media_month], cv.[media_month])
 	  ,coalesce(forecast.[media_week], cv.[media_week])
 	  ,coalesce(forecast.[Media_YYYYWW], cv.[Media_YYYYWW])
 	  ,coalesce(forecast.[Calendar_Year], cv.[Calendar_Year])
 	  ,coalesce(forecast.[Calendar_Month], cv.[Calendar_Month])
+	  ,strategy_eligibility
+	  ,lead_offer
 	  ) as forecast_cv
 
 FULL JOIN #volumebudget
