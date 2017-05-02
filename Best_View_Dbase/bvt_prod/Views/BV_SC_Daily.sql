@@ -9,7 +9,7 @@ AS SELECT
 FROM openrowset(
 	'SQLNCLI10'
 	,'Server=S5280a04;Trusted_Connection=YES;'
-	,'set fmtonly off exec bvt_prod.Forecasting_Calculations_PR 8'
+	,'set fmtonly off exec UVAQ.bvt_prod.Forecasting_Calculations_PR 8'
 	) as fv
 where Forecast_Daydate > '2016-01-01'
 group by Owner_type_matrix_id_FK 
@@ -29,7 +29,7 @@ Select Owner_type_matrix_id_FK as hierarchy_id
 FROM openrowset(
 	'SQLNCLI10'
 	,'Server=S5280a04;Trusted_Connection=YES;'
-	,'set fmtonly off exec bvt_prod.Forecasting_Calculations_PR 7'
+	,'set fmtonly off exec UVAQ.bvt_prod.Forecasting_Calculations_PR 7'
 	)
 where Forecast_Daydate > '2016-01-01'
 group by Owner_type_matrix_id_FK 
@@ -49,7 +49,7 @@ Select Owner_type_matrix_id_FK as hierarchy_id
 FROM openrowset(
 	'SQLNCLI10'
 	,'Server=S5280a04;Trusted_Connection=YES;'
-	,'set fmtonly off exec bvt_prod.Forecasting_Calculations_PR 9'
+	,'set fmtonly off exec UVAQ.bvt_prod.Forecasting_Calculations_PR 9'
 	)
 where Forecast_Daydate > '2016-01-01'
 group by Owner_type_matrix_id_FK 
@@ -68,7 +68,7 @@ Select Owner_type_matrix_id_FK as hierarchy_id
 FROM openrowset(
 	'SQLNCLI10'
 	,'Server=S5280a04;Trusted_Connection=YES;'
-	,'set fmtonly off exec bvt_prod.Forecasting_Calculations_PR 4'
+	,'set fmtonly off exec UVAQ.bvt_prod.Forecasting_Calculations_PR 4'
 	)
 where Forecast_Daydate > '2016-01-01'
 group by Owner_type_matrix_id_FK 
@@ -87,7 +87,7 @@ Select Owner_type_matrix_id_FK as hierarchy_id
 FROM openrowset(
 	'SQLNCLI10'
 	,'Server=S5280a04;Trusted_Connection=YES;'
-	,'set fmtonly off exec bvt_prod.Forecasting_Calculations_PR 6'
+	,'set fmtonly off exec UVAQ.bvt_prod.Forecasting_Calculations_PR 6'
 	)
 where Forecast_Daydate > '2016-01-01'
 group by Owner_type_matrix_id_FK 
@@ -107,7 +107,7 @@ Select Owner_type_matrix_id_FK as hierarchy_id
 FROM openrowset(
 	'SQLNCLI10'
 	,'Server=S5280a04;Trusted_Connection=YES;'
-	,'set fmtonly off exec bvt_prod.Forecasting_Calculations_PR 11'
+	,'set fmtonly off exec UVAQ.bvt_prod.Forecasting_Calculations_PR 11'
 	)
 where Forecast_Daydate > '2016-01-01'
 group by Owner_type_matrix_id_FK 
@@ -128,7 +128,7 @@ Select Owner_type_matrix_id_FK as hierarchy_id
 FROM openrowset(
 	'SQLNCLI10'
 	,'Server=S5280a04;Trusted_Connection=YES;'
-	,'set fmtonly off exec bvt_prod.Forecasting_Calculations_PR 12'
+	,'set fmtonly off exec UVAQ.bvt_prod.Forecasting_Calculations_PR 12'
 	)
 where Forecast_Daydate > '2016-01-01'
 group by Owner_type_matrix_id_FK 

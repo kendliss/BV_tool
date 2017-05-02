@@ -11,7 +11,7 @@
 FROM openrowset(
 	'SQLNCLI10'
 	,'Server=S5280a04;Trusted_Connection=YES;'
-	,'set fmtonly off exec bvt_prod.Forecasting_Calculations_PR 8'
+	,'set fmtonly off exec UVAQ.bvt_prod.Forecasting_Calculations_PR 8'
 	) as fv
 	join [bvt_prod].[Program_Touch_Definitions_TBL]
 	on [idProgram_Touch_Definitions_TBL_FK]=[idProgram_Touch_Definitions_TBL]
@@ -37,7 +37,7 @@ Select 	att_program_code
 FROM openrowset(
 	'SQLNCLI10'
 	,'Server=S5280a04;Trusted_Connection=YES;'
-	,'set fmtonly off exec bvt_prod.Forecasting_Calculations_PR 7'
+	,'set fmtonly off exec UVAQ.bvt_prod.Forecasting_Calculations_PR 7'
 	) as fv
 	join [bvt_prod].[Program_Touch_Definitions_TBL]
 	on [idProgram_Touch_Definitions_TBL_FK]=[idProgram_Touch_Definitions_TBL]
@@ -63,7 +63,7 @@ Select 	att_program_code
 FROM openrowset(
 	'SQLNCLI10'
 	,'Server=S5280a04;Trusted_Connection=YES;'
-	,'set fmtonly off exec bvt_prod.Forecasting_Calculations_PR 9'
+	,'set fmtonly off exec UVAQ.bvt_prod.Forecasting_Calculations_PR 9'
 	) as fv
 	join [bvt_prod].[Program_Touch_Definitions_TBL]
 	on [idProgram_Touch_Definitions_TBL_FK]=[idProgram_Touch_Definitions_TBL]
@@ -88,7 +88,7 @@ Select 	att_program_code
 FROM openrowset(
 	'SQLNCLI10'
 	,'Server=S5280a04;Trusted_Connection=YES;'
-	,'set fmtonly off exec bvt_prod.Forecasting_Calculations_PR 4'
+	,'set fmtonly off exec UVAQ.bvt_prod.Forecasting_Calculations_PR 4'
 	) as fv
 	join [bvt_prod].[Program_Touch_Definitions_TBL]
 	on [idProgram_Touch_Definitions_TBL_FK]=[idProgram_Touch_Definitions_TBL]
@@ -113,7 +113,7 @@ Select 	att_program_code
 FROM openrowset(
 	'SQLNCLI10'
 	,'Server=S5280a04;Trusted_Connection=YES;'
-	,'set fmtonly off exec bvt_prod.Forecasting_Calculations_PR 6'
+	,'set fmtonly off exec UVAQ.bvt_prod.Forecasting_Calculations_PR 6'
 	) as fv
 	join [bvt_prod].[Program_Touch_Definitions_TBL]
 	on [idProgram_Touch_Definitions_TBL_FK]=[idProgram_Touch_Definitions_TBL]
@@ -139,7 +139,7 @@ Select 	att_program_code
 FROM openrowset(
 	'SQLNCLI10'
 	,'Server=S5280a04;Trusted_Connection=YES;'
-	,'set fmtonly off exec bvt_prod.Forecasting_Calculations_PR 11'
+	,'set fmtonly off exec UVAQ.bvt_prod.Forecasting_Calculations_PR 11'
 	) as fv
 	join [bvt_prod].[Program_Touch_Definitions_TBL]
 	on [idProgram_Touch_Definitions_TBL_FK]=[idProgram_Touch_Definitions_TBL]
@@ -166,7 +166,7 @@ Select 	att_program_code
 FROM openrowset(
 	'SQLNCLI10'
 	,'Server=S5280a04;Trusted_Connection=YES;'
-	,'set fmtonly off exec bvt_prod.Forecasting_Calculations_PR 12'
+	,'set fmtonly off exec UVAQ.bvt_prod.Forecasting_Calculations_PR 12'
 	) as fv
 	join [bvt_prod].[Program_Touch_Definitions_TBL]
 	on [idProgram_Touch_Definitions_TBL_FK]=[idProgram_Touch_Definitions_TBL]
