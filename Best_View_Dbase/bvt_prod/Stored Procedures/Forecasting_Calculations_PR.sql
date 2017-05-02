@@ -10,20 +10,63 @@ SET NOCOUNT ON
 -------Section 1.1 - Flightplan Selection	
 --Select the appropriate Flight Plan
 --Check and delete temp	
+
 IF OBJECT_ID('tempdb.dbo.#flightplan', 'U') IS NOT NULL
   DROP TABLE #flightplan; 
 
 	SELECT * INTO #flightplan
-	from bvt_prod.Flight_Plan_Records
-	where idProgram_Touch_Definitions_TBL_FK 
-		in (select idProgram_Touch_Definitions_TBL 
-			from bvt_prod.Program_Touch_Definitions_TBL
-			WHERE idProgram_LU_TBL_FK=@PROG)
--------In Home date limitation to prevent excess calculations on old flight plan records
-	and inhome_date>='2016-01-01';
+	from bvt_prod.Flightplan_FUN(@prog);
 
 create CLUSTERED index idx_c_flightplan_flightplanid ON #flightplan([idFlight_Plan_Records]);
 ---End Flightplan selection
+-------Touch Definition View--------------------------
+IF OBJECT_ID('tempdb.dbo.#touchdef', 'U') IS NOT NULL
+  DROP TABLE #touchdef; 
+
+SELECT *
+INTO #touchdef
+from[bvt_prod].[Touchdef_FUN](@prog);
+
+create clustered index IDX_C_touchdef_id ON #touchdef(idProgram_Touch_Definitions_TBL);
+
+----------End Touch Def-----------------------------
+--/*Inserting the start/end procs until triggers are fixed
+--KPI Start End
+delete [bvt_processed].[KPI_Rate_Start_End]
+where [idProgram_Touch_Definitions_TBL_FK] in 
+(select idProgram_Touch_Definitions_TBL from #touchdef);
+insert into bvt_processed.KPI_Rate_Start_End
+select * from bvt_prod.KPI_Rate_Start_End_VW
+where idProgram_Touch_Definitions_TBL_FK in (select idProgram_Touch_Definitions_TBL from #touchdef);
+--Response Curve Start End
+delete [bvt_processed].[Response_Curve_Start_End]
+where [idProgram_Touch_Definitions_TBL_FK] in 
+(select idProgram_Touch_Definitions_TBL from #touchdef);
+insert into [bvt_processed].[Response_Curve_Start_End]
+select * from [bvt_prod].[Response_Curve_Start_End_VW]
+where idProgram_Touch_Definitions_TBL_FK in (select idProgram_Touch_Definitions_TBL from #touchdef);
+--Response Daily Start End
+delete [bvt_processed].[Response_Daily_Start_End]
+where [idProgram_Touch_Definitions_TBL_FK] in 
+(select idProgram_Touch_Definitions_TBL from #touchdef);
+insert into [bvt_processed].[Response_Daily_Start_End]
+select * from [bvt_prod].[Response_Daily_Start_End_VW]
+where idProgram_Touch_Definitions_TBL_FK in (select idProgram_Touch_Definitions_TBL from #touchdef);
+--Sales Curve Start End
+delete [bvt_processed].[Sales_Curve_Start_End]
+where [idProgram_Touch_Definitions_TBL_FK] in 
+(select idProgram_Touch_Definitions_TBL from #touchdef);
+insert into [bvt_processed].[Sales_Curve_Start_End]
+select * from [bvt_prod].[Sales_Curve_Start_End_VW]
+where idProgram_Touch_Definitions_TBL_FK in (select idProgram_Touch_Definitions_TBL from #touchdef);
+--Sales Rates Start End
+delete [bvt_processed].[Sales_Rates_Start_End]
+where [idProgram_Touch_Definitions_TBL_FK] in 
+(select idProgram_Touch_Definitions_TBL from #touchdef);
+insert into [bvt_processed].[Sales_Rates_Start_End]
+select * from [bvt_prod].[Sales_Rates_Start_End_VW]
+where idProgram_Touch_Definitions_TBL_FK in (select idProgram_Touch_Definitions_TBL from #touchdef);
+--*/
 
 ----Section 1.3 - Target Adjustments
 IF OBJECT_ID('tempdb.dbo.#Trgt_adj', 'U') IS NOT NULL
@@ -66,9 +109,14 @@ CREATE CLUSTERED INDEX IDX_C_volumes_flightplanid ON #volumes(idFlight_Plan_Reco
 --End Section 1
 
 ---------------------Section 2 FORECAST -----------------------------------
+IF OBJECT_ID('tempdb.dbo.#forecast', 'U') IS NOT NULL
+  DROP TABLE #forecast; 
+
 select #flightplan.idFlight_Plan_Records
 	, #flightplan.Campaign_Name
 	, #flightplan.InHome_Date
+	, strat.Strategy_Eligibility
+	, lead.Lead_Offer
 	
 ---Media_Calendar_Info
 	, Media_Calendar_Daily.ISO_Week_Year as Media_Year
@@ -91,13 +139,15 @@ select #flightplan.idFlight_Plan_Records
 	, Offer
 	, [owner_type_matrix_id_FK]
 	, channel
+	, Scorecard_Group
+	, Scorecard_Program_Channel
+
 
 ----Metrics
 	, KPI_Type
 	, Product_Code
 	, Forecast_DayDate
 	, [Forecast]
-
 
 from #flightplan 
 left join
@@ -123,8 +173,7 @@ from
 ---KPI daily Rates
 (select idFlight_Plan_Records
 	, responsebyday.idProgram_Touch_Definitions_TBL_FK
-	, idkpi_types_FK
-	, Day_of_Week
+	, ResponseByDay.idkpi_types_FK
 	, case when ResponseByDay.idTarget_Rate_Reasons_LU_TBL_FK is null then KPI_Daily*Seasonality_Adj
 		else KPI_Daily*Seasonality_Adj*Rate_Adjustment_Factor end as KPI_Daily
 	, Forecast_DayDate
@@ -133,11 +182,19 @@ from
 (select Daily_Join.idFlight_Plan_Records
 	, Daily_Join.idProgram_Touch_Definitions_TBL_FK
 	, Daily_Join.idkpi_types_FK
-	, Daily_Join.Day_of_Week
 	, KPI_Daily*week_percent as KPI_Daily
-	, DATEADD(week,c.Week_ID-1,InHome_Date) as Forecast_Week_Date
-	, DATEADD(day,Day_of_Week-1,DATEADD(week,c.Week_ID-1,InHome_Date)) as Forecast_DayDate
-	, ISO_week
+--	, DATEADD(week,c.Week_ID,InHome_Date) as Forecast_Week_Date
+	, case when Media='EM' then
+		case when day_of_week=1 then DATEADD(week,c.Week_ID,InHome_Date)
+			else DATEADD(day,day_of_week-1,DATEADD(week,c.Week_ID,Inhome_Date))
+			end
+	  else 
+	    case when day_of_week=datepart(WEEKDAY,inhome_date) then DATEADD(week,c.Week_ID,InHome_Date)
+			when day_of_week<datepart(WEEKDAY,inhome_date) then DATEADD(day,7-datepart(WEEKDAY,inhome_date)+Day_of_Week,DATEADD(week,c.Week_ID,InHome_Date))
+			else DATEADD(day,Day_of_Week-datepart(WEEKDAY,inhome_date),DATEADD(week,c.Week_ID,InHome_Date))
+			end 
+	  end as Forecast_DayDate
+	, ISO_WEEK
 	, ISO_Week_Year
 	, MediaMonth
 	, idTarget_Rate_Reasons_LU_TBL_FK
@@ -161,19 +218,12 @@ from
 	, b.idkpi_types_FK
 	
   --Code to account for having a TFN or URL or not in flightplan entry and a manual adjustment or not
-	, case when adjustment is null then (case when tfn_ind=-1 and b.idkpi_types_FK=1 then KPI_Rate
+	,case when tfn_ind=1 and b.idkpi_types_FK=1 then KPI_Rate*isnull(adjustment,1)
 		when TFN_ind=0 and b.idkpi_types_FK=1 then 0
-		when URL_ind=-1 and b.idkpi_types_FK=2 then KPI_Rate
+		when URL_ind=1 and b.idkpi_types_FK=2 then KPI_Rate*isnull(adjustment,1)
 		when URL_ind=0 and b.idkpi_types_FK=2 then 0
-		else KPI_Rate
-		end)
-	else (case when tfn_ind=-1 and b.idkpi_types_FK=1 then KPI_Rate*adjustment
-		when TFN_ind=0 and b.idkpi_types_FK=1 then 0
-		when URL_ind=-1 and b.idkpi_types_FK=2 then KPI_Rate*adjustment
-		when URL_ind=0 and b.idkpi_types_FK=2 then 0
-		else KPI_Rate*adjustment
-		end) 
-	end as KPI_Rate
+		else KPI_Rate*isnull(adjustment,1)
+		end as KPI_Rate
 	, InHome_Date
 	, idTarget_Rate_Reasons_LU_TBL_FK
 from #flightplan as A
@@ -194,9 +244,19 @@ from #flightplan as A
 	left join [bvt_processed].[Response_Curve_Start_End] as C
 		on Daily_Join.idProgram_Touch_Definitions_TBL_FK=c.idProgram_Touch_Definitions_TBL_FK and Daily_Join.idkpi_types_FK=c.idkpi_type_FK
 		and inhome_date between Curve_Start_Date and c.END_DATE
-	left join  dim.Media_Calendar_Daily 
-		on Daily_Join.InHome_Date=Media_Calendar_Daily.Date) as ResponseByDay
-----------End  Weekly Response Curve and Media Calendar		
+	left join dim.Media_Calendar_Daily 
+		on Daily_Join.InHome_Date=Media_Calendar_Daily.Date
+	left join #touchdef
+		on Daily_Join.idProgram_Touch_Definitions_TBL_FK=#touchdef.idProgram_Touch_Definitions_TBL) as ResponseByDay
+----------End  Weekly Response Curve and Media Calendar	
+/*Code for seasonality adjustments broken out for response and sales
+	left join bvt_prod.Response_Seasonality as E
+		on ResponseByDay.idProgram_Touch_Definitions_TBL_FK=E.idProgram_Touch_Definitions_TBL_FK 
+		  and ResponseByDay.idkpi_types_FK=E.idkpi_types_FK
+		  and iso_week_year=Media_Year 
+		  and mediamonth=Media_Month 
+		  AND ISO_Week=Media_Week
+*/
 	left join bvt_prod.Seasonality_Adjustements as E
 		on ResponseByDay.idProgram_Touch_Definitions_TBL_FK=E.idProgram_Touch_Definitions_TBL_FK and iso_week_year=Media_Year and mediamonth=Media_Month AND ISO_Week=Media_Week
 	left join #Trgt_adj as Target_adjustment_start_end
@@ -232,8 +292,8 @@ from
 
 (select idFlight_Plan_Records
 	, responsebyday.idProgram_Touch_Definitions_TBL_FK
-	, idkpi_type_FK
-	, idProduct_LU_TBL_FK
+	, ResponseByDay.idkpi_type_FK
+	, ResponseByDay.idProduct_LU_TBL_FK
 	, Day_of_Week
 	, case when ResponseByDay.idTarget_Rate_Reasons_LU_TBL_FK is null then Sales_rate_Daily*Seasonality_Adj
 		else Sales_rate_Daily*Seasonality_Adj*Rate_Adjustment_Factor end as Sales_rate_Daily
@@ -244,11 +304,20 @@ from
 (select Daily_Join.idFlight_Plan_Records
 	, Daily_Join.idProgram_Touch_Definitions_TBL_FK
 	, Daily_Join.idkpi_type_FK
-	, idProduct_LU_TBL_FK
+	, Daily_Join.idProduct_LU_TBL_FK
 	, Daily_Join.Day_of_Week
 	, Salesrate_Daily*week_percent as Sales_Rate_Daily
-	, DATEADD(week,c.Week_ID-1,InHome_Date) as Forecast_Week_Date
-	, DATEADD(day,Day_of_Week-1,DATEADD(week,c.Week_ID-1,InHome_Date)) as Forecast_DayDate
+--	, DATEADD(week,c.Week_ID,InHome_Date) as Forecast_Week_Date
+	, case when Media='EM' then
+		case when day_of_week=1 then DATEADD(week,c.Week_ID,InHome_Date)
+			else DATEADD(day,day_of_week-1,DATEADD(week,c.Week_ID,Inhome_Date))
+			end
+	  else 
+	    case when day_of_week=datepart(WEEKDAY,inhome_date) then DATEADD(week,c.Week_ID,InHome_Date)
+			when day_of_week<datepart(WEEKDAY,inhome_date) then DATEADD(day,7-datepart(WEEKDAY,inhome_date)+Day_of_Week,DATEADD(week,c.Week_ID,InHome_Date))
+			else DATEADD(day,Day_of_Week-datepart(WEEKDAY,inhome_date),DATEADD(week,c.Week_ID,InHome_Date))
+			end 
+	  end as Forecast_DayDate
 	, ISO_week
 	, ISO_Week_Year
 	, MediaMonth
@@ -272,19 +341,12 @@ from
 	a.idFlight_Plan_Records
 	, a.idProgram_Touch_Definitions_TBL_FK
 	, B.idkpi_type_FK
-	, idProduct_LU_TBL_FK
-	, case when adjustment is null then (case when tfn_ind=-1 and b.idkpi_type_FK=1 then Sales_Rate
+	, B.idProduct_LU_TBL_FK
+	, case when tfn_ind=1 and b.idkpi_type_FK=1 then Sales_Rate*isnull(adjustment,1)*isnull(Sales_Adjustment,1)
 		when TFN_ind=0 and b.idkpi_type_FK=1 then 0
-		when URL_ind=-1 and b.idkpi_type_FK=2 then Sales_Rate
+		when URL_ind=1 and b.idkpi_type_FK=2 then Sales_Rate*isnull(adjustment,1)*isnull(Sales_Adjustment,1)
 		when URL_ind=0 and b.idkpi_type_FK=2 then 0
-		else Sales_Rate
-		end)
-	else (case when tfn_ind=-1 and b.idkpi_type_FK=1 then Sales_Rate*adjustment
-		when TFN_ind=0 and b.idkpi_type_FK=1 then 0
-		when URL_ind=-1 and b.idkpi_type_FK=2 then Sales_Rate*adjustment
-		when URL_ind=0 and b.idkpi_type_FK=2 then 0
-		else Sales_Rate*adjustment
-		end) 
+		else Sales_Rate*isnull(adjustment,1)*isnull(Sales_Adjustment,1)
 	end as Sales_Rate
 	, InHome_Date
 	, idTarget_Rate_Reasons_LU_TBL_FK
@@ -293,8 +355,14 @@ from #flightplan as A
 	left join [bvt_processed].[Sales_Rates_Start_End] as B
 		on A.idProgram_Touch_Definitions_TBL_FK=B.idProgram_Touch_Definitions_TBL_FK
 			and InHome_Date between Sales_Rate_Start_Date and b.END_DATE
+	--Adds Manual Rate/Sales Adjustment by KPI type		
 	left join bvt_prod.Target_Rate_Adjustment_Manual_TBL
-		on idFlight_Plan_Records=idFlight_Plan_Records_FK and B.idkpi_type_FK=Target_Rate_Adjustment_Manual_TBL.idkpi_types_FK) as SalesRate_Join
+		on idFlight_Plan_Records=idFlight_Plan_Records_FK and B.idkpi_type_FK=Target_Rate_Adjustment_Manual_TBL.idkpi_types_FK
+	--Adds Manual Sales Adjustment by KPI Type and Product Code
+	left join bvt_prod.Target_Sales_Rate_Adjustment_Manual_TBL
+		on idFlight_Plan_Records = Target_Sales_Rate_Adjustment_Manual_TBL.idFlight_Plan_Records_FK 
+		and B.idkpi_type_FK=Target_Sales_Rate_Adjustment_Manual_TBL.idKPI_Types_FK
+		and B.idProduct_LU_TBL_FK = Target_Sales_Rate_Adjustment_Manual_TBL.idProduct_LU_TBL_FK) as SalesRate_Join
 ---End Join KPI and Flight Plan	
 
 	left join [bvt_processed].[Response_Daily_Start_End] as B 
@@ -305,14 +373,31 @@ from #flightplan as A
 ---End Join Daily Percentages
 
 	left join [bvt_processed].[Sales_Curve_Start_End] as C
-		on Daily_Join.idProgram_Touch_Definitions_TBL_FK=c.idProgram_Touch_Definitions_TBL_FK and Daily_Join.idkpi_type_FK=c.idkpi_type_FK
-		and inhome_date between Curve_Start_Date and c.END_DATE
+		on Daily_Join.idProgram_Touch_Definitions_TBL_FK=c.idProgram_Touch_Definitions_TBL_FK
+		 and Daily_Join.idkpi_type_FK=c.idkpi_type_FK
+		 and inhome_date between Curve_Start_Date and c.END_DATE
+		 and Case when c.idProduct_LU_TBL_FK is not null 
+		       then c.idProduct_LU_TBL_FK
+			   else Daily_Join.idProduct_LU_TBL_FK
+			   end = Daily_Join.idProduct_LU_TBL_FK
+		    		 
 	left join (SELECT * FROM [bvt_prod].[Dropdate_Start_End_FUN](@PROG)) as D
 		on Daily_Join.idProgram_Touch_Definitions_TBL_FK=d.idProgram_Touch_Definitions_TBL_FK
 		and inhome_date between drop_start_date and d.end_date
 	left join  dim.Media_Calendar_Daily 
-		on Daily_Join.InHome_Date=Media_Calendar_Daily.Date) as ResponseByDay
-----------End  Weekly Response Curve and Media Calendar		
+		on Daily_Join.InHome_Date=Media_Calendar_Daily.Date
+	left join #touchdef
+		on Daily_Join.idProgram_Touch_Definitions_TBL_FK=#touchdef.idProgram_Touch_Definitions_TBL) as ResponseByDay
+----------End  Weekly Response Curve and Media Calendar	
+/*Code for seasonality adjustments broken out for response and sales
+	left join bvt_prod.Sales_Seasonality as E
+		on ResponseByDay.idProgram_Touch_Definitions_TBL_FK=E.idProgram_Touch_Definitions_TBL_FK 
+		  and ResponseByDay.idkpi_types_FK=E.idkpi_types_FK
+		  and ResponseByDay.idProduct_LU_TBL_FK=E.idProduct_LU_TBL_FK
+		  and iso_week_year=Media_Year 
+		  and mediamonth=Media_Month 
+		  AND ISO_Week=Media_Week
+*/	
 	left join bvt_prod.Seasonality_Adjustements as E
 		on ResponseByDay.idProgram_Touch_Definitions_TBL_FK=E.idProgram_Touch_Definitions_TBL_FK and iso_week_year=Media_Year and mediamonth=Media_Month and ISO_Week = Media_Week
 	left join #Trgt_adj  as Target_adjustment_start_end
@@ -339,12 +424,16 @@ left join Dim.Media_Calendar_Daily
 
 left join
 -----Bring in touch definition labels 
-bvt_prod.Touch_Definition_VW as touchdef
+#touchdef as touchdef
 		on #flightplan.idProgram_Touch_Definitions_TBL_FK=idProgram_Touch_Definitions_TBL
-
+left join
+bvt_prod.Strategy_Eligibility_LU_TBL strat
+	on #flightplan.Strategy_Eligibility_LU_TBL_FK = strat.idStrategy_Eligibility_LU_TBL
+left join
+bvt_prod.Lead_Offer_LU_TBL lead
+	on #flightplan.Lead_Offer_LU_TBL_FK = lead.idLead_Offer_LU_TBL
 where Tactic <> 'Cost'	
 ;
--------------END SECTION SALES-----------------------------------------------------
------END SECTION Forecasting-------------------------------------------------------
+
 SET NOCOUNT OFF
 END
