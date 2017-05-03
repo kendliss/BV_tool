@@ -174,8 +174,8 @@ from
 (select idFlight_Plan_Records
 	, responsebyday.idProgram_Touch_Definitions_TBL_FK
 	, ResponseByDay.idkpi_types_FK
-	, case when ResponseByDay.idTarget_Rate_Reasons_LU_TBL_FK is null then KPI_Daily*Seasonality_Adj
-		else KPI_Daily*Seasonality_Adj*Rate_Adjustment_Factor end as KPI_Daily
+	, case when ResponseByDay.idTarget_Rate_Reasons_LU_TBL_FK is null then KPI_Daily*isnull(Seasonality_Adj,1)
+		else KPI_Daily*isnull(Seasonality_Adj,1)*Rate_Adjustment_Factor end as KPI_Daily
 	, Forecast_DayDate
 from
 ----Join Weekly Response Curve and Media Calendar
@@ -218,9 +218,8 @@ from
 	, b.idkpi_types_FK
 	
   --Code to account for having a TFN or URL or not in flightplan entry and a manual adjustment or not
-	,case when tfn_ind=1 and b.idkpi_types_FK=1 then KPI_Rate*isnull(adjustment,1)
+	,case 
 		when TFN_ind=0 and b.idkpi_types_FK=1 then 0
-		when URL_ind=1 and b.idkpi_types_FK=2 then KPI_Rate*isnull(adjustment,1)
 		when URL_ind=0 and b.idkpi_types_FK=2 then 0
 		else KPI_Rate*isnull(adjustment,1)
 		end as KPI_Rate
@@ -295,8 +294,8 @@ from
 	, ResponseByDay.idkpi_type_FK
 	, ResponseByDay.idProduct_LU_TBL_FK
 	, Day_of_Week
-	, case when ResponseByDay.idTarget_Rate_Reasons_LU_TBL_FK is null then Sales_rate_Daily*Seasonality_Adj
-		else Sales_rate_Daily*Seasonality_Adj*Rate_Adjustment_Factor end as Sales_rate_Daily
+	, case when ResponseByDay.idTarget_Rate_Reasons_LU_TBL_FK is null then Sales_rate_Daily*isnull(Seasonality_Adj,1)
+		else Sales_rate_Daily*isnull(Seasonality_Adj,1)*Rate_Adjustment_Factor end as Sales_rate_Daily
 	, Forecast_DayDate
 
 from
@@ -342,9 +341,8 @@ from
 	, a.idProgram_Touch_Definitions_TBL_FK
 	, B.idkpi_type_FK
 	, B.idProduct_LU_TBL_FK
-	, case when tfn_ind=1 and b.idkpi_type_FK=1 then Sales_Rate*isnull(adjustment,1)*isnull(Sales_Adjustment,1)
+	, case 
 		when TFN_ind=0 and b.idkpi_type_FK=1 then 0
-		when URL_ind=1 and b.idkpi_type_FK=2 then Sales_Rate*isnull(adjustment,1)*isnull(Sales_Adjustment,1)
 		when URL_ind=0 and b.idkpi_type_FK=2 then 0
 		else Sales_Rate*isnull(adjustment,1)*isnull(Sales_Adjustment,1)
 	end as Sales_Rate
