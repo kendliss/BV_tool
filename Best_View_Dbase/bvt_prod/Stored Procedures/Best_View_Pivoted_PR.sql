@@ -16,39 +16,18 @@ IF OBJECT_ID('tempdb.dbo.#flightplan', 'U') IS NOT NULL
   DROP TABLE #flightplan; 
 
 	SELECT * INTO #flightplan
-	from bvt_prod.Flight_Plan_Records
-	where idProgram_Touch_Definitions_TBL_FK 
-		in (select idProgram_Touch_Definitions_TBL 
-			from bvt_prod.Program_Touch_Definitions_TBL
-			WHERE idProgram_LU_TBL_FK=@PROG)
--------In Home date limitation to prevent excess calculations on old flight plan records
-	and inhome_date>='2016-01-01';
+	from bvt_prod.Flightplan_FUN(@prog);
 
-create CLUSTERED index idx_c_flightplan_flightplanid ON #flightplan([idFlight_Plan_Records]);
+create CLUSTERED index idx_c_flightplan_flightplanid ON #flightplan([idFlight_Plan_Records])
 
 ---End Flightplan selection
 -------Touch Definition View--------------------------
 IF OBJECT_ID('tempdb.dbo.#touchdef', 'U') IS NOT NULL
   DROP TABLE #touchdef; 
 
-SELECT idProgram_Touch_Definitions_TBL
-	, Touch_Name, Program_Name, Tactic, Media, Audience
-	, Creative_Name, Goal, Offer, Campaign_Type, Channel
-	, owner_type_matrix_id_FK, 
-	SC.Scorecard_group, Scorecard_program_Channel
+SELECT *
 INTO #touchdef
-from bvt_prod.Program_Touch_Definitions_TBL
-	left join bvt_prod.Audience_LU_TBL on idAudience_LU_TBL_FK=idAudience_LU_TBL
-	left join bvt_prod.Campaign_Type_LU_TBL on idCampaign_Type_LU_TBL_FK=idCampaign_Type_LU_TBL
-	left join bvt_prod.Creative_LU_TBL on idCreative_LU_TBL_fk=idCreative_LU_TBL
-	left join bvt_prod.Goal_LU_TBL on idGoal_LU_TBL_fk=idGoal_LU_TBL
-	left join bvt_prod.Media_LU_TBL on idMedia_LU_TBL_fk=idMedia_LU_TBL
-	left join bvt_prod.Offer_LU_TBL on idOffer_LU_TBL_fk=idOffer_LU_TBL
-	left join bvt_prod.Program_LU_TBL on idProgram_LU_TBL_fk=idProgram_LU_TBL
-	left join bvt_prod.Tactic_LU_TBL on idTactic_LU_TBL_fk=idTactic_LU_TBL
-	left join bvt_prod.Channel_LU_TBL on idChanel_LU_TBL_FK=idChanel_LU_TBL
-	left Join (Select Distinct ID, scorecard_group, scorecard_program_channel from JAVDB.IREPORT_2015.dbo.WB_00_Reporting_Hierarchy) sc on sc.ID =  owner_type_matrix_id_FK
-WHERE idProgram_LU_TBL_fk=@PROG;
+from[bvt_prod].[Touchdef_FUN](@prog);
 
 create clustered index IDX_C_touchdef_id ON #touchdef(idProgram_Touch_Definitions_TBL);
 
@@ -145,6 +124,8 @@ IF OBJECT_ID('tempdb.dbo.#forecast', 'U') IS NOT NULL
 select #flightplan.idFlight_Plan_Records
 	, #flightplan.Campaign_Name
 	, #flightplan.InHome_Date
+	, strat.Strategy_Eligibility
+	, lead.Lead_Offer
 	
 ---Media_Calendar_Info
 	, Media_Calendar_Daily.ISO_Week_Year as Media_Year
@@ -203,8 +184,8 @@ from
 (select idFlight_Plan_Records
 	, responsebyday.idProgram_Touch_Definitions_TBL_FK
 	, responsebyday.idkpi_types_FK
-	, case when ResponseByDay.idTarget_Rate_Reasons_LU_TBL_FK is null then KPI_Daily*Seasonality_Adj
-		else KPI_Daily*Seasonality_Adj*Rate_Adjustment_Factor end as KPI_Daily
+	, case when ResponseByDay.idTarget_Rate_Reasons_LU_TBL_FK is null then KPI_Daily*isnull(Seasonality_Adj,1)
+		else KPI_Daily*isnull(Seasonality_Adj,1)*Rate_Adjustment_Factor end as KPI_Daily
 	, Forecast_DayDate
 from
 ----Join Weekly Response Curve and Media Calendar
@@ -247,9 +228,8 @@ from
 	, b.idkpi_types_FK
 	
   --Code to account for having a TFN or URL or not in flightplan entry and a manual adjustment or not
-	,case when tfn_ind=1 and b.idkpi_types_FK=1 then KPI_Rate*isnull(adjustment,1)
+	,case 
 		when TFN_ind=0 and b.idkpi_types_FK=1 then 0
-		when URL_ind=1 and b.idkpi_types_FK=2 then KPI_Rate*isnull(adjustment,1)
 		when URL_ind=0 and b.idkpi_types_FK=2 then 0
 		else KPI_Rate*isnull(adjustment,1)
 		end as KPI_Rate
@@ -324,8 +304,8 @@ from
 	, ResponseByDay.idkpi_type_FK
 	, ResponseByDay.idProduct_LU_TBL_FK
 	, Day_of_Week
-	, case when ResponseByDay.idTarget_Rate_Reasons_LU_TBL_FK is null then Sales_rate_Daily*Seasonality_Adj
-		else Sales_rate_Daily*Seasonality_Adj*Rate_Adjustment_Factor end as Sales_rate_Daily
+	, case when ResponseByDay.idTarget_Rate_Reasons_LU_TBL_FK is null then Sales_rate_Daily*isnull(Seasonality_Adj,1)
+		else Sales_rate_Daily*isnull(Seasonality_Adj,1)*Rate_Adjustment_Factor end as Sales_rate_Daily
 	, Forecast_DayDate
 
 from
@@ -371,9 +351,8 @@ from
 	, a.idProgram_Touch_Definitions_TBL_FK
 	, B.idkpi_type_FK
 	, B.idProduct_LU_TBL_FK
-	, case when tfn_ind=1 and b.idkpi_type_FK=1 then Sales_Rate*isnull(adjustment,1)*isnull(Sales_Adjustment,1)
+	, case 
 		when TFN_ind=0 and b.idkpi_type_FK=1 then 0
-		when URL_ind=1 and b.idkpi_type_FK=2 then Sales_Rate*isnull(adjustment,1)*isnull(Sales_Adjustment,1)
 		when URL_ind=0 and b.idkpi_type_FK=2 then 0
 		else Sales_Rate*isnull(adjustment,1)*isnull(Sales_Adjustment,1)
 	end as Sales_Rate
@@ -453,6 +432,12 @@ left join
 -----Bring in touch definition labels 
 #touchdef as touchdef
 		on #flightplan.idProgram_Touch_Definitions_TBL_FK=idProgram_Touch_Definitions_TBL
+left join
+bvt_prod.Strategy_Eligibility_LU_TBL strat
+	on #flightplan.Strategy_Eligibility_LU_TBL_FK = strat.idStrategy_Eligibility_LU_TBL
+left join
+bvt_prod.Lead_Offer_LU_TBL lead
+	on #flightplan.Lead_Offer_LU_TBL_FK = lead.idLead_Offer_LU_TBL
 where Tactic <> 'Cost'	
 ;
 
@@ -794,8 +779,8 @@ FROM
 	  ,coalesce(forecast.[Media_YYYYWW], cv.[Media_YYYYWW]) as Media_YYYYWW
 	  ,coalesce(forecast.[Calendar_Year], cv.[Calendar_Year]) as Calendar_Year
 	  ,coalesce(forecast.[Calendar_Month], cv.[Calendar_Month]) as Calendar_Month
-	  ,strategy_eligibility
-	  ,lead_offer
+	  ,strat.strategy_eligibility
+	  ,lead.Lead_Offer
       ,sum(isnull(forecast.[Forecast],0)) as Forecast
 	  ,sum(isnull(CV.forecast,0)) as Commitment 
 FROM #forecast as forecast
@@ -842,8 +827,8 @@ group by 	   Coalesce(#flightplan.idFlight_Plan_Records, forecast.[idFlight_Plan
 	  ,coalesce(forecast.[Media_YYYYWW], cv.[Media_YYYYWW])
 	  ,coalesce(forecast.[Calendar_Year], cv.[Calendar_Year])
 	  ,coalesce(forecast.[Calendar_Month], cv.[Calendar_Month])
-	  ,strategy_eligibility
-	  ,lead_offer
+	  ,strat.strategy_eligibility
+	  ,lead.Lead_Offer
 	  ) as forecast_cv
 
 FULL JOIN #volumebudget

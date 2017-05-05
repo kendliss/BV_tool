@@ -117,6 +117,8 @@ IF OBJECT_ID('tempdb.dbo.#forecast', 'U') IS NOT NULL
 select #flightplan.idFlight_Plan_Records
 	, #flightplan.Campaign_Name
 	, #flightplan.InHome_Date
+	, strat.Strategy_Eligibility
+	, lead.Lead_Offer
 
 ---Media_Calendar_Info
 	, Media_Calendar_Daily.ISO_Week_Year as Media_Year
@@ -175,8 +177,8 @@ from
 (select idFlight_Plan_Records
 	, responsebyday.idProgram_Touch_Definitions_TBL_FK
 	, ResponseByDay.idkpi_types_FK
-	, case when ResponseByDay.idTarget_Rate_Reasons_LU_TBL_FK is null then KPI_Daily*Seasonality_Adj
-		else KPI_Daily*Seasonality_Adj*Rate_Adjustment_Factor end as KPI_Daily
+	, case when ResponseByDay.idTarget_Rate_Reasons_LU_TBL_FK is null then KPI_Daily*isnull(Seasonality_Adj,1)
+		else KPI_Daily*isnull(Seasonality_Adj,1)*Rate_Adjustment_Factor end as KPI_Daily
 	, Forecast_DayDate
 from
 ----Join Weekly Response Curve and Media Calendar
@@ -219,9 +221,8 @@ from
 	, b.idkpi_types_FK
 	
   --Code to account for having a TFN or URL or not in flightplan entry and a manual adjustment or not
-	,case when tfn_ind=1 and b.idkpi_types_FK=1 then KPI_Rate*isnull(adjustment,1)
+	,case 
 		when TFN_ind=0 and b.idkpi_types_FK=1 then 0
-		when URL_ind=1 and b.idkpi_types_FK=2 then KPI_Rate*isnull(adjustment,1)
 		when URL_ind=0 and b.idkpi_types_FK=2 then 0
 		else KPI_Rate*isnull(adjustment,1)
 		end as KPI_Rate
@@ -296,8 +297,8 @@ from
 	, ResponseByDay.idkpi_type_FK
 	, ResponseByDay.idProduct_LU_TBL_FK
 	, Day_of_Week
-	, case when ResponseByDay.idTarget_Rate_Reasons_LU_TBL_FK is null then Sales_rate_Daily*Seasonality_Adj
-		else Sales_rate_Daily*Seasonality_Adj*Rate_Adjustment_Factor end as Sales_rate_Daily
+	, case when ResponseByDay.idTarget_Rate_Reasons_LU_TBL_FK is null then Sales_rate_Daily*isnull(Seasonality_Adj,1)
+		else Sales_rate_Daily*isnull(Seasonality_Adj,1)*Rate_Adjustment_Factor end as Sales_rate_Daily
 	, Forecast_DayDate
 
 from
@@ -343,9 +344,8 @@ from
 	, a.idProgram_Touch_Definitions_TBL_FK
 	, B.idkpi_type_FK
 	, B.idProduct_LU_TBL_FK
-	, case when tfn_ind=1 and b.idkpi_type_FK=1 then Sales_Rate*isnull(adjustment,1)*isnull(Sales_Adjustment,1)
+	, case 
 		when TFN_ind=0 and b.idkpi_type_FK=1 then 0
-		when URL_ind=1 and b.idkpi_type_FK=2 then Sales_Rate*isnull(adjustment,1)*isnull(Sales_Adjustment,1)
 		when URL_ind=0 and b.idkpi_type_FK=2 then 0
 		else Sales_Rate*isnull(adjustment,1)*isnull(Sales_Adjustment,1)
 	end as Sales_Rate
@@ -427,7 +427,12 @@ left join
 -----Bring in touch definition labels 
 #touchdef as touchdef
 		on #flightplan.idProgram_Touch_Definitions_TBL_FK=idProgram_Touch_Definitions_TBL
-
+left join
+bvt_prod.Strategy_Eligibility_LU_TBL strat
+	on #flightplan.Strategy_Eligibility_LU_TBL_FK = strat.idStrategy_Eligibility_LU_TBL
+left join
+bvt_prod.Lead_Offer_LU_TBL lead
+	on #flightplan.Lead_Offer_LU_TBL_FK = lead.idLead_Offer_LU_TBL
 where Tactic <> 'Cost'	
 ;
 
@@ -764,8 +769,8 @@ FROM
 	  ,coalesce(forecast.[Media_YYYYWW], cv.[Media_YYYYWW]) as Media_YYYYWW
 	  ,coalesce(forecast.[Calendar_Year], cv.[Calendar_Year]) as Calendar_Year
 	  ,coalesce(forecast.[Calendar_Month], cv.[Calendar_Month]) as Calendar_Month
-	  ,strategy_eligibility
-	  ,lead_offer
+	  ,strat.strategy_eligibility
+	  ,lead.Lead_Offer
       ,sum(isnull(forecast.[Forecast],0)) as Forecast
 	  ,sum(isnull(CV.forecast,0)) as Commitment 
 FROM #forecast as forecast
@@ -813,8 +818,8 @@ group by 	   Coalesce(#flightplan.idFlight_Plan_Records, forecast.[idFlight_Plan
 	  ,coalesce(forecast.[Media_YYYYWW], cv.[Media_YYYYWW])
 	  ,coalesce(forecast.[Calendar_Year], cv.[Calendar_Year])
 	  ,coalesce(forecast.[Calendar_Month], cv.[Calendar_Month])
-	  ,strategy_eligibility
-	  ,lead_offer
+	  ,strat.Strategy_Eligibility
+	  ,Lead.Lead_Offer
 	  ) as forecast_cv
 
 FULL JOIN #volumebudget
