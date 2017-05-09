@@ -487,7 +487,7 @@ select IR_Campaign_Data_Weekly_MAIN_2012_Sbset.Parentid, idFlight_Plan_Records_F
 			from bvt_processed.DTV_Now_Sales_by_day a
 			JOIN  bvt_prod.DTV_Now_Sales_App_VW b
 				on a.eCRW_Cell_ID = b.ecrw_Cell_ID
-			UNION
+			UNION ALL
 			Select a.eCRW_Project_Name, b.parentID, a.Date, a.[Online Sales]*b.Cell_Percent as Daily_Sales from 
 				(Select * from bvt_processed.DTV_Now_Sales_by_day
 				where eCRW_Cell_ID is null) a
