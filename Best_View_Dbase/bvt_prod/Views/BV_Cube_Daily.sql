@@ -10,7 +10,7 @@
 	, sum(Forecast) as forecast
 FROM openrowset(
 	'SQLNCLI10'
-	,'Server=S5280a04;Trusted_Connection=YES;'
+	,'Server=S5280a04;UID=warehouse;PWD=Data*Trap!'
 	,'set fmtonly off exec UVAQ.bvt_prod.Forecasting_Calculations_PR 8'
 	) as fv
 	join [bvt_prod].[Program_Touch_Definitions_TBL]
@@ -36,7 +36,7 @@ Select 	att_program_code
 	, sum(Forecast)  as forecast 
 FROM openrowset(
 	'SQLNCLI10'
-	,'Server=S5280a04;Trusted_Connection=YES;'
+	,'Server=S5280a04;UID=warehouse;PWD=Data*Trap!'
 	,'set fmtonly off exec UVAQ.bvt_prod.Forecasting_Calculations_PR 7'
 	) as fv
 	join [bvt_prod].[Program_Touch_Definitions_TBL]
@@ -62,7 +62,7 @@ Select 	att_program_code
 	, sum(Forecast)  as forecast
 FROM openrowset(
 	'SQLNCLI10'
-	,'Server=S5280a04;Trusted_Connection=YES;'
+	,'Server=S5280a04;UID=warehouse;PWD=Data*Trap!'
 	,'set fmtonly off exec UVAQ.bvt_prod.Forecasting_Calculations_PR 9'
 	) as fv
 	join [bvt_prod].[Program_Touch_Definitions_TBL]
@@ -87,7 +87,7 @@ Select 	att_program_code
 	, sum(Forecast)  as forecast
 FROM openrowset(
 	'SQLNCLI10'
-	,'Server=S5280a04;Trusted_Connection=YES;'
+	,'Server=S5280a04;UID=warehouse;PWD=Data*Trap!'
 	,'set fmtonly off exec UVAQ.bvt_prod.Forecasting_Calculations_PR 4'
 	) as fv
 	join [bvt_prod].[Program_Touch_Definitions_TBL]
@@ -112,7 +112,7 @@ Select 	att_program_code
 	, sum(Forecast)  as forecast
 FROM openrowset(
 	'SQLNCLI10'
-	,'Server=S5280a04;Trusted_Connection=YES;'
+	,'Server=S5280a04;UID=warehouse;PWD=Data*Trap!'
 	,'set fmtonly off exec UVAQ.bvt_prod.Forecasting_Calculations_PR 6'
 	) as fv
 	join [bvt_prod].[Program_Touch_Definitions_TBL]
@@ -138,7 +138,7 @@ Select 	att_program_code
 	, sum(Forecast)  as forecast
 FROM openrowset(
 	'SQLNCLI10'
-	,'Server=S5280a04;Trusted_Connection=YES;'
+	,'Server=S5280a04;UID=warehouse;PWD=Data*Trap!'
 	,'set fmtonly off exec UVAQ.bvt_prod.Forecasting_Calculations_PR 11'
 	) as fv
 	join [bvt_prod].[Program_Touch_Definitions_TBL]
@@ -165,7 +165,7 @@ Select 	att_program_code
 	, sum(Forecast)  as forecast
 FROM openrowset(
 	'SQLNCLI10'
-	,'Server=S5280a04;Trusted_Connection=YES;'
+	,'Server=S5280a04;UID=warehouse;PWD=Data*Trap!'
 	,'set fmtonly off exec UVAQ.bvt_prod.Forecasting_Calculations_PR 12'
 	) as fv
 	join [bvt_prod].[Program_Touch_Definitions_TBL]
