@@ -3,9 +3,9 @@
 AS
 BEGIN 
 SET NOCOUNT ON
-/*Temporary Declarations for Testing
+/*--Temporary Declarations for Testing
 DECLARE @PROG INT
-set @PROG = 4
+set @PROG = 11
 --*/
 ------Section 1 Subselecting Tables - into temps---------
 
@@ -124,8 +124,8 @@ IF OBJECT_ID('tempdb.dbo.#forecast', 'U') IS NOT NULL
 select #flightplan.idFlight_Plan_Records
 	, #flightplan.Campaign_Name
 	, #flightplan.InHome_Date
-	, strat.Strategy_Eligibility
-	, lead.Lead_Offer
+	, #flightplan.Strategy_Eligibility
+	, #flightplan.Lead_Offer
 	
 ---Media_Calendar_Info
 	, Media_Calendar_Daily.ISO_Week_Year as Media_Year
@@ -381,12 +381,14 @@ from #flightplan as A
 ---End Join Daily Percentages
 
 	left join [bvt_processed].[Sales_Curve_Start_End] as C
-		on Daily_Join.idProgram_Touch_Definitions_TBL_FK=c.idProgram_Touch_Definitions_TBL_FK and Daily_Join.idkpi_type_FK=c.idkpi_type_FK
+		on Daily_Join.idProgram_Touch_Definitions_TBL_FK=c.idProgram_Touch_Definitions_TBL_FK 
+		and Daily_Join.idkpi_type_FK=c.idkpi_type_FK
 		and inhome_date between Curve_Start_Date and c.END_DATE
 		and Case when c.idProduct_LU_TBL_FK is not null 
 		       then c.idProduct_LU_TBL_FK
 			   else Daily_Join.idProduct_LU_TBL_FK
 			   end = Daily_Join.idProduct_LU_TBL_FK
+			   
 	left join (SELECT * FROM [bvt_prod].[Dropdate_Start_End_FUN](@PROG)) as D
 		on Daily_Join.idProgram_Touch_Definitions_TBL_FK=d.idProgram_Touch_Definitions_TBL_FK
 		and inhome_date between drop_start_date and d.end_date
@@ -432,12 +434,6 @@ left join
 -----Bring in touch definition labels 
 #touchdef as touchdef
 		on #flightplan.idProgram_Touch_Definitions_TBL_FK=idProgram_Touch_Definitions_TBL
-left join
-bvt_prod.Strategy_Eligibility_LU_TBL strat
-	on #flightplan.Strategy_Eligibility_LU_TBL_FK = strat.idStrategy_Eligibility_LU_TBL
-left join
-bvt_prod.Lead_Offer_LU_TBL lead
-	on #flightplan.Lead_Offer_LU_TBL_FK = lead.idLead_Offer_LU_TBL
 where Tactic <> 'Cost'	
 ;
 
@@ -779,8 +775,6 @@ FROM
 	  ,coalesce(forecast.[Media_YYYYWW], cv.[Media_YYYYWW]) as Media_YYYYWW
 	  ,coalesce(forecast.[Calendar_Year], cv.[Calendar_Year]) as Calendar_Year
 	  ,coalesce(forecast.[Calendar_Month], cv.[Calendar_Month]) as Calendar_Month
-	  ,strat.strategy_eligibility
-	  ,lead.Lead_Offer
       ,sum(isnull(forecast.[Forecast],0)) as Forecast
 	  ,sum(isnull(CV.forecast,0)) as Commitment 
 FROM #forecast as forecast
@@ -798,12 +792,7 @@ FROM #forecast as forecast
 	on Coalesce(forecast.idFlight_Plan_Records, cv.idFLight_Plan_Records) = #flightplan.idFlight_Plan_Records
 	LEFT JOIN #touchdef
 	on #flightplan.idProgram_Touch_Definitions_TBL_FK = #touchdef.idProgram_Touch_Definitions_TBL
-	left join
-	bvt_prod.Strategy_Eligibility_LU_TBL strat
-	on #flightplan.Strategy_Eligibility_LU_TBL_FK = strat.idStrategy_Eligibility_LU_TBL
-	left join
-	bvt_prod.Lead_Offer_LU_TBL lead
-	on #flightplan.Lead_Offer_LU_TBL_FK = lead.idLead_Offer_LU_TBL
+
 group by 	   Coalesce(#flightplan.idFlight_Plan_Records, forecast.[idFlight_Plan_Records], cv.[idFlight_Plan_Records])
       ,Coalesce(#flightplan.Campaign_Name, forecast.[Campaign_Name], cv.[Campaign_Name])
       ,coalesce(#flightplan.InHome_Date, forecast.[InHome_Date], cv.[InHome_Date])
@@ -827,8 +816,6 @@ group by 	   Coalesce(#flightplan.idFlight_Plan_Records, forecast.[idFlight_Plan
 	  ,coalesce(forecast.[Media_YYYYWW], cv.[Media_YYYYWW])
 	  ,coalesce(forecast.[Calendar_Year], cv.[Calendar_Year])
 	  ,coalesce(forecast.[Calendar_Month], cv.[Calendar_Month])
-	  ,strat.strategy_eligibility
-	  ,lead.Lead_Offer
 	  ) as forecast_cv
 
 FULL JOIN #volumebudget
@@ -846,7 +833,11 @@ FULL JOIN #ResponseSales
 	 and forecast_cv.[KPI_Type] =#ResponseSales.[KPI_Type]
 	 and forecast_cv.[Product_Code] = #ResponseSales.[product_code]
 	 and forecast_cv.[Calendar_Year] = #ResponseSales.[Calendar_Year]
-	 and forecast_cv.[Calendar_Month] = #ResponseSales.[Calendar_Month];
+	 and forecast_cv.[Calendar_Month] = #ResponseSales.[Calendar_Month]
+	 
+	LEFT JOIN #flightplan
+    ON Coalesce(forecast_cv.[idFlight_Plan_Records_FK],  #volumebudget.[idFlight_plan_records_FK], #ResponseSales.[idFlight_Plan_Records_FK]) = #flightplan.idFlight_Plan_Records
+;
 ------------END OF BLENDING BEST VIEW!-----------------------------------
 
 
@@ -1331,3 +1322,4 @@ group by [idFlight_Plan_Records_FK], [Campaign_Name], [InHome_Date], [Strategy_E
 
 SET NOCOUNT OFF
 END
+

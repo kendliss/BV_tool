@@ -12,14 +12,14 @@ set @PROG = 11
 -------Section 1.1 - Flightplan Selection	
 --Select the appropriate Flight Plan
 --Check and delete temp	
-
 IF OBJECT_ID('tempdb.dbo.#flightplan', 'U') IS NOT NULL
   DROP TABLE #flightplan; 
 
 	SELECT * INTO #flightplan
 	from bvt_prod.Flightplan_FUN(@prog);
 
-create CLUSTERED index idx_c_flightplan_flightplanid ON #flightplan([idFlight_Plan_Records]);
+create CLUSTERED index idx_c_flightplan_flightplanid ON #flightplan([idFlight_Plan_Records])
+;
 ---End Flightplan selection
 -------Touch Definition View--------------------------
 IF OBJECT_ID('tempdb.dbo.#touchdef', 'U') IS NOT NULL
@@ -67,6 +67,13 @@ where [idProgram_Touch_Definitions_TBL_FK] in
 (select idProgram_Touch_Definitions_TBL from #touchdef);
 insert into [bvt_processed].[Sales_Rates_Start_End]
 select * from [bvt_prod].[Sales_Rates_Start_End_VW]
+where idProgram_Touch_Definitions_TBL_FK in (select idProgram_Touch_Definitions_TBL from #touchdef);
+--Target Adjustment Start End
+delete [bvt_processed].[Target_Adjustment_Start_End]
+where [idProgram_Touch_Definitions_TBL_FK] in 
+(select idProgram_Touch_Definitions_TBL from #touchdef);
+insert into [bvt_processed].[Target_Adjustment_Start_End]
+select * from [bvt_prod].[Target_Adjustment_Start_End_VW]
 where idProgram_Touch_Definitions_TBL_FK in (select idProgram_Touch_Definitions_TBL from #touchdef);
 --*/
 
@@ -117,8 +124,8 @@ IF OBJECT_ID('tempdb.dbo.#forecast', 'U') IS NOT NULL
 select #flightplan.idFlight_Plan_Records
 	, #flightplan.Campaign_Name
 	, #flightplan.InHome_Date
-	, strat.Strategy_Eligibility
-	, lead.Lead_Offer
+	, #flightplan.Strategy_Eligibility
+	, #flightplan.Lead_Offer
 
 ---Media_Calendar_Info
 	, Media_Calendar_Daily.ISO_Week_Year as Media_Year
@@ -427,18 +434,12 @@ left join
 -----Bring in touch definition labels 
 #touchdef as touchdef
 		on #flightplan.idProgram_Touch_Definitions_TBL_FK=idProgram_Touch_Definitions_TBL
-left join
-bvt_prod.Strategy_Eligibility_LU_TBL strat
-	on #flightplan.Strategy_Eligibility_LU_TBL_FK = strat.idStrategy_Eligibility_LU_TBL
-left join
-bvt_prod.Lead_Offer_LU_TBL lead
-	on #flightplan.Lead_Offer_LU_TBL_FK = lead.idLead_Offer_LU_TBL
 where Tactic <> 'Cost'	
 ;
 
 create index IDX_NC_FORECASTTEMP
  ON #FORECAST([idFlight_Plan_Records], [Calendar_Year], [Calendar_Month]
-  , [media_year] ,[Media_Week] ,[kpi_type] ,[product_code]);
+  , [media_year] ,[Media_Week] ,[kpi_type] ,[product_code])  ;
 -------------END SECTION SALES-----------------------------------------------------
 -----END SECTION Forecasting-------------------------------------------------------
 
@@ -581,8 +582,8 @@ from
 		when kpiproduct like '%CTECH%' then 'ConnecTech'
 		when kpiproduct like '%DLIFE%' then 'Digital Life'
 		when kpiproduct like '%WHP%' then 'WRLS Home'
+		when kpiproduct like '%DTVNow%' then 'DTV Now'
 		end as Product_Code
-
 , sum(Actuals.[Actual]) as Actual
 
 from #actuals
@@ -597,7 +598,7 @@ UNPIVOT (Actual for kpiproduct in
 			[ITP_Dir_Sales_ON_CING_VOICE_N], [ITP_Dir_Sales_ON_CING_FAMILY_N], [ITP_Dir_Sales_ON_CING_DATA_N], [ITP_Dir_Sales_ON_DISH_N], 
 			[ITP_Dir_Sales_ON_DSL_REG_N], [ITP_Dir_Sales_ON_DSL_DRY_N], [ITP_Dir_Sales_ON_DSL_IP_N], [ITP_Dir_Sales_ON_UVRS_HSIAG_N],
 			[ITP_Dir_Sales_ON_UVRS_HSIA_N], [ITP_Dir_Sales_ON_UVRS_TV_N], [ITP_Dir_Sales_ON_UVRS_BOLT_N], [ITP_Dir_Sales_ON_LOCAL_ACCL_N], 
-			[ITP_Dir_Sales_ON_UVRS_VOIP_N], [ITP_Dir_Sales_ON_DLIFE_N], [ITP_Dir_Sales_ON_CING_WHP_N], [ITP_Dir_Sales_ON_Migrations])) as Actuals
+			[ITP_Dir_Sales_ON_UVRS_VOIP_N], [ITP_Dir_Sales_ON_DLIFE_N], [ITP_Dir_Sales_ON_CING_WHP_N], [ITP_Dir_Sales_ON_Migrations], [ITP_Dir_Sales_ON_DTVNOW_N])) as Actuals
 GROUP BY [idFlight_Plan_Records_FK], [Report_Year], [Report_Week], [Calendar_Year], [Calendar_Month]
 
 , case
@@ -627,6 +628,7 @@ GROUP BY [idFlight_Plan_Records_FK], [Report_Year], [Report_Week], [Calendar_Yea
 	when kpiproduct like '%CTECH%' then 'ConnecTech'
 	when kpiproduct like '%DLIFE%' then 'Digital Life'
 	when kpiproduct like '%WHP%' then 'WRLS Home'
+	when kpiproduct like '%DTVNow%' then 'DTV Now'
 	end 
 	) as actuals 
 	inner join #flightplan on [idFlight_Plan_Records_FK] = [idFlight_Plan_Records]
@@ -690,6 +692,10 @@ create index IDX_NC_CV
 /*Combine the Forecast, Actuals, and CV into a single Best View of the
 program selected for output*/
 -----------------------------------------------------------------------
+
+
+
+
 select
 coalesce(forecast_cv.[idFlight_Plan_Records_FK], #volumebudget.[idFlight_Plan_Records_FK], #ResponseSales.[idFlight_Plan_Records_FK]) as idFlight_Plan_Records_FK,
 		coalesce(forecast_cv.[Campaign_Name], #volumebudget.[Campaign_Name], #ResponseSales.[Campaign_Name]) as Campaign_Name,
@@ -769,8 +775,6 @@ FROM
 	  ,coalesce(forecast.[Media_YYYYWW], cv.[Media_YYYYWW]) as Media_YYYYWW
 	  ,coalesce(forecast.[Calendar_Year], cv.[Calendar_Year]) as Calendar_Year
 	  ,coalesce(forecast.[Calendar_Month], cv.[Calendar_Month]) as Calendar_Month
-	  ,strat.strategy_eligibility
-	  ,lead.Lead_Offer
       ,sum(isnull(forecast.[Forecast],0)) as Forecast
 	  ,sum(isnull(CV.forecast,0)) as Commitment 
 FROM #forecast as forecast
@@ -788,12 +792,6 @@ FROM #forecast as forecast
 	on Coalesce(forecast.idFlight_Plan_Records, cv.idFLight_Plan_Records) = #flightplan.idFlight_Plan_Records
 	LEFT JOIN #touchdef
 	on #flightplan.idProgram_Touch_Definitions_TBL_FK = #touchdef.idProgram_Touch_Definitions_TBL
-	left join
-	bvt_prod.Strategy_Eligibility_LU_TBL strat
-	on #flightplan.Strategy_Eligibility_LU_TBL_FK = strat.idStrategy_Eligibility_LU_TBL
-	left join
-	bvt_prod.Lead_Offer_LU_TBL lead
-	on #flightplan.Lead_Offer_LU_TBL_FK = lead.idLead_Offer_LU_TBL
 
 group by 	   Coalesce(#flightplan.idFlight_Plan_Records, forecast.[idFlight_Plan_Records], cv.[idFlight_Plan_Records])
       ,Coalesce(#flightplan.Campaign_Name, forecast.[Campaign_Name], cv.[Campaign_Name])
@@ -818,8 +816,6 @@ group by 	   Coalesce(#flightplan.idFlight_Plan_Records, forecast.[idFlight_Plan
 	  ,coalesce(forecast.[Media_YYYYWW], cv.[Media_YYYYWW])
 	  ,coalesce(forecast.[Calendar_Year], cv.[Calendar_Year])
 	  ,coalesce(forecast.[Calendar_Month], cv.[Calendar_Month])
-	  ,strat.Strategy_Eligibility
-	  ,Lead.Lead_Offer
 	  ) as forecast_cv
 
 FULL JOIN #volumebudget
@@ -838,9 +834,13 @@ FULL JOIN #ResponseSales
 	 and forecast_cv.[Product_Code] = #ResponseSales.[product_code]
 	 and forecast_cv.[Calendar_Year] = #ResponseSales.[Calendar_Year]
 	 and forecast_cv.[Calendar_Month] = #ResponseSales.[Calendar_Month]
+	 
+	LEFT JOIN #flightplan
+    ON Coalesce(forecast_cv.[idFlight_Plan_Records_FK],  #volumebudget.[idFlight_plan_records_FK], #ResponseSales.[idFlight_Plan_Records_FK]) = #flightplan.idFlight_Plan_Records
 ;
 ------------END OF BLENDING BEST VIEW!-----------------------------------
 
 
 SET NOCOUNT OFF
 END
+
