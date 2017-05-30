@@ -644,6 +644,8 @@
     <Build Include="bvt_prod\Functions\Flightplan_FUN.sql" />
     <Build Include="bvt_prod\Functions\Touchdef_FUN.sql" />
     <Build Include="bvt_prod\Views\View1.sql" />
+    <Build Include="bvt_prod\Stored Procedures\BV_to_Cube_Forecasting_Calculations_PR.sql" />
+    <Build Include="bvt_prod\Views\CLM_Revenue_GRE_Raw_Data.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="Best_View_Dbase.refactorlog" />

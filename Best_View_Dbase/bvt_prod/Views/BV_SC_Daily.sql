@@ -8,7 +8,7 @@ AS SELECT
 	, sum(Forecast) as forecast
 FROM openrowset(
 	'SQLNCLI10'
-	,'Server=S5280a04;Trusted_Connection=YES;'
+	,'Server=S5280a04;UID=warehouse;PWD=Data*Trap!'
 	,'set fmtonly off exec UVAQ.bvt_prod.Forecasting_Calculations_PR 8'
 	) as fv
 where Forecast_Daydate > '2016-01-01'
@@ -28,7 +28,7 @@ Select Owner_type_matrix_id_FK as hierarchy_id
 	, sum(Forecast)  as forecast 
 FROM openrowset(
 	'SQLNCLI10'
-	,'Server=S5280a04;Trusted_Connection=YES;'
+	,'Server=S5280a04;UID=warehouse;PWD=Data*Trap!'
 	,'set fmtonly off exec UVAQ.bvt_prod.Forecasting_Calculations_PR 7'
 	)
 where Forecast_Daydate > '2016-01-01'
@@ -48,7 +48,7 @@ Select Owner_type_matrix_id_FK as hierarchy_id
 	, sum(Forecast)  as forecast
 FROM openrowset(
 	'SQLNCLI10'
-	,'Server=S5280a04;Trusted_Connection=YES;'
+	,'Server=S5280a04;UID=warehouse;PWD=Data*Trap!'
 	,'set fmtonly off exec UVAQ.bvt_prod.Forecasting_Calculations_PR 9'
 	)
 where Forecast_Daydate > '2016-01-01'
@@ -67,7 +67,7 @@ Select Owner_type_matrix_id_FK as hierarchy_id
 	, sum(Forecast)  as forecast
 FROM openrowset(
 	'SQLNCLI10'
-	,'Server=S5280a04;Trusted_Connection=YES;'
+	,'Server=S5280a04;UID=warehouse;PWD=Data*Trap!'
 	,'set fmtonly off exec UVAQ.bvt_prod.Forecasting_Calculations_PR 4'
 	)
 where Forecast_Daydate > '2016-01-01'
@@ -86,7 +86,7 @@ Select Owner_type_matrix_id_FK as hierarchy_id
 	, sum(Forecast)  as forecast
 FROM openrowset(
 	'SQLNCLI10'
-	,'Server=S5280a04;Trusted_Connection=YES;'
+	,'Server=S5280a04;UID=warehouse;PWD=Data*Trap!'
 	,'set fmtonly off exec UVAQ.bvt_prod.Forecasting_Calculations_PR 6'
 	)
 where Forecast_Daydate > '2016-01-01'
@@ -106,7 +106,7 @@ Select Owner_type_matrix_id_FK as hierarchy_id
 	, sum(Forecast)  as forecast
 FROM openrowset(
 	'SQLNCLI10'
-	,'Server=S5280a04;Trusted_Connection=YES;'
+	,'Server=S5280a04;UID=warehouse;PWD=Data*Trap!'
 	,'set fmtonly off exec UVAQ.bvt_prod.Forecasting_Calculations_PR 11'
 	)
 where Forecast_Daydate > '2016-01-01'
@@ -127,7 +127,7 @@ Select Owner_type_matrix_id_FK as hierarchy_id
 	, sum(Forecast)  as forecast
 FROM openrowset(
 	'SQLNCLI10'
-	,'Server=S5280a04;Trusted_Connection=YES;'
+	,'Server=S5280a04;UID=warehouse;PWD=Data*Trap!'
 	,'set fmtonly off exec UVAQ.bvt_prod.Forecasting_Calculations_PR 12'
 	)
 where Forecast_Daydate > '2016-01-01'

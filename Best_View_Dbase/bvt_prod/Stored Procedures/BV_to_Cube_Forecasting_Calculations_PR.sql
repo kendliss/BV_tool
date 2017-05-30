@@ -1,5 +1,4 @@
-﻿alter PROCEDURE [bvt_prod].[Forecasting_Calculations_PR]
-	@PROG int	
+﻿create PROCEDURE [bvt_prod].[BV_To_CUBE_Forecasting_Calculations_PR]
 AS
 BEGIN 
 SET NOCOUNT ON
@@ -15,7 +14,12 @@ IF OBJECT_ID('tempdb.dbo.#flightplan', 'U') IS NOT NULL
   DROP TABLE #flightplan; 
 
 	SELECT * INTO #flightplan
-	from bvt_prod.Flightplan_FUN(@prog);
+	from idProgram_Touch_Definitions_TBL_FK 
+    in (select idProgram_Touch_Definitions_TBL 
+	from bvt_prod.Program_Touch_Definitions_TBL
+	WHERE idProgram_LU_TBL_FK not in (1,2,3,5,10))
+-------In Home date limitation to prevent excess calculations on old flight plan records
+  and inhome_date>='2016-01-01';
 
 create CLUSTERED index idx_c_flightplan_flightplanid ON #flightplan([idFlight_Plan_Records]);
 ---End Flightplan selection
@@ -23,14 +27,29 @@ create CLUSTERED index idx_c_flightplan_flightplanid ON #flightplan([idFlight_Pl
 IF OBJECT_ID('tempdb.dbo.#touchdef', 'U') IS NOT NULL
   DROP TABLE #touchdef; 
 
-SELECT *
-INTO #touchdef
-from[bvt_prod].[Touchdef_FUN](@prog);
+SELECT idProgram_Touch_Definitions_TBL
+	, Touch_Name, Program_Name, Tactic, Media, Audience
+	, Creative_Name, Goal, Offer, Campaign_Type, Channel
+	, owner_type_matrix_id_FK, 
+	SC.Scorecard_group, Scorecard_program_Channel
+from bvt_prod.Program_Touch_Definitions_TBL
+	left join bvt_prod.Audience_LU_TBL on idAudience_LU_TBL_FK=idAudience_LU_TBL
+	left join bvt_prod.Campaign_Type_LU_TBL on idCampaign_Type_LU_TBL_FK=idCampaign_Type_LU_TBL
+	left join bvt_prod.Creative_LU_TBL on idCreative_LU_TBL_fk=idCreative_LU_TBL
+	left join bvt_prod.Goal_LU_TBL on idGoal_LU_TBL_fk=idGoal_LU_TBL
+	left join bvt_prod.Media_LU_TBL on idMedia_LU_TBL_fk=idMedia_LU_TBL
+	left join bvt_prod.Offer_LU_TBL on idOffer_LU_TBL_fk=idOffer_LU_TBL
+	left join bvt_prod.Program_LU_TBL on idProgram_LU_TBL_fk=idProgram_LU_TBL
+	left join bvt_prod.Tactic_LU_TBL on idTactic_LU_TBL_fk=idTactic_LU_TBL
+	left join bvt_prod.Channel_LU_TBL on idChanel_LU_TBL_FK=idChanel_LU_TBL
+	left Join (Select Distinct ID, scorecard_group, scorecard_program_channel from JAVDB.IREPORT_2015.dbo.WB_00_Reporting_Hierarchy) sc on sc.ID =  owner_type_matrix_id_FK
+WHERE idProgram_LU_TBL_fk not in (1,2,3,5,10);
 
 create clustered index IDX_C_touchdef_id ON #touchdef(idProgram_Touch_Definitions_TBL);
 
 ----------End Touch Def-----------------------------
---/*Inserting the start/end procs until triggers are fixed
+--/*Inserting the start/end procs until triggers are fixed/completed
+--VERY INEFFICIENT
 --KPI Start End
 delete [bvt_processed].[KPI_Rate_Start_End]
 where [idProgram_Touch_Definitions_TBL_FK] in 
@@ -66,7 +85,7 @@ where [idProgram_Touch_Definitions_TBL_FK] in
 insert into [bvt_processed].[Sales_Rates_Start_End]
 select * from [bvt_prod].[Sales_Rates_Start_End_VW]
 where idProgram_Touch_Definitions_TBL_FK in (select idProgram_Touch_Definitions_TBL from #touchdef);
---*/
+--End of messy table updates for lack of triggers*/
 
 ----Section 1.3 - Target Adjustments
 IF OBJECT_ID('tempdb.dbo.#Trgt_adj', 'U') IS NOT NULL
