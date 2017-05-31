@@ -15,7 +15,7 @@ IF OBJECT_ID('tempdb.dbo.#flightplan', 'U') IS NOT NULL
   DROP TABLE #flightplan; 
 
 	SELECT * INTO #flightplan
-	from bvt_prod.Flightplan_FUN(@prog);
+	from bvt_prod.Flightplan_FUN(@PROG);
 
 create CLUSTERED index idx_c_flightplan_flightplanid ON #flightplan([idFlight_Plan_Records]);
 ---End Flightplan selection
@@ -25,7 +25,7 @@ IF OBJECT_ID('tempdb.dbo.#touchdef', 'U') IS NOT NULL
 
 SELECT *
 INTO #touchdef
-from[bvt_prod].[Touchdef_FUN](@prog);
+from[bvt_prod].[Touchdef_FUN](@PROG);
 
 create clustered index IDX_C_touchdef_id ON #touchdef(idProgram_Touch_Definitions_TBL);
 
@@ -99,6 +99,8 @@ into #volumes
 			on flighting.idTarget_Rate_Reasons_LU_TBL_FK=Target_adjustment_start_end.idTarget_Rate_Reasons_LU_TBL_FK 
 			and flighting.idProgram_Touch_Definitions_TBL_FK=Target_adjustment_start_end.idProgram_Touch_Definitions_TBL_FK
 			and flighting.inhome_date between Adj_Start_Date and Target_adjustment_start_end.end_date
+		left join (SELECT * FROM [bvt_prod].[CPP_Start_End_FUN](@Prog)) AS CPP_Start_End on flighting.idProgram_Touch_Definitions_TBL_FK=CPP_Start_End.idProgram_Touch_Definitions_TBL_FK
+			and InHome_Date between Cpp_start_date and CPP_Start_End.end_date
 Group by idFlight_Plan_Records, idVolume_Type_LU_TBL_FK, Lead_Volumes.Volume, Target_adjustment_start_end.Volume_Adjustment
 	 , Flight_Plan_Records_Volume.Volume, InHome_Date;
 
