@@ -104,11 +104,11 @@ into #volumes
 		left join bvt_prod.Lead_Volumes on flighting.idProgram_Touch_Definitions_TBL_FK=Lead_Volumes.idProgram_Touch_Definitions_TBL_FK
 			and ISO_Week_Year=Media_Year and MediaMonth=Media_Month
 		left join bvt_prod.Flight_Plan_Record_Budgets on idFlight_Plan_Records=Flight_Plan_Record_Budgets.idFlight_Plan_Records_FK
-		left join (SELECT * FROM [bvt_prod].[Target_adjustment_start_end_FUN](4)) as Target_adjustment_start_end
+		left join (SELECT * FROM [bvt_prod].[Target_adjustment_start_end_FUN](@PROG)) as Target_adjustment_start_end
 			on flighting.idTarget_Rate_Reasons_LU_TBL_FK=Target_adjustment_start_end.idTarget_Rate_Reasons_LU_TBL_FK 
 			and flighting.idProgram_Touch_Definitions_TBL_FK=Target_adjustment_start_end.idProgram_Touch_Definitions_TBL_FK
 			and flighting.inhome_date between Adj_Start_Date and Target_adjustment_start_end.end_date
-		left join (SELECT * FROM [bvt_prod].[CPP_Start_End_FUN](4)) AS CPP_Start_End on flighting.idProgram_Touch_Definitions_TBL_FK=CPP_Start_End.idProgram_Touch_Definitions_TBL_FK
+		left join (SELECT * FROM [bvt_prod].[CPP_Start_End_FUN](@PROG)) AS CPP_Start_End on flighting.idProgram_Touch_Definitions_TBL_FK=CPP_Start_End.idProgram_Touch_Definitions_TBL_FK
 			and InHome_Date between Cpp_start_date and CPP_Start_End.end_date
 Group by idFlight_Plan_Records, idVolume_Type_LU_TBL_FK, Lead_Volumes.Volume, Target_adjustment_start_end.Volume_Adjustment
 	 , Flight_Plan_Records_Volume.Volume, InHome_Date;
@@ -984,8 +984,8 @@ sum(isnull([Telesales_WRLS Family_BV], 0)) as [Telesales_WRLS Family_BV],
 sum(isnull([Telesales_WRLS Voice_BV], 0)) as [Telesales_WRLS Voice_BV], 
 sum(isnull([Telesales_WRLS Home_BV], 0)) as [Telesales_WRLS Home_BV], 
 sum(isnull([Telesales_Digital Life_BV], 0)) as [Telesales_Digital Life_BV], 
-sum(isnull([Telesales_Bolt ons_AV], 0)) as [Telesales_Bolt Ons_AV],
-sum(isnull([Telesales_Upgrades_AV], 0)) as [Telesales_Upgrades_AV],
+sum(isnull([Telesales_Bolt ons_BV], 0)) as [Telesales_Bolt Ons_BV],
+sum(isnull([Telesales_Upgrades_BV], 0)) as [Telesales_Upgrades_BV],
 sum(isnull([Volume_BV], 0)) as [Volume_BV],
 sum(isnull([Online_sales_Access Line_CV], 0))+ sum(isnull([Online_sales_DSL_CV], 0))+ sum(isnull([Online_sales_DSL Direct_CV], 0))+ sum(isnull([Online_sales_HSIA_CV], 0))+ sum(isnull([Online_sales_Fiber_CV], 0))+ sum(isnull([Online_sales_IPDSL_CV], 0))+ sum(isnull([Online_sales_DirecTV_CV], 0))+ sum(isnull([Online_sales_UVTV_CV], 0))+ sum(isnull([Online_sales_VoIP_CV], 0))+ sum(isnull([Online_sales_WRLS Data_CV], 0))+ sum(isnull([Online_sales_WRLS Family_CV], 0))+ sum(isnull([Online_sales_WRLS Voice_CV], 0))+ sum(isnull([Online_sales_WRLS Home_CV], 0))+ sum(isnull([Online_sales_Digital Life_CV], 0)) as Online_Total_CV,
 sum(isnull([Online_sales_Access Line_BV], 0))+ sum(isnull([Online_sales_DSL_BV], 0))+ sum(isnull([Online_sales_DSL Direct_BV], 0))+ sum(isnull([Online_sales_HSIA_BV], 0))+ sum(isnull([Online_sales_Fiber_BV], 0))+ sum(isnull([Online_sales_IPDSL_BV], 0))+ sum(isnull([Online_sales_DirecTV_BV], 0))+ sum(isnull([Online_sales_UVTV_BV], 0))+ sum(isnull([Online_sales_VoIP_BV], 0))+ sum(isnull([Online_sales_WRLS Data_BV], 0))+ sum(isnull([Online_sales_WRLS Family_BV], 0))+ sum(isnull([Online_sales_WRLS Voice_BV], 0))+ sum(isnull([Online_sales_WRLS Home_BV], 0))+ sum(isnull([Online_sales_Digital Life_BV], 0)) as Online_Total_BV,
