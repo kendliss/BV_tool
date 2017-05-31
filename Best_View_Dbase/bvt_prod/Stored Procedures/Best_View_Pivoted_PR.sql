@@ -861,7 +861,9 @@ sum(isnull([Online_sales_WRLS Data_CV], 0)) as [Online_sales_WRLS Data_CV],
 sum(isnull([Online_sales_WRLS Family_CV], 0)) as [Online_sales_WRLS Family_CV], 
 sum(isnull([Online_sales_WRLS Voice_CV], 0)) as [Online_sales_WRLS Voice_CV],
 sum(isnull([Online_sales_WRLS Home_CV], 0)) as [Online_sales_WRLS Home_CV], 
-sum(isnull([Online_sales_Digital Life_CV], 0)) as [Online_sales_Digital Life_CV], 
+sum(isnull([Online_sales_Digital Life_CV], 0)) as [Online_sales_Digital Life_CV],
+sum(isnull([Online_sales_Bolt ons_CV], 0)) as [Online_sales_Bolt Ons_CV],
+sum(isnull([Online_sales_Upgrades_CV], 0)) as [Online_sales_Upgrades_CV],
 sum(isnull([Telesales_Access Line_CV], 0)) as [Telesales_Access Line_CV], 
 sum(isnull([Telesales_DSL_CV], 0)) as [Telesales_DSL_CV], 
 sum(isnull([Telesales_DSL Direct_CV], 0)) as [Telesales_DSL Direct_CV], 
@@ -876,6 +878,8 @@ sum(isnull([Telesales_WRLS Family_CV], 0)) as [Telesales_WRLS Family_CV],
 sum(isnull([Telesales_WRLS Voice_CV], 0)) as [Telesales_WRLS Voice_CV],
 sum(isnull([Telesales_WRLS Home_CV], 0)) as [Telesales_WRLS Home_CV], 
 sum(isnull([Telesales_Digital Life_CV], 0)) as [Telesales_Digital Life_CV],
+sum(isnull([Telesales_Bolt ons_CV], 0)) as [Telesales_Bolt Ons_CV],
+sum(isnull([Telesales_Upgrades_CV], 0)) as [Telesales_Upgrades_CV],
 sum(isnull([Volume_CV],0)) as [Volume_CV],
 sum(isnull([Call_FV], 0)) as [Call_FV], 
 sum(isnull([Online_FV], 0)) as [Online_FV], 
@@ -893,6 +897,8 @@ sum(isnull([Online_sales_WRLS Family_FV], 0)) as [Online_sales_WRLS Family_FV],
 sum(isnull([Online_sales_WRLS Voice_FV], 0)) as [Online_sales_WRLS Voice_FV],
 sum(isnull([Online_sales_WRLS Home_FV], 0)) as [Online_sales_WRLS Home_FV], 
 sum(isnull([Online_sales_Digital Life_FV], 0)) as [Online_sales_Digital Life_FV],
+sum(isnull([Online_sales_Bolt ons_FV], 0)) as [Online_sales_Bolt Ons_FV],
+sum(isnull([Online_sales_Upgrades_FV], 0)) as [Online_sales_Upgrades_FV],
 sum(isnull([Telesales_Access Line_FV], 0)) as [Telesales_Access Line_FV], 
 sum(isnull([Telesales_DSL_FV], 0)) as [Telesales_DSL_FV], 
 sum(isnull([Telesales_DSL Direct_FV], 0)) as [Telesales_DSL Direct_FV], 
@@ -907,6 +913,8 @@ sum(isnull([Telesales_WRLS Family_FV], 0)) as [Telesales_WRLS Family_FV],
 sum(isnull([Telesales_WRLS Voice_FV], 0)) as [Telesales_WRLS Voice_FV],
 sum(isnull([Telesales_WRLS Home_FV], 0)) as [Telesales_WRLS Home_FV], 
 sum(isnull([Telesales_Digital Life_FV], 0)) as [Telesales_Digital Life_FV],
+sum(isnull([Telesales_Bolt ons_FV], 0)) as [Telesales_Bolt Ons_FV],
+sum(isnull([Telesales_Upgrades_FV], 0)) as [Telesales_Upgrades_FV],
 sum(isnull([Volume_FV],0)) as [Volume_FV],
 sum(isnull([Call_AV], 0)) as [Call_AV], 
 sum(isnull([Online_AV], 0)) as [Online_AV], 
@@ -925,6 +933,8 @@ sum(isnull([Online_sales_WRLS Voice_AV], 0)) as [Online_sales_WRLS Voice_AV],
 sum(isnull([Online_sales_WRLS Home_AV], 0)) as [Online_sales_WRLS Home_AV], 
 sum(isnull([Online_sales_Digital Life_AV], 0)) as [Online_sales_Digital Life_AV],
 sum(isnull([Online_Sales_DTV Now_AV],0)) as [Online_sales_DTV Now_AV],
+sum(isnull([Online_sales_Bolt ons_AV], 0)) as [Online_sales_Bolt Ons_AV],
+sum(isnull([Online_sales_Upgrades_AV], 0)) as [Online_sales_Upgrades_AV],
 sum(isnull([Telesales_Access Line_AV], 0)) as [Telesales_Access Line_AV], 
 sum(isnull([Telesales_DSL_AV], 0)) as [Telesales_DSL_AV], 
 sum(isnull([Telesales_DSL Direct_AV], 0)) as [Telesales_DSL Direct_AV], 
@@ -939,6 +949,8 @@ sum(isnull([Telesales_WRLS Family_AV], 0)) as [Telesales_WRLS Family_AV],
 sum(isnull([Telesales_WRLS Voice_AV], 0)) as [Telesales_WRLS Voice_AV], 
 sum(isnull([Telesales_WRLS Home_AV], 0)) as [Telesales_WRLS Home_AV], 
 sum(isnull([Telesales_Digital Life_AV], 0)) as [Telesales_Digital Life_AV], 
+sum(isnull([Telesales_Bolt ons_AV], 0)) as [Telesales_Bolt Ons_AV],
+sum(isnull([Telesales_Upgrades_AV], 0)) as [Telesales_Upgrades_AV],
 sum(isnull([Volume_AV],0)) as [Volume_AV],
 sum(isnull([Call_BV], 0)) as [Call_BV], 
 sum(isnull([Online_BV], 0)) as [Online_BV], 
@@ -956,6 +968,8 @@ sum(isnull([Online_sales_WRLS Family_BV], 0)) as [Online_sales_WRLS Family_BV],
 sum(isnull([Online_sales_WRLS Voice_BV], 0)) as [Online_sales_WRLS Voice_BV], 
 sum(isnull([Online_sales_WRLS Home_BV], 0)) as [Online_sales_WRLS Home_BV], 
 sum(isnull([Online_sales_Digital Life_BV], 0)) as [Online_sales_Digital Life_BV], 
+sum(isnull([Online_sales_Bolt ons_BV], 0)) as [Online_sales_Bolt Ons_BV],
+sum(isnull([Online_sales_Upgrades_BV], 0)) as [Online_sales_Upgrads_BV],
 sum(isnull([Telesales_Access Line_BV], 0)) as [Telesales_Access Line_BV], 
 sum(isnull([Telesales_DSL_BV], 0)) as [Telesales_DSL_BV], 
 sum(isnull([Telesales_DSL Direct_BV], 0)) as [Telesales_DSL Direct_BV], 
@@ -970,6 +984,8 @@ sum(isnull([Telesales_WRLS Family_BV], 0)) as [Telesales_WRLS Family_BV],
 sum(isnull([Telesales_WRLS Voice_BV], 0)) as [Telesales_WRLS Voice_BV], 
 sum(isnull([Telesales_WRLS Home_BV], 0)) as [Telesales_WRLS Home_BV], 
 sum(isnull([Telesales_Digital Life_BV], 0)) as [Telesales_Digital Life_BV], 
+sum(isnull([Telesales_Bolt ons_AV], 0)) as [Telesales_Bolt Ons_AV],
+sum(isnull([Telesales_Upgrades_AV], 0)) as [Telesales_Upgrades_AV],
 sum(isnull([Volume_BV], 0)) as [Volume_BV],
 sum(isnull([Online_sales_Access Line_CV], 0))+ sum(isnull([Online_sales_DSL_CV], 0))+ sum(isnull([Online_sales_DSL Direct_CV], 0))+ sum(isnull([Online_sales_HSIA_CV], 0))+ sum(isnull([Online_sales_Fiber_CV], 0))+ sum(isnull([Online_sales_IPDSL_CV], 0))+ sum(isnull([Online_sales_DirecTV_CV], 0))+ sum(isnull([Online_sales_UVTV_CV], 0))+ sum(isnull([Online_sales_VoIP_CV], 0))+ sum(isnull([Online_sales_WRLS Data_CV], 0))+ sum(isnull([Online_sales_WRLS Family_CV], 0))+ sum(isnull([Online_sales_WRLS Voice_CV], 0))+ sum(isnull([Online_sales_WRLS Home_CV], 0))+ sum(isnull([Online_sales_Digital Life_CV], 0)) as Online_Total_CV,
 sum(isnull([Online_sales_Access Line_BV], 0))+ sum(isnull([Online_sales_DSL_BV], 0))+ sum(isnull([Online_sales_DSL Direct_BV], 0))+ sum(isnull([Online_sales_HSIA_BV], 0))+ sum(isnull([Online_sales_Fiber_BV], 0))+ sum(isnull([Online_sales_IPDSL_BV], 0))+ sum(isnull([Online_sales_DirecTV_BV], 0))+ sum(isnull([Online_sales_UVTV_BV], 0))+ sum(isnull([Online_sales_VoIP_BV], 0))+ sum(isnull([Online_sales_WRLS Data_BV], 0))+ sum(isnull([Online_sales_WRLS Family_BV], 0))+ sum(isnull([Online_sales_WRLS Voice_BV], 0))+ sum(isnull([Online_sales_WRLS Home_BV], 0))+ sum(isnull([Online_sales_Digital Life_BV], 0)) as Online_Total_BV,
@@ -987,6 +1003,15 @@ sum(isnull([Telesales_HSIA_CV], 0))+ sum(isnull([Telesales_Fiber_CV], 0))+ sum(i
 sum(isnull([Telesales_HSIA_BV], 0))+ sum(isnull([Telesales_Fiber_BV], 0))+ sum(isnull([Telesales_IPDSL_BV], 0))+ sum(isnull([Telesales_DirecTV_BV], 0))+ sum(isnull([Telesales_UVTV_BV], 0))+ sum(isnull([Telesales_VoIP_BV], 0))+ sum(isnull([Telesales_WRLS Data_BV], 0))+ sum(isnull([Telesales_WRLS Family_BV], 0))+ sum(isnull([Telesales_WRLS Voice_BV], 0)) as Telesales_SC_Strat_BV,
 sum(isnull([Telesales_HSIA_FV], 0))+ sum(isnull([Telesales_Fiber_FV], 0))+ sum(isnull([Telesales_IPDSL_FV], 0))+ sum(isnull([Telesales_DirecTV_FV], 0))+ sum(isnull([Telesales_UVTV_FV], 0))+ sum(isnull([Telesales_VoIP_FV], 0))+ sum(isnull([Telesales_WRLS Data_FV], 0))+ sum(isnull([Telesales_WRLS Family_FV], 0))+ sum(isnull([Telesales_WRLS Voice_FV], 0)) as Telesales_SC_Strat_FV,
 sum(isnull([Telesales_HSIA_AV], 0))+ sum(isnull([Telesales_Fiber_AV], 0))+ sum(isnull([Telesales_IPDSL_AV], 0))+ sum(isnull([Telesales_DirecTV_AV], 0))+ sum(isnull([Telesales_UVTV_AV], 0))+ sum(isnull([Telesales_VoIP_AV], 0))+ sum(isnull([Telesales_WRLS Data_AV], 0))+ sum(isnull([Telesales_WRLS Family_AV], 0))+ sum(isnull([Telesales_WRLS Voice_AV], 0)) as Telesales_SC_Strat_AV,
+--Total Sales with Upgrades and Bolt Ons
+sum(isnull([Online_sales_Access Line_CV], 0))+ sum(isnull([Online_sales_DSL_CV], 0))+ sum(isnull([Online_sales_DSL Direct_CV], 0))+ sum(isnull([Online_sales_HSIA_CV], 0))+ sum(isnull([Online_sales_Fiber_CV], 0))+ sum(isnull([Online_sales_IPDSL_CV], 0))+ sum(isnull([Online_sales_DirecTV_CV], 0))+ sum(isnull([Online_sales_UVTV_CV], 0))+ sum(isnull([Online_sales_VoIP_CV], 0))+ sum(isnull([Online_sales_WRLS Data_CV], 0))+ sum(isnull([Online_sales_WRLS Family_CV], 0))+ sum(isnull([Online_sales_WRLS Voice_CV], 0))+ sum(isnull([Online_sales_WRLS Home_CV], 0))+ sum(isnull([Online_sales_Digital Life_CV], 0))+ sum(isnull([Online_sales_Bolt Ons_CV], 0))+ sum(isnull([Online_sales_Upgrades_CV], 0)) as Online_Total_CLM_CV,
+sum(isnull([Online_sales_Access Line_BV], 0))+ sum(isnull([Online_sales_DSL_BV], 0))+ sum(isnull([Online_sales_DSL Direct_BV], 0))+ sum(isnull([Online_sales_HSIA_BV], 0))+ sum(isnull([Online_sales_Fiber_BV], 0))+ sum(isnull([Online_sales_IPDSL_BV], 0))+ sum(isnull([Online_sales_DirecTV_BV], 0))+ sum(isnull([Online_sales_UVTV_BV], 0))+ sum(isnull([Online_sales_VoIP_BV], 0))+ sum(isnull([Online_sales_WRLS Data_BV], 0))+ sum(isnull([Online_sales_WRLS Family_BV], 0))+ sum(isnull([Online_sales_WRLS Voice_BV], 0))+ sum(isnull([Online_sales_WRLS Home_BV], 0))+ sum(isnull([Online_sales_Digital Life_BV], 0))+ sum(isnull([Online_sales_Bolt Ons_BV], 0))+ sum(isnull([Online_sales_Upgrades_BV], 0)) as Online_Total_CLM_BV,
+sum(isnull([Online_sales_Access Line_FV], 0))+ sum(isnull([Online_sales_DSL_FV], 0))+ sum(isnull([Online_sales_DSL Direct_FV], 0))+ sum(isnull([Online_sales_HSIA_FV], 0))+ sum(isnull([Online_sales_Fiber_FV], 0))+ sum(isnull([Online_sales_IPDSL_FV], 0))+ sum(isnull([Online_sales_DirecTV_FV], 0))+ sum(isnull([Online_sales_UVTV_FV], 0))+ sum(isnull([Online_sales_VoIP_FV], 0))+ sum(isnull([Online_sales_WRLS Data_FV], 0))+ sum(isnull([Online_sales_WRLS Family_FV], 0))+ sum(isnull([Online_sales_WRLS Voice_FV], 0))+ sum(isnull([Online_sales_WRLS Home_FV], 0))+ sum(isnull([Online_sales_Digital Life_FV], 0))+ sum(isnull([Online_sales_Bolt Ons_FV], 0))+ sum(isnull([Online_sales_Upgrades_FV], 0)) as Online_Total_CLM_FV,
+sum(isnull([Online_sales_Access Line_AV], 0))+ sum(isnull([Online_sales_DSL_AV], 0))+ sum(isnull([Online_sales_DSL Direct_AV], 0))+ sum(isnull([Online_sales_HSIA_AV], 0))+ sum(isnull([Online_sales_Fiber_AV], 0))+ sum(isnull([Online_sales_IPDSL_AV], 0))+ sum(isnull([Online_sales_DirecTV_AV], 0))+ sum(isnull([Online_sales_UVTV_AV], 0))+ sum(isnull([Online_sales_VoIP_AV], 0))+ sum(isnull([Online_sales_WRLS Data_AV], 0))+ sum(isnull([Online_sales_WRLS Family_AV], 0))+ sum(isnull([Online_sales_WRLS Voice_AV], 0))+ sum(isnull([Online_sales_WRLS Home_AV], 0))+ sum(isnull([Online_sales_Digital Life_BV], 0))+ sum(isnull([Online_Sales_DTV Now_AV],0))+ sum(isnull([Online_sales_Bolt Ons_AV], 0))+ sum(isnull([Online_sales_Upgrades_AV], 0)) as Online_Total_CLM_AV,
+sum(isnull([Telesales_Access Line_CV], 0))+ sum(isnull([Telesales_DSL_CV], 0))+ sum(isnull([Telesales_DSL Direct_CV], 0))+ sum(isnull([Telesales_HSIA_CV], 0))+ sum(isnull([Telesales_Fiber_CV], 0))+ sum(isnull([Telesales_IPDSL_CV], 0))+ sum(isnull([Telesales_DirecTV_CV], 0))+ sum(isnull([Telesales_UVTV_CV], 0))+ sum(isnull([Telesales_VoIP_CV], 0))+ sum(isnull([Telesales_WRLS Data_CV], 0))+ sum(isnull([Telesales_WRLS Family_CV], 0))+ sum(isnull([Telesales_WRLS Voice_CV], 0))+ sum(isnull([Telesales_WRLS Home_CV], 0))+ sum(isnull([Telesales_Digital Life_CV], 0))+ sum(isnull([Telesales_Bolt Ons_CV], 0))+ sum(isnull([Telesales_Upgrades_CV], 0)) as Telesales_Total_CLM_CV,
+sum(isnull([Telesales_Access Line_BV], 0))+ sum(isnull([Telesales_DSL_BV], 0))+ sum(isnull([Telesales_DSL Direct_BV], 0))+ sum(isnull([Telesales_HSIA_BV], 0))+ sum(isnull([Telesales_Fiber_BV], 0))+ sum(isnull([Telesales_IPDSL_BV], 0))+ sum(isnull([Telesales_DirecTV_BV], 0))+ sum(isnull([Telesales_UVTV_BV], 0))+ sum(isnull([Telesales_VoIP_BV], 0))+ sum(isnull([Telesales_WRLS Data_BV], 0))+ sum(isnull([Telesales_WRLS Family_BV], 0))+ sum(isnull([Telesales_WRLS Voice_BV], 0))+ sum(isnull([Telesales_WRLS Home_BV], 0))+ sum(isnull([Telesales_Digital Life_BV], 0))+ sum(isnull([Telesales_Bolt Ons_BV], 0))+ sum(isnull([Telesales_Upgrades_BV], 0)) as Telesales_Total_CLM_BV,
+sum(isnull([Telesales_Access Line_FV], 0))+ sum(isnull([Telesales_DSL_FV], 0))+ sum(isnull([Telesales_DSL Direct_FV], 0))+ sum(isnull([Telesales_HSIA_FV], 0))+ sum(isnull([Telesales_Fiber_FV], 0))+ sum(isnull([Telesales_IPDSL_FV], 0))+ sum(isnull([Telesales_DirecTV_FV], 0))+ sum(isnull([Telesales_UVTV_FV], 0))+ sum(isnull([Telesales_VoIP_FV], 0))+ sum(isnull([Telesales_WRLS Data_FV], 0))+ sum(isnull([Telesales_WRLS Family_FV], 0))+ sum(isnull([Telesales_WRLS Voice_FV], 0))+ sum(isnull([Telesales_WRLS Home_FV], 0))+ sum(isnull([Telesales_Digital Life_FV], 0))+ sum(isnull([Telesales_Bolt Ons_FV], 0))+ sum(isnull([Telesales_Upgrades_FV], 0)) as Telesales_Total_CLM_FV,
+sum(isnull([Telesales_Access Line_AV], 0))+ sum(isnull([Telesales_DSL_AV], 0))+ sum(isnull([Telesales_DSL Direct_AV], 0))+ sum(isnull([Telesales_HSIA_AV], 0))+ sum(isnull([Telesales_Fiber_AV], 0))+ sum(isnull([Telesales_IPDSL_AV], 0))+ sum(isnull([Telesales_DirecTV_AV], 0))+ sum(isnull([Telesales_UVTV_AV], 0))+ sum(isnull([Telesales_VoIP_AV], 0))+ sum(isnull([Telesales_WRLS Data_AV], 0))+ sum(isnull([Telesales_WRLS Family_AV], 0))+ sum(isnull([Telesales_WRLS Voice_AV], 0))+ sum(isnull([Telesales_WRLS Home_AV], 0))+ sum(isnull([Telesales_Digital Life_AV], 0))+ sum(isnull([Telesales_Bolt Ons_AV], 0))+ sum(isnull([Telesales_Upgrades_AV], 0)) as Telesales_Total_CLM_AV,
 
 ------------------------------BEGINS EDITS---------------------------------------------------------------
 --Total Sales
@@ -1001,6 +1026,19 @@ sum(isnull([Telesales_Access Line_FV], 0))+ sum(isnull([Telesales_DSL_FV], 0))+ 
 
 sum(isnull([Online_sales_Access Line_AV], 0))+ sum(isnull([Online_sales_DSL_AV], 0))+ sum(isnull([Online_sales_DSL Direct_AV], 0))+ sum(isnull([Online_sales_HSIA_AV], 0))+ sum(isnull([Online_sales_Fiber_AV], 0))+ sum(isnull([Online_sales_IPDSL_AV], 0))+ sum(isnull([Online_sales_DirecTV_AV], 0))+ sum(isnull([Online_sales_UVTV_AV], 0))+ sum(isnull([Online_sales_VoIP_AV], 0))+ sum(isnull([Online_sales_WRLS Data_AV], 0))+ sum(isnull([Online_sales_WRLS Family_AV], 0))+ sum(isnull([Online_sales_WRLS Voice_AV], 0))+ sum(isnull([Online_sales_WRLS Home_AV], 0))+ sum(isnull([Online_sales_Digital Life_AV], 0))+
 sum(isnull([Telesales_Access Line_AV], 0))+ sum(isnull([Telesales_DSL_AV], 0))+ sum(isnull([Telesales_DSL Direct_AV], 0))+ sum(isnull([Telesales_HSIA_AV], 0))+ sum(isnull([Telesales_Fiber_AV], 0))+ sum(isnull([Telesales_IPDSL_AV], 0))+ sum(isnull([Telesales_DirecTV_AV], 0))+ sum(isnull([Telesales_UVTV_AV], 0))+ sum(isnull([Telesales_VoIP_AV], 0))+ sum(isnull([Telesales_WRLS Data_AV], 0))+ sum(isnull([Telesales_WRLS Family_AV], 0))+ sum(isnull([Telesales_WRLS Voice_AV], 0))+ sum(isnull([Telesales_WRLS Home_AV], 0))+ sum(isnull([Telesales_Digital Life_AV], 0))+ sum(isnull([Online_Sales_DTV Now_AV],0)) as Total_Sales_AV,
+
+--Total Sales with Bolt Ons and Upgrades
+sum(isnull([Online_sales_Access Line_CV], 0))+ sum(isnull([Online_sales_DSL_CV], 0))+ sum(isnull([Online_sales_DSL Direct_CV], 0))+ sum(isnull([Online_sales_HSIA_CV], 0))+ sum(isnull([Online_sales_Fiber_CV], 0))+ sum(isnull([Online_sales_IPDSL_CV], 0))+ sum(isnull([Online_sales_DirecTV_CV], 0))+ sum(isnull([Online_sales_UVTV_CV], 0))+ sum(isnull([Online_sales_VoIP_CV], 0))+ sum(isnull([Online_sales_WRLS Data_CV], 0))+ sum(isnull([Online_sales_WRLS Family_CV], 0))+ sum(isnull([Online_sales_WRLS Voice_CV], 0))+ sum(isnull([Online_sales_WRLS Home_CV], 0))+ sum(isnull([Online_sales_Digital Life_CV], 0))+ sum(isnull([Online_sales_Bolt Ons_CV], 0))+ sum(isnull([Online_sales_Upgrades_CV], 0))+
+sum(isnull([Telesales_Access Line_CV], 0))+ sum(isnull([Telesales_DSL_CV], 0))+ sum(isnull([Telesales_DSL Direct_CV], 0))+ sum(isnull([Telesales_HSIA_CV], 0))+ sum(isnull([Telesales_Fiber_CV], 0))+ sum(isnull([Telesales_IPDSL_CV], 0))+ sum(isnull([Telesales_DirecTV_CV], 0))+ sum(isnull([Telesales_UVTV_CV], 0))+ sum(isnull([Telesales_VoIP_CV], 0))+ sum(isnull([Telesales_WRLS Data_CV], 0))+ sum(isnull([Telesales_WRLS Family_CV], 0))+ sum(isnull([Telesales_WRLS Voice_CV], 0))+ sum(isnull([Telesales_WRLS Home_CV], 0))+ sum(isnull([Telesales_Digital Life_CV], 0))+ sum(isnull([Telesales_Bolt Ons_CV], 0))+ sum(isnull([Telesales_Upgrades_CV], 0)) as Total_Sales_CLM_CV,
+
+sum(isnull([Online_sales_Access Line_BV], 0))+ sum(isnull([Online_sales_DSL_BV], 0))+ sum(isnull([Online_sales_DSL Direct_BV], 0))+ sum(isnull([Online_sales_HSIA_BV], 0))+ sum(isnull([Online_sales_Fiber_BV], 0))+ sum(isnull([Online_sales_IPDSL_BV], 0))+ sum(isnull([Online_sales_DirecTV_BV], 0))+ sum(isnull([Online_sales_UVTV_BV], 0))+ sum(isnull([Online_sales_VoIP_BV], 0))+ sum(isnull([Online_sales_WRLS Data_BV], 0))+ sum(isnull([Online_sales_WRLS Family_BV], 0))+ sum(isnull([Online_sales_WRLS Voice_BV], 0))+ sum(isnull([Online_sales_WRLS Home_BV], 0))+ sum(isnull([Online_sales_Digital Life_BV], 0))+ sum(isnull([Online_sales_Bolt Ons_BV], 0))+ sum(isnull([Online_sales_Upgrades_BV], 0))+
+sum(isnull([Telesales_Access Line_BV], 0))+ sum(isnull([Telesales_DSL_BV], 0))+ sum(isnull([Telesales_DSL Direct_BV], 0))+ sum(isnull([Telesales_HSIA_BV], 0))+ sum(isnull([Telesales_Fiber_BV], 0))+ sum(isnull([Telesales_IPDSL_BV], 0))+ sum(isnull([Telesales_DirecTV_BV], 0))+ sum(isnull([Telesales_UVTV_BV], 0))+ sum(isnull([Telesales_VoIP_BV], 0))+ sum(isnull([Telesales_WRLS Data_BV], 0))+ sum(isnull([Telesales_WRLS Family_BV], 0))+ sum(isnull([Telesales_WRLS Voice_BV], 0))+ sum(isnull([Telesales_WRLS Home_BV], 0))+ sum(isnull([Telesales_Digital Life_BV], 0))+ sum(isnull([Telesales_Bolt Ons_BV], 0))+ sum(isnull([Telesales_Upgrades_BV], 0)) as Total_Sales_CLM_BV,
+
+sum(isnull([Online_sales_Access Line_FV], 0))+ sum(isnull([Online_sales_DSL_FV], 0))+ sum(isnull([Online_sales_DSL Direct_FV], 0))+ sum(isnull([Online_sales_HSIA_FV], 0))+ sum(isnull([Online_sales_Fiber_FV], 0))+ sum(isnull([Online_sales_IPDSL_FV], 0))+ sum(isnull([Online_sales_DirecTV_FV], 0))+ sum(isnull([Online_sales_UVTV_FV], 0))+ sum(isnull([Online_sales_VoIP_FV], 0))+ sum(isnull([Online_sales_WRLS Data_FV], 0))+ sum(isnull([Online_sales_WRLS Family_FV], 0))+ sum(isnull([Online_sales_WRLS Voice_FV], 0))+ sum(isnull([Online_sales_WRLS Home_FV], 0))+ sum(isnull([Online_sales_Digital Life_FV], 0))+ sum(isnull([Online_sales_Bolt Ons_FV], 0))+ sum(isnull([Online_sales_Upgrades_FV], 0))+
+sum(isnull([Telesales_Access Line_FV], 0))+ sum(isnull([Telesales_DSL_FV], 0))+ sum(isnull([Telesales_DSL Direct_FV], 0))+ sum(isnull([Telesales_HSIA_FV], 0))+ sum(isnull([Telesales_Fiber_FV], 0))+ sum(isnull([Telesales_IPDSL_FV], 0))+ sum(isnull([Telesales_DirecTV_FV], 0))+ sum(isnull([Telesales_UVTV_FV], 0))+ sum(isnull([Telesales_VoIP_FV], 0))+ sum(isnull([Telesales_WRLS Data_FV], 0))+ sum(isnull([Telesales_WRLS Family_FV], 0))+ sum(isnull([Telesales_WRLS Voice_FV], 0))+ sum(isnull([Telesales_WRLS Home_FV], 0))+ sum(isnull([Telesales_Digital Life_FV], 0))+ sum(isnull([Telesales_Bolt Ons_FV], 0))+ sum(isnull([Telesales_Upgrades_FV], 0)) as Total_Sales_CLM_FV,
+
+sum(isnull([Online_sales_Access Line_AV], 0))+ sum(isnull([Online_sales_DSL_AV], 0))+ sum(isnull([Online_sales_DSL Direct_AV], 0))+ sum(isnull([Online_sales_HSIA_AV], 0))+ sum(isnull([Online_sales_Fiber_AV], 0))+ sum(isnull([Online_sales_IPDSL_AV], 0))+ sum(isnull([Online_sales_DirecTV_AV], 0))+ sum(isnull([Online_sales_UVTV_AV], 0))+ sum(isnull([Online_sales_VoIP_AV], 0))+ sum(isnull([Online_sales_WRLS Data_AV], 0))+ sum(isnull([Online_sales_WRLS Family_AV], 0))+ sum(isnull([Online_sales_WRLS Voice_AV], 0))+ sum(isnull([Online_sales_WRLS Home_AV], 0))+ sum(isnull([Online_sales_Digital Life_AV], 0))+ sum(isnull([Online_sales_Bolt Ons_AV], 0))+ sum(isnull([Online_sales_Upgrades_AV], 0))+
+sum(isnull([Telesales_Access Line_AV], 0))+ sum(isnull([Telesales_DSL_AV], 0))+ sum(isnull([Telesales_DSL Direct_AV], 0))+ sum(isnull([Telesales_HSIA_AV], 0))+ sum(isnull([Telesales_Fiber_AV], 0))+ sum(isnull([Telesales_IPDSL_AV], 0))+ sum(isnull([Telesales_DirecTV_AV], 0))+ sum(isnull([Telesales_UVTV_AV], 0))+ sum(isnull([Telesales_VoIP_AV], 0))+ sum(isnull([Telesales_WRLS Data_AV], 0))+ sum(isnull([Telesales_WRLS Family_AV], 0))+ sum(isnull([Telesales_WRLS Voice_AV], 0))+ sum(isnull([Telesales_WRLS Home_AV], 0))+ sum(isnull([Telesales_Digital Life_AV], 0))+ sum(isnull([Online_Sales_DTV Now_AV],0))+ sum(isnull([Telesales_Bolt Ons_AV], 0))+ sum(isnull([Telesales_Upgrades_AV], 0)) as Total_Sales_CLM_AV,
 
 sum(isnull([Online_sales_HSIA_CV], 0))+ sum(isnull([Online_sales_Fiber_CV], 0))+ sum(isnull([Online_sales_IPDSL_CV], 0))+ sum(isnull([Online_sales_DirecTV_CV], 0))+ sum(isnull([Online_sales_UVTV_CV], 0))+ sum(isnull([Online_sales_VoIP_CV], 0))+ sum(isnull([Online_sales_WRLS Data_CV], 0))+ sum(isnull([Online_sales_WRLS Family_CV], 0))+ sum(isnull([Online_sales_WRLS Voice_CV], 0))+
 sum(isnull([Telesales_HSIA_CV], 0))+ sum(isnull([Telesales_Fiber_CV], 0))+ sum(isnull([Telesales_IPDSL_CV], 0))+ sum(isnull([Telesales_DirecTV_CV], 0))+ sum(isnull([Telesales_UVTV_CV], 0))+ sum(isnull([Telesales_VoIP_CV], 0))+ sum(isnull([Telesales_WRLS Data_CV], 0))+ sum(isnull([Telesales_WRLS Family_CV], 0))+ sum(isnull([Telesales_WRLS Voice_CV], 0)) as Total_SC_Strat_Sales_CV,
@@ -1029,6 +1067,8 @@ SUM(ISNULL([Telesales_WRLS Family_AV], 0))+ SUM(ISNULL([Online_Sales_WRLS Family
 SUM(ISNULL([Telesales_WRLS Voice_AV], 0))+ SUM(ISNULL([Online_Sales_WRLS Voice_AV], 0)) AS Total_Sales_WRLS_Voice_AV,
 SUM(ISNULL([Telesales_WRLS Home_AV], 0))+ SUM(ISNULL([Online_Sales_WRLS Home_AV], 0)) AS Total_Sales_WRLS_Home_AV,
 SUM(ISNULL([Telesales_Digital Life_AV], 0))+ SUM(ISNULL([Online_Sales_Digital Life_AV], 0)) AS Total_Sales_Digital_Life_AV,
+sum(isnull([Telesales_Bolt Ons_AV], 0))+ sum(isnull([Online_sales_Bolt Ons_AV], 0)) AS Total_Sales_Bolt_Ons_AV,
+sum(isnull([Telesales_Upgrades_AV], 0))+ sum(isnull([Online_sales_Upgrades_AV], 0)) AS Total_Sales_Upgrades_AV,
 
 --Total Sales by Product (BV)
 SUM(ISNULL([Telesales_Access Line_BV], 0))+ SUM(ISNULL([Online_Sales_Access Line_BV], 0)) AS Total_Sales_Access_Line_BV,
@@ -1045,6 +1085,8 @@ SUM(ISNULL([Telesales_WRLS Family_BV], 0))+ SUM(ISNULL([Online_Sales_WRLS Family
 SUM(ISNULL([Telesales_WRLS Voice_BV], 0))+ SUM(ISNULL([Online_Sales_WRLS Voice_BV], 0)) AS Total_Sales_WRLS_Voice_BV,
 SUM(ISNULL([Telesales_WRLS Home_BV], 0))+ SUM(ISNULL([Online_Sales_WRLS Home_BV], 0)) AS Total_Sales_WRLS_Home_BV,
 SUM(ISNULL([Telesales_Digital Life_BV], 0))+ SUM(ISNULL([Online_Sales_Digital Life_BV], 0)) AS Total_Sales_Digital_Life_BV,
+sum(isnull([Telesales_Bolt Ons_BV], 0))+ sum(isnull([Online_sales_Bolt Ons_BV], 0)) AS Total_Sales_Bolt_Ons_BV,
+sum(isnull([Telesales_Upgrades_BV], 0))+ sum(isnull([Online_sales_Upgrades_BV], 0)) AS Total_Sales_Upgrades_BV,
 
 --Total Sales by Product (CV)
 SUM(ISNULL([Telesales_Access Line_CV], 0))+ SUM(ISNULL([Online_Sales_Access Line_CV], 0)) AS Total_Sales_Access_Line_CV,
@@ -1061,6 +1103,8 @@ SUM(ISNULL([Telesales_WRLS Family_CV], 0))+ SUM(ISNULL([Online_Sales_WRLS Family
 SUM(ISNULL([Telesales_WRLS Voice_CV], 0))+ SUM(ISNULL([Online_Sales_WRLS Voice_CV], 0)) AS Total_Sales_WRLS_Voice_CV,
 SUM(ISNULL([Telesales_WRLS Home_CV], 0))+ SUM(ISNULL([Online_Sales_WRLS Home_CV], 0)) AS Total_Sales_WRLS_Home_CV,
 SUM(ISNULL([Telesales_Digital Life_CV], 0))+ SUM(ISNULL([Online_Sales_Digital Life_CV], 0)) AS Total_Sales_Digital_Life_CV,
+sum(isnull([Telesales_Bolt Ons_CV], 0))+ sum(isnull([Online_sales_Bolt Ons_CV], 0)) AS Total_Sales_Bolt_Ons_CV,
+sum(isnull([Telesales_Upgrades_CV], 0))+ sum(isnull([Online_sales_Upgrades_CV], 0)) AS Total_Sales_Upgrades_CV,
 
 --Total Sales by Product (FV)
 SUM(ISNULL([Telesales_Access Line_FV], 0))+ SUM(ISNULL([Online_Sales_Access Line_FV], 0)) AS Total_Sales_Access_Line_FV,
@@ -1077,7 +1121,8 @@ SUM(ISNULL([Telesales_WRLS Family_FV], 0))+ SUM(ISNULL([Online_Sales_WRLS Family
 SUM(ISNULL([Telesales_WRLS Voice_FV], 0))+ SUM(ISNULL([Online_Sales_WRLS Voice_FV], 0)) AS Total_Sales_WRLS_Voice_FV,
 SUM(ISNULL([Telesales_WRLS Home_FV], 0))+ SUM(ISNULL([Online_Sales_WRLS Home_FV], 0)) AS Total_Sales_WRLS_Home_FV,
 SUM(ISNULL([Telesales_Digital Life_FV], 0))+ SUM(ISNULL([Online_Sales_Digital Life_FV], 0)) AS Total_Sales_Digital_Life_FV,
-
+sum(isnull([Telesales_Bolt Ons_FV], 0))+ sum(isnull([Online_sales_Bolt Ons_FV], 0)) AS Total_Sales_Bolt_Ons_FV,
+sum(isnull([Telesales_Upgrades_FV], 0))+ sum(isnull([Online_sales_Upgrades_FV], 0)) AS Total_Sales_Upgrades_FV,
 
 
 --TV Sales
@@ -1200,6 +1245,8 @@ SUM(ISNULL([Telesales_Access Line_FV],0))+SUM(ISNULL([Telesales_DSL_FV],0))+SUM(
 [Online_sales_WRLS Voice_CV],
 [Online_sales_WRLS Home_CV],
 [Online_sales_Digital Life_CV], 
+[Online_sales_Bolt Ons_CV],
+[Online_sales_Upgrades_CV],
 [Telesales_Access Line_CV], 
 [Telesales_DSL_CV], 
 [Telesales_DSL Direct_CV], 
@@ -1214,6 +1261,8 @@ SUM(ISNULL([Telesales_Access Line_FV],0))+SUM(ISNULL([Telesales_DSL_FV],0))+SUM(
 [Telesales_WRLS Voice_CV],
 [Telesales_WRLS Home_CV],
 [Telesales_Digital Life_CV], 
+[Telesales_Bolt Ons_CV],
+[Telesales_Upgrades_CV],
 [Volume_CV]
 )) as P1
 
@@ -1233,6 +1282,8 @@ SUM(ISNULL([Telesales_Access Line_FV],0))+SUM(ISNULL([Telesales_DSL_FV],0))+SUM(
 [Online_sales_WRLS Voice_FV],
 [Online_sales_WRLS Home_FV],
 [Online_sales_Digital Life_FV], 
+[Online_sales_Bolt Ons_FV],
+[Online_sales_Upgrades_FV],
 [Telesales_Access Line_FV], 
 [Telesales_DSL_FV], 
 [Telesales_DSL Direct_FV], 
@@ -1247,6 +1298,8 @@ SUM(ISNULL([Telesales_Access Line_FV],0))+SUM(ISNULL([Telesales_DSL_FV],0))+SUM(
 [Telesales_WRLS Voice_FV], 
 [Telesales_WRLS Home_FV],
 [Telesales_Digital Life_FV], 
+[Telesales_Bolt Ons_FV],
+[Telesales_Upgrades_FV],
 [Volume_FV])) as P2
 
 	pivot(sum(actual) for AV_Metric in ([Call_AV], 
@@ -1266,6 +1319,8 @@ SUM(ISNULL([Telesales_Access Line_FV],0))+SUM(ISNULL([Telesales_DSL_FV],0))+SUM(
 [Online_sales_WRLS Home_AV],
 [Online_sales_Digital Life_AV], 
 [Online_Sales_DTV Now_AV], 
+[Online_sales_Bolt Ons_AV],
+[Online_sales_Upgrades_AV],
 [Telesales_Access Line_AV], 
 [Telesales_DSL_AV], 
 [Telesales_DSL Direct_AV], 
@@ -1280,6 +1335,8 @@ SUM(ISNULL([Telesales_Access Line_FV],0))+SUM(ISNULL([Telesales_DSL_FV],0))+SUM(
 [Telesales_WRLS Voice_AV],
 [Telesales_WRLS Home_AV],
 [Telesales_Digital Life_AV], 
+[Telesales_Bolt Ons_AV],
+[Telesales_Upgrades_AV],
 [Volume_AV])) as P3
 
 	pivot(sum(best_view) for BV_Metric in ([Call_BV], 
@@ -1298,6 +1355,8 @@ SUM(ISNULL([Telesales_Access Line_FV],0))+SUM(ISNULL([Telesales_DSL_FV],0))+SUM(
 [Online_sales_WRLS Voice_BV],
 [Online_sales_WRLS Home_BV],
 [Online_sales_Digital Life_BV], 
+[Online_sales_Bolt Ons_BV],
+[Online_sales_Upgrades_BV],
 [Telesales_Access Line_BV], 
 [Telesales_DSL_BV], 
 [Telesales_DSL Direct_BV], 
@@ -1311,7 +1370,9 @@ SUM(ISNULL([Telesales_Access Line_FV],0))+SUM(ISNULL([Telesales_DSL_FV],0))+SUM(
 [Telesales_WRLS Family_BV], 
 [Telesales_WRLS Voice_BV], 
 [Telesales_WRLS Home_BV],
-[Telesales_Digital Life_BV], 
+[Telesales_Digital Life_BV],
+[Telesales_Bolt Ons_BV],
+[Telesales_Upgrades_BV], 
 [Volume_BV])) as P4
 
 group by [idFlight_Plan_Records_FK], [Campaign_Name], [InHome_Date], [Strategy_Eligibility], [Lead_Offer], [Media_Year], [Media_Week], [Media_Month], [Touch_Name]
