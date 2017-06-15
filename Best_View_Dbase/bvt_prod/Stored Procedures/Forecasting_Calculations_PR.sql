@@ -105,6 +105,44 @@ Group by idFlight_Plan_Records, idVolume_Type_LU_TBL_FK, Lead_Volumes.Volume, Ta
 	 , Flight_Plan_Records_Volume.Volume, InHome_Date;
 
 CREATE CLUSTERED INDEX IDX_C_volumes_flightplanid ON #volumes(idFlight_Plan_Records);
+
+-----------------
+-----Section 1.5 - budgets
+-----Only a few programs use this portion of the tool. Use CPP and Manual entry
+
+IF OBJECT_ID('tempdb.dbo.#budgets', 'U') IS NOT NULL
+  DROP TABLE #budgets;
+
+select 
+	#flightplan.idFlight_Plan_Records
+	, #flightplan.InHome_Date
+	, CPP_Start_End.idCPP_Category_FK
+	, case when Budget_Type_LU_TBL_idBudget_Type_LU_TBL=2 then Bill_Month
+		else month(DATEADD(month,bill_timing,#flightplan.InHome_Date)) 
+		end as bill_month
+	, case when Budget_Type_LU_TBL_idBudget_Type_LU_TBL=2 then Bill_Year
+		else year(DATEADD(month,bill_timing,#flightplan.InHome_Date)) 
+		end as bill_year
+	, case when Budget_Type_LU_TBL_idBudget_Type_LU_TBL=2 then Budget
+		else CPP*Volume end as budget
+	, (CAST(case when Budget_Type_LU_TBL_idBudget_Type_LU_TBL=2 then Bill_Month
+		else month(DATEADD(month,bill_timing,#flightplan.InHome_Date)) END AS VARCHAR) + '/1/' +
+CAST(case when Budget_Type_LU_TBL_idBudget_Type_LU_TBL=2 then Bill_Year
+		else year(DATEADD(month,bill_timing,#flightplan.InHome_Date)) END AS VARCHAR)) AS Forecast_DayDate
+INTO #budgets
+	from #flightplan
+		left join bvt_prod.Flight_Plan_Record_Budgets
+			on #flightplan.idFlight_Plan_Records=idFlight_Plan_Records_FK
+		LEFT join (SELECT * FROM [bvt_prod].[CPP_Start_End_FUN](@PROG)) AS CPP_Start_End
+			on #flightplan.idProgram_Touch_Definitions_TBL_FK=CPP_Start_End.idProgram_Touch_Definitions_TBL_FK
+			and #flightplan.InHome_Date between CPP_Start_End.CPP_Start_Date and CPP_Start_End.END_DATE
+		LEFT join #volumes as FPV
+			on #flightplan.idFlight_Plan_Records=FPV.idFlight_Plan_Records
+Where case when Budget_Type_LU_TBL_idBudget_Type_LU_TBL=2 then Budget
+		else CPP*Volume end  is not null;
+
+CREATE CLUSTERED INDEX IDX_C_budgets_flightplanid ON #budgets(idFlight_Plan_Records);
+
 ---------------------------------------------------------------------------------
 --End Section 1
 
@@ -412,7 +450,15 @@ UNION
 	, 'Volume' as Product_Code
 	, Drop_Date as Forecast_DayDate
 	, Volume as Forecast
-from #volumes)) as metricsa) as metrics
+from #volumes)
+UNION
+(Select idFlight_Plan_Records
+	, 'Budget' as KPI_Type
+	, 'Budget' as Product_Code
+	, Forecast_DayDate
+	, SUM(Budget) as Forecast
+from #budgets
+	GROUP BY idFlight_Plan_Records, Forecast_DayDate)) as metricsa) as metrics
 on #flightplan.idFlight_Plan_Records=metrics.idFlight_Plan_Records
 -----------------------------------------------------------------	
 --Media Calendar Information-------------------------------------
@@ -424,7 +470,7 @@ left join
 -----Bring in touch definition labels 
 #touchdef as touchdef
 		on #flightplan.idProgram_Touch_Definitions_TBL_FK=idProgram_Touch_Definitions_TBL
-where Tactic <> 'Cost'	
+--where Tactic <> 'Cost'	
 ;
 
 SET NOCOUNT OFF
