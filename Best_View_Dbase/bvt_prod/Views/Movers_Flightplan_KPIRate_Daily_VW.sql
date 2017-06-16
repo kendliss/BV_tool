@@ -21,7 +21,7 @@ from
 	, Daily_Join.Day_of_Week
 	, KPI_Daily*week_percent as KPI_Daily
 	, DATEADD(week,c.Week_ID,InHome_Date) as Forecast_Week_Date
-	, DATEADD(day,Day_of_Week,DATEADD(week,c.Week_ID,InHome_Date)) as Forecast_DayDate
+	, DATEADD(day,Day_of_Week-1,DATEADD(week,c.Week_ID,InHome_Date)) as Forecast_DayDate
 	, ISO_week
 	, ISO_Week_Year
 	, MediaMonth
@@ -46,15 +46,15 @@ from
 	, b.idkpi_types_FK
 	
   --Code to account for having a TFN or URL or not in flightplan entry and a manual adjustment or not
-	, case when adjustment is null then (case when tfn_ind=-1 and b.idkpi_types_FK=1 then KPI_Rate
+	, case when adjustment is null then (case when tfn_ind=1 and b.idkpi_types_FK=1 then KPI_Rate
 		when TFN_ind=0 and b.idkpi_types_FK=1 then 0
-		when URL_ind=-1 and b.idkpi_types_FK=2 then KPI_Rate
+		when URL_ind=1 and b.idkpi_types_FK=2 then KPI_Rate
 		when URL_ind=0 and b.idkpi_types_FK=2 then 0
 		else KPI_Rate
 		end)
-	else (case when tfn_ind=-1 and b.idkpi_types_FK=1 then KPI_Rate*adjustment
+	else (case when tfn_ind=1 and b.idkpi_types_FK=1 then KPI_Rate*adjustment
 		when TFN_ind=0 and b.idkpi_types_FK=1 then 0
-		when URL_ind=-1 and b.idkpi_types_FK=2 then KPI_Rate*adjustment
+		when URL_ind=1 and b.idkpi_types_FK=2 then KPI_Rate*adjustment
 		when URL_ind=0 and b.idkpi_types_FK=2 then 0
 		else KPI_Rate*adjustment
 		end) 

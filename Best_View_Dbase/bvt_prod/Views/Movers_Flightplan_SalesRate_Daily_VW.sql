@@ -25,7 +25,7 @@ from
 	, Daily_Join.Day_of_Week
 	, Salesrate_Daily*week_percent as Sales_Rate_Daily
 	, DATEADD(week,c.Week_ID,InHome_Date) as Forecast_Week_Date
-	, DATEADD(day,Day_of_Week,DATEADD(week,c.Week_ID,InHome_Date)) as Forecast_DayDate
+	, DATEADD(day,Day_of_Week-1,DATEADD(week,c.Week_ID,InHome_Date)) as Forecast_DayDate
 	, ISO_week
 	, ISO_Week_Year
 	, MediaMonth
@@ -50,15 +50,15 @@ from
 	, a.idProgram_Touch_Definitions_TBL_FK
 	, B.idkpi_type_FK
 	, idProduct_LU_TBL_FK
-	, case when adjustment is null then (case when tfn_ind=-1 and b.idkpi_type_FK=1 then Sales_Rate
+	, case when adjustment is null then (case when tfn_ind=1 and b.idkpi_type_FK=1 then Sales_Rate
 		when TFN_ind=0 and b.idkpi_type_FK=1 then 0
-		when URL_ind=-1 and b.idkpi_type_FK=2 then Sales_Rate
+		when URL_ind=1 and b.idkpi_type_FK=2 then Sales_Rate
 		when URL_ind=0 and b.idkpi_type_FK=2 then 0
 		else Sales_Rate
 		end)
-	else (case when tfn_ind=-1 and b.idkpi_type_FK=1 then Sales_Rate*adjustment
+	else (case when tfn_ind=1 and b.idkpi_type_FK=1 then Sales_Rate*adjustment
 		when TFN_ind=0 and b.idkpi_type_FK=1 then 0
-		when URL_ind=-1 and b.idkpi_type_FK=2 then Sales_Rate*adjustment
+		when URL_ind=1 and b.idkpi_type_FK=2 then Sales_Rate*adjustment
 		when URL_ind=0 and b.idkpi_type_FK=2 then 0
 		else Sales_Rate*adjustment
 		end) 

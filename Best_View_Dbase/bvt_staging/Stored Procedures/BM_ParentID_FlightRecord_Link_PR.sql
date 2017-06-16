@@ -16,7 +16,9 @@ AS
 BEGIN
 	SET NOCOUNT ON;
 
+/*Moved mobility to DMDR, inserted new touches
 
+*/
 
 IF Object_ID('bvt_staging.BM_pID_FlightPlan_Clean') IS NOT NULL
 TRUNCATE TABLE bvt_staging.BM_pID_FlightPlan_Clean
@@ -60,12 +62,14 @@ WHEN Media_Code = 'BAM' THEN 1493 --Wireline BAM
 
 WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Wireline Bill - Bill Insert' AND (Campaign_Name LIKE '%EBill%' OR Campaign_Name like '%E-Bill%') AND Campaign_Name NOT LIKE '%TV%' THEN 1429 --Wireline TV Cross Sell eBill Insert
 WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Enabler Bill - Bill Insert' AND Campaign_Name LIKE '%TV%' AND (Campaign_Name LIKE '%EBill%' OR Campaign_Name LIKE '%E-Bill%') THEN 1430 --Enabler TV Cross Sell eBill Insert
-WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Mobility Bill - Bill Insert' AND eCRW_Project_Name LIKE '%TV%sell%' THEN 1431 --Wireless TV Cross Sell Bill Insert 
+WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Mobility Bill - Bill Insert' AND eCRW_Project_Name LIKE '%TV%sell%' AND Start_Date < '3/1/17' THEN 1431 --Mobility TV Cross Sell Bill Insert 
+WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Mobility Bill - Bill Insert' AND eCRW_Project_Name LIKE '%TV%sell%' AND Start_Date >= '3/1/17' THEN 1770 --Mobility TV Cross Sell Bill Insert - DMDR
 --WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Wireline Bill - Bill Insert' AND eCRW_Project_Name LIKE '%TV%sell%' THEN 1432 --Wireline TV Cross Sell Bill Insert (OLD Enabler)
 WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Enabler Bill - Bill Insert' AND eCRW_Project_Name LIKE '%BI_DTV_CROSS_SELL%' THEN 1433 --Enabler TV Cross Sell Bill Insert
 WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Wireline Bill - Bill Insert' AND eCRW_Project_Name LIKE '%Bundles%' THEN 1434 --Wireline Bundles Bill Insert
 --WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Wireline Bill - Bill Insert' AND eCRW_Project_Name LIKE '%IPBBMonthly%' AND eCRW_Project_Name LIKE '%WRLN%' THEN 1435 --Wireline DSL Cross Sell Bill Insert
-WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Mobility Bill - Bill Insert' AND (eCRW_Project_Name LIKE '%IPBB%' OR eCRW_Project_Name LIKE '%Broadband%') THEN 1437 --Wireless IPBB Cross Sell Bill Insert
+WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Mobility Bill - Bill Insert' AND (eCRW_Project_Name LIKE '%IPBB%' OR eCRW_Project_Name LIKE '%Broadband%') AND Start_Date < '3/1/17' THEN 1437 --Mobility IPBB Cross Sell Bill Insert
+WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Mobility Bill - Bill Insert' AND (eCRW_Project_Name LIKE '%IPBB%' OR eCRW_Project_Name LIKE '%Broadband%') AND Start_Date >= '3/1/17' THEN 1769 --Mobility IPBB Cross Sell Bill Insert - DMDR
 WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Wireline Bill - Bill Insert' AND eCRW_Project_Name LIKE '%TV%sell%' THEN 1438 --Wireline DTV Cross Sell Bill Insert
 WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Enabler Bill - Bill Insert' AND eCRW_Project_Name LIKE '%IPBB%' THEN 1440 --Enabler IPBB Cross Sell Bill Insert
 WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Wireline Bill - Bill Insert' AND eCRW_Project_Name LIKE '%IPBBMonthly%' THEN 1531 --Wireline IPBB Cross Sell Bill Insert
@@ -79,8 +83,11 @@ WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Enabler Bill - Bill Inse
 WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Wireline Bill - Bill Insert' AND eCRW_Project_Name LIKE '%Mandatory%' THEN 1572 --Wireline Mandatory Bill Insert
 WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'DIRECTV Bill - Bill Insert' AND eCRW_Project_Name LIKE '%Thank%You%' THEN 1615 --DirecTV Thank you Bill Insert
 WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Enabler Bill - Bill Insert' AND eCRW_Project_Name LIKE '%WLS%' THEN 1616 --Enabler WRLS Cross Sell Bill Insert
-WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Mobility Bill - Bill Insert' AND eCRW_Project_Name LIKE '%Add a line%' THEN 1618 --Wireless WRLS AAL Bill Insert
+WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Mobility Bill - Bill Insert' AND eCRW_Project_Name LIKE '%Add a line%' AND Start_Date < '3/1/17' THEN 1618 --Mobility WRLS AAL Bill Insert
+WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Mobility Bill - Bill Insert' AND eCRW_Project_Name LIKE '%Add a line%' AND Start_Date >= '3/1/17' THEN 1771 --Mobility WRLS AAL Bill Insert - DMDR
 WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Wireline Bill - Bill Insert' AND eCRW_Project_Name LIKE '%Thank%you%' THEN 1619 --Wireline Thank You Bill Insert
+WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Mobility Bill - Bill Insert' AND eCRW_Project_Name LIKE '%Bundles%' AND Start_Date < '3/1/17' THEN 1757 --Mobility Bundles Bill Insert
+WHEN Media_Code = 'BI' AND Scorecard_Program_Channel = 'Mobility Bill - Bill Insert' AND eCRW_Project_Name LIKE '%Bundles%' AND Start_Date >= '3/1/17' THEN 1768 --Mobility Bundles Bill Insert - DMDR
 
 
 --Bill Media -- FPA
@@ -114,16 +121,19 @@ WHEN Media_Code = 'FPC' AND Scorecard_Program_Channel = 'Wireline Bill - FPC' AN
 WHEN Media_Code = 'FPC' AND Scorecard_Program_Channel = 'Wireline Bill - FPC' AND eCRW_Project_Name LIKE '%Wireless%' THEN 1562 --Wireline WRLS Cross Sell FPC
 WHEN Media_Code = 'FPC' AND Scorecard_Program_Channel = 'Enabler Bill - FPC' AND eCRW_Project_Name LIKE '%Wireless%' THEN 1563 --Enabler WRLS Cross Sell FPC
 WHEN Media_Code = 'FPC' AND Scorecard_Program_Channel = 'Wireline Bill - FPC' AND eCRW_Project_Name LIKE '%Tripleplay%' THEN 1620 --Wireline Triple Play Bundles FPC
-WHEN Media_Code = 'FPC' AND Scorecard_Program_Channel = 'Mobility Bill - FPC' AND eCRW_Project_Name LIKE '%DTV%' THEN 1622 --Mobility TV Cross Sell FPC
-WHEN Media_Code = 'FPC' AND Scorecard_Program_Channel = 'Mobility Bill - FPC' AND eCRW_Project_Name LIKE '%IPBB%' THEN 1623 --Mobility IPBB Cross Sell FPC
-WHEN Media_Code = 'FPC' AND Scorecard_Program_Channel = 'Mobility Bill - FPC' AND eCRW_Project_Name LIKE '%Add_a_Line%' THEN 1624 --Mobility WRLS AAL FPC
+WHEN Media_Code = 'FPC' AND Scorecard_Program_Channel = 'Mobility Bill - FPC' AND eCRW_Project_Name LIKE '%DTV%' AND Start_Date < '3/1/17' THEN 1622 --Mobility TV Cross Sell FPC
+WHEN Media_Code = 'FPC' AND Scorecard_Program_Channel = 'Mobility Bill - FPC' AND eCRW_Project_Name LIKE '%DTV%' AND Start_Date >= '3/1/17' THEN 1766 --Mobility TV Cross Sell FPC - DMDR
+WHEN Media_Code = 'FPC' AND Scorecard_Program_Channel = 'Mobility Bill - FPC' AND eCRW_Project_Name LIKE '%IPBB%' AND Start_Date < '3/1/17' THEN 1623 --Mobility IPBB Cross Sell FPC
+WHEN Media_Code = 'FPC' AND Scorecard_Program_Channel = 'Mobility Bill - FPC' AND eCRW_Project_Name LIKE '%IPBB%' AND Start_Date >= '3/1/17' THEN 1765 --Mobility IPBB Cross Sell FPC - DMDR
+WHEN Media_Code = 'FPC' AND Scorecard_Program_Channel = 'Mobility Bill - FPC' AND eCRW_Project_Name LIKE '%Add_a_Line%' AND Start_Date < '3/1/17' THEN 1624 --Mobility WRLS AAL FPC
+WHEN Media_Code = 'FPC' AND Scorecard_Program_Channel = 'Mobility Bill - FPC' AND eCRW_Project_Name LIKE '%Add_a_Line%' AND Start_Date >= '3/1/17' THEN 1767 --Mobility WRLS AAL FPC - DMDR
 
 --Bill Media -- FYI
 -- Still Missing: 1485, 1631
 
 WHEN Media_Code = 'FYI' AND Scorecard_Program_Channel = 'Wireline Bill - Bill Message' AND eCRW_Project_Name LIKE '%Wireline%' AND eCRW_Project_Name LIKE '%TV%' AND eCRW_Project_Name LIKE '%Spanish%' THEN 1471 --Wireline TV Cross Sell Spanish Bill Message
-WHEN Media_Code = 'FYI' AND Scorecard_Program_Channel = 'Mobility Bill - Bill Message' AND eCRW_Project_Name LIKE '%Wireless%' AND eCRW_Project_Name LIKE '%TV%' AND eCRW_Project_Name LIKE '%Spanish%' THEN 1472 --Wireless DTV Cross Sell Spanish Bill Message
-WHEN Media_Code = 'FYI' AND Scorecard_Program_Channel = 'Mobility Bill - Bill Message' AND eCRW_Project_Name LIKE '%Wireless%' AND eCRW_Project_Name LIKE '%TV%' AND eCRW_Project_Name NOT LIKE '%Spanish%' THEN 1473 --Wireless DTV Cross Sell Bill Message
+WHEN Media_Code = 'FYI' AND Scorecard_Program_Channel = 'Mobility Bill - Bill Message' AND eCRW_Project_Name LIKE '%Wireless%' AND eCRW_Project_Name LIKE '%TV%' AND eCRW_Project_Name LIKE '%Spanish%' THEN 1472 --Mobility DTV Cross Sell Spanish Bill Message
+WHEN Media_Code = 'FYI' AND Scorecard_Program_Channel = 'Mobility Bill - Bill Message' AND eCRW_Project_Name LIKE '%Wireless%' AND eCRW_Project_Name LIKE '%TV%' AND eCRW_Project_Name NOT LIKE '%Spanish%' THEN 1473 --Mobility DTV Cross Sell Bill Message
 WHEN Media_Code = 'FYI' AND Scorecard_Program_Channel = 'Wireline Bill - Bill Message' AND eCRW_Project_Name LIKE '%CSBM_BillMsg%' AND (Campaign_Name LIKE '%DTV Eligible%' OR Campaign_Name LIKE '%IPTV Eligible%') THEN 1474 --Wireline TV Cross Sell Bill Message
 WHEN Media_Code = 'FYI' AND Scorecard_Program_Channel = 'Enabler Bill - Bill Message' AND eCRW_Project_Name LIKE '%U%Verse%' AND eCRW_Project_Name LIKE '%TV%' AND eCRW_Project_Name NOT LIKE '%Spanish%' THEN 1475 --Enabler DTV Cross Sell Bill Message
 WHEN Media_Code = 'FYI' AND Scorecard_Program_Channel = 'Wireline Bill - Bill Message' AND eCRW_Project_Name LIKE '%Migration%' AND Campaign_Name LIKE '%Bundles%' THEN 1476 --Wireline Bundles Bill Message
@@ -136,14 +146,16 @@ WHEN Media_Code = 'FYI' AND Scorecard_Program_Channel = 'Enabler Bill - Bill Mes
 WHEN Media_Code = 'FYI' AND Scorecard_Program_Channel = 'Enabler Bill - Bill Message' AND eCRW_Project_Name LIKE '%U%verse%' AND eCRW_Project_Name LIKE '%Welcome%' AND eCRW_Project_Name NOT LIKE '%Giga%' THEN 1483 --Enabler Welcome Bill Message
 WHEN Media_Code = 'FYI' AND Scorecard_Program_Channel = 'Wireline Bill - Bill Message' AND eCRW_Project_Name LIKE '%UNAT_BillMsg%' AND Campaign_Name LIKE '%DTV Subs%' THEN 1484 --Wireline DTV Cross Sell Bill Message
 WHEN Media_Code = 'FYI' AND Scorecard_Program_Channel = 'Enabler Bill - Bill Message' AND eCRW_Project_Name LIKE '%U%verse%' AND eCRW_Project_Name LIKE '%HSIA%' THEN 1486 --Enabler HSIA Cross Sell Bill Message
-WHEN Media_Code = 'FYI' AND Scorecard_Program_Channel = 'Mobility Bill - Bill Message' AND eCRW_Project_Name LIKE '%Wireless%' AND eCRW_Project_Name LIKE '%Broadband%' THEN 1487 --Wireless IPBB Cross Sell Bill Message
+WHEN Media_Code = 'FYI' AND Scorecard_Program_Channel = 'Mobility Bill - Bill Message' AND eCRW_Project_Name LIKE '%Wireless%' AND eCRW_Project_Name LIKE '%Broadband%' THEN 1487 --Mobility IPBB Cross Sell Bill Message
 WHEN Media_Code = 'FYI' AND Scorecard_Program_Channel = 'Wireline Bill - Bill Message' AND (eCRW_Project_Name LIKE '%_ALL_%' OR eCRW_Project_Name LIKE '%Generic%' OR eCRW_Project_Name LIKE '%Bundles%') AND eCRW_Project_Name LIKE '%Spanish%' THEN 1567 --Wireline Spanish Thank you Bill Message
 WHEN Media_Code = 'FYI' AND Scorecard_Program_Channel = 'Wireline Bill - Bill Message' AND (eCRW_Project_Name LIKE '%_ALL_%' OR eCRW_Project_Name LIKE '%Generic%' OR eCRW_Project_Name LIKE '%Bundles%') THEN 1557 --Wireline Thank you Bill Message
-WHEN Media_Code = 'FYI' AND Scorecard_Program_Channel = 'Mobility Bill - Bill Message' AND (eCRW_Project_Name LIKE '%_ALL_%' OR eCRW_Project_Name LIKE '%Generic%' OR eCRW_Project_Name LIKE '%Bundles%') AND eCRW_Project_Name LIKE '%Spanish%' THEN 1568 --Wireless Spanish Thank you Bill Message
-WHEN Media_Code = 'FYI' AND Scorecard_Program_Channel = 'Mobility Bill - Bill Message' AND (eCRW_Project_Name LIKE '%_ALL_%' OR eCRW_Project_Name LIKE '%Generic%' OR eCRW_Project_Name LIKE '%Bundles%') THEN 1559 --Wireless Thank you Bill Message
+WHEN Media_Code = 'FYI' AND Scorecard_Program_Channel = 'Mobility Bill - Bill Message' AND (eCRW_Project_Name LIKE '%_ALL_%' OR eCRW_Project_Name LIKE '%Generic%' OR eCRW_Project_Name LIKE '%Bundles%') AND eCRW_Project_Name LIKE '%Spanish%' THEN 1568 --Mobility Spanish Thank you Bill Message
+WHEN Media_Code = 'FYI' AND Scorecard_Program_Channel = 'Mobility Bill - Bill Message' AND (eCRW_Project_Name LIKE '%_ALL_%' OR eCRW_Project_Name LIKE '%Generic%' OR eCRW_Project_Name LIKE '%Bundles%') AND Start_Date < '3/1/17' THEN 1559 --Mobility Thank you Bill Message
+WHEN Media_Code = 'FYI' AND Scorecard_Program_Channel = 'Mobility Bill - Bill Message' AND (eCRW_Project_Name LIKE '%_ALL_%' OR eCRW_Project_Name LIKE '%Generic%' OR eCRW_Project_Name LIKE '%Bundles%') AND Start_Date >= '3/1/17' THEN 1763 --Mobility Thank you Bill Message - DMDR
 WHEN Media_Code = 'FYI' AND Scorecard_Program_Channel = 'Enabler Bill - Bill Message' AND (eCRW_Project_Name LIKE '%_ALL_%' OR eCRW_Project_Name LIKE '%Generic%' OR eCRW_Project_Name LIKE '%Bundles%') AND eCRW_Project_Name LIKE '%Spanish%' THEN 1569 --Enabler Spanish Thank you Bill Message
 WHEN Media_Code = 'FYI' AND Scorecard_Program_Channel = 'Enabler Bill - Bill Message' AND (eCRW_Project_Name LIKE '%_ALL_%' OR eCRW_Project_Name LIKE '%Generic%' OR eCRW_Project_Name LIKE '%Bundles%') THEN 1558 --Enabler Thank you Bill Message
-WHEN Media_Code = 'FYI' AND Scorecard_Program_Channel = 'Mobility Bill - Bill Message' AND eCRW_Project_Name LIKE '%Add-a-line%' THEN 1625 --Wireless WRLS AAL Bill Message
+WHEN Media_Code = 'FYI' AND Scorecard_Program_Channel = 'Mobility Bill - Bill Message' AND eCRW_Project_Name LIKE '%Add-a-line%' AND Start_Date < '3/1/17' THEN 1625 --Mobility WRLS AAL Bill Message
+WHEN Media_Code = 'FYI' AND Scorecard_Program_Channel = 'Mobility Bill - Bill Message' AND eCRW_Project_Name LIKE '%Add-a-line%' AND Start_Date >= '3/1/17' THEN 1764 --Mobility WRLS AAL Bill Message - DMDR
 WHEN Media_Code = 'FYI' AND Scorecard_Program_Channel = 'DIRECTV Bill - Bill Message' AND eCRW_Project_Name LIKE '%Wireless%' THEN 1633 -- DirecTV WRLS Cross Sell Bill Message
 WHEN Media_Code = 'FYI' AND Scorecard_Program_Channel = 'DIRECTV Bill - Bill Message' AND eCRW_Project_Name LIKE '%Bundle%' THEN 1686 --DIRECTV Bundles Bill Message 
 
@@ -153,7 +165,8 @@ WHEN Media_Code = 'FYI' AND Scorecard_Program_Channel = 'DIRECTV Bill - Bill Mes
 
 WHEN Media_Code = 'OE' AND Scorecard_Program_Channel = 'Enabler Bill - OE/RE' AND eCRW_Project_Name LIKE '%Bundles%' THEN 1489 --Enabler TV Cross Sell OE
 WHEN Media_Code = 'OE' AND Scorecard_Program_Channel = 'Wireline Bill - OE/RE' AND eCRW_Project_Name LIKE '%Bundles%' THEN 1488 --Wireline OE
-WHEN Media_Code = 'OE' AND Scorecard_Program_Channel = 'Mobility Bill - OE/RE' AND eCRW_Project_Name LIKE '%TV%' THEN 1626 --Wireless TV Cross Sell OE
+WHEN Media_Code = 'OE' AND Scorecard_Program_Channel = 'Mobility Bill - OE/RE' AND eCRW_Project_Name LIKE '%TV%' AND Start_Date < '3/1/17' THEN 1626 --Mobility TV Cross Sell OE
+WHEN Media_Code = 'OE' AND Scorecard_Program_Channel = 'Mobility Bill - OE/RE' AND eCRW_Project_Name LIKE '%TV%' AND Start_Date >= '3/1/17' THEN 1762 --Mobility TV Cross Sell OE - DMDR
 WHEN Media_Code = 'OE' AND Scorecard_Program_Channel = 'DIRECTV Bill - OE/RE' AND eCRW_Project_Name LIKE '%Wireless%' THEN 1684 --DIRECTV WLS Cross Sell OE
 WHEN Media_Code = 'OE' AND Scorecard_Program_Channel = 'Enabler Bill - OE/RE' AND eCRW_Project_Name LIKE '%IPBB%' THEN 1685 --Enabler IPBB Cross Sell OE
 
@@ -162,9 +175,10 @@ WHEN Media_Code = 'OE' AND Scorecard_Program_Channel = 'Enabler Bill - OE/RE' AN
 --Bill Media -- Onsert
 -- Still Missing: 1467, 1537, 1538
 
-WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'Mobility Bill - Bill Onsert' AND eCRW_Project_Name LIKE '%Wireless%' AND eCRW_Project_Name LIKE '%TV%' AND eCRW_Project_Name LIKE '%Spanish%' THEN 1461 --Wireless DTV Cross Sell Onsert
+WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'Mobility Bill - Bill Onsert' AND eCRW_Project_Name LIKE '%Wireless%' AND eCRW_Project_Name LIKE '%TV%' AND eCRW_Project_Name LIKE '%Spanish%' THEN 1461 --Mobility DTV Cross Sell Onsert
 WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'Enabler Bill - Bill Onsert' AND eCRW_Project_Name LIKE '%TV%' THEN 1462 --Enabler DTV Cross Sell Onsert
-WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'Mobility Bill - Bill Onsert' AND (Campaign_Name LIKE '%TV%') THEN 1463 --Wireless TV Cross Sell Bill Onsert
+WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'Mobility Bill - Bill Onsert' AND (Campaign_Name LIKE '%TV%') AND Start_Date < '3/1/17' THEN 1463 --Mobility TV Cross Sell Bill Onsert
+WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'Mobility Bill - Bill Onsert' AND (Campaign_Name LIKE '%TV%') AND Start_Date >= '3/1/17' THEN 1758 --Mobility TV Cross Sell Bill Onsert - DMDR
 WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'Enabler Bill - Bill Onsert' AND eCRW_Project_Name LIKE '%Upgrade%' THEN 1464 --Enabler Internet Update Onsert
 WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'Enabler Bill - Bill Onsert' AND eCRW_Project_Name LIKE '%Voice%' THEN 1465 -- Enabler Voice Onsert
 WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'Enabler Bill - Bill Onsert' AND eCRW_Project_Name LIKE '%Welcome%' And eCRW_Project_Name NOT LIKE '%GIGA%' THEN 1466 --Enabler Welcome Onsert
@@ -176,8 +190,10 @@ WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'DIRECTV Bill - Bill 
 WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'DIRECTV Bill - Bill Onsert' AND eCRW_Project_Name LIKE '%Wireless%' AND eCRW_Project_Name LIKE '%Spanish%' THEN 1540 --DIRECTV OOF WRLS Spanish Onsert
 WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'DIRECTV Bill - Bill Onsert' AND eCRW_Project_Name LIKE '%Wireless%' THEN 1539 --DIRECTV OOF WRLS Onsert
 WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'Enabler Bill - Bill Onsert' AND eCRW_Project_Name LIKE '%Wireless%' THEN 1554 --Titan WRLS Cross Sell Onsert
-WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'Mobility Bill - Bill Onsert' AND (eCRW_Project_Name LIKE '%HSIA%' OR eCRW_Project_Name LIKE '%IPBB%') THEN 1627 --Mobility IPBB Cross Sell Onsert
-When Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'Mobility Bill - Bill Onsert' AND eCRW_Project_Name LIKE '%Add-a-line%' THEN 1628 --Mobility WRLS AAL Cross Sell Onsert
+WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'Mobility Bill - Bill Onsert' AND (eCRW_Project_Name LIKE '%HSIA%' OR eCRW_Project_Name LIKE '%IPBB%') AND Start_Date < '3/1/17' THEN 1627 --Mobility IPBB Cross Sell Onsert
+WHEN Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'Mobility Bill - Bill Onsert' AND (eCRW_Project_Name LIKE '%HSIA%' OR eCRW_Project_Name LIKE '%IPBB%') AND Start_Date >= '3/1/17' THEN 1772 --Mobility IPBB Cross Sell Onsert - DMDR
+When Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'Mobility Bill - Bill Onsert' AND eCRW_Project_Name LIKE '%Add-a-line%' AND Start_Date < '3/1/17' THEN 1628 --Mobility WRLS AAL Cross Sell Onsert
+When Media_Code = 'Onsert' AND Scorecard_Program_Channel = 'Mobility Bill - Bill Onsert' AND eCRW_Project_Name LIKE '%Add-a-line%' AND Start_Date >= '3/1/17' THEN 1761 --Mobility WRLS AAL Cross Sell Onsert - DMDR
 
 --Bill Media -- RE
 --Still Missing:

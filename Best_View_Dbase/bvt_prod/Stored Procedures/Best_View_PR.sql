@@ -3,23 +3,23 @@
 AS
 BEGIN 
 SET NOCOUNT ON
-/*Temporary Declarations for Testing
+/*--Temporary Declarations for Testing
 DECLARE @PROG INT
-set @PROG = 4
+set @PROG = 11
 --*/
 ------Section 1 Subselecting Tables - into temps---------
 
 -------Section 1.1 - Flightplan Selection	
 --Select the appropriate Flight Plan
 --Check and delete temp	
-
 IF OBJECT_ID('tempdb.dbo.#flightplan', 'U') IS NOT NULL
   DROP TABLE #flightplan; 
 
 	SELECT * INTO #flightplan
 	from bvt_prod.Flightplan_FUN(@prog);
 
-create CLUSTERED index idx_c_flightplan_flightplanid ON #flightplan([idFlight_Plan_Records]);
+create CLUSTERED index idx_c_flightplan_flightplanid ON #flightplan([idFlight_Plan_Records])
+;
 ---End Flightplan selection
 -------Touch Definition View--------------------------
 IF OBJECT_ID('tempdb.dbo.#touchdef', 'U') IS NOT NULL
@@ -67,6 +67,13 @@ where [idProgram_Touch_Definitions_TBL_FK] in
 (select idProgram_Touch_Definitions_TBL from #touchdef);
 insert into [bvt_processed].[Sales_Rates_Start_End]
 select * from [bvt_prod].[Sales_Rates_Start_End_VW]
+where idProgram_Touch_Definitions_TBL_FK in (select idProgram_Touch_Definitions_TBL from #touchdef);
+--Target Adjustment Start End
+delete [bvt_processed].[Target_Adjustment_Start_End]
+where [idProgram_Touch_Definitions_TBL_FK] in 
+(select idProgram_Touch_Definitions_TBL from #touchdef);
+insert into [bvt_processed].[Target_Adjustment_Start_End]
+select * from [bvt_prod].[Target_Adjustment_Start_End_VW]
 where idProgram_Touch_Definitions_TBL_FK in (select idProgram_Touch_Definitions_TBL from #touchdef);
 --*/
 
@@ -117,9 +124,9 @@ IF OBJECT_ID('tempdb.dbo.#forecast', 'U') IS NOT NULL
 select #flightplan.idFlight_Plan_Records
 	, #flightplan.Campaign_Name
 	, #flightplan.InHome_Date
-	, strat.Strategy_Eligibility
-	, lead.Lead_Offer
-	
+	, #flightplan.Strategy_Eligibility
+	, #flightplan.Lead_Offer
+
 ---Media_Calendar_Info
 	, Media_Calendar_Daily.ISO_Week_Year as Media_Year
 	, Media_Calendar_Daily.ISO_Week as Media_Week
@@ -177,8 +184,8 @@ from
 (select idFlight_Plan_Records
 	, responsebyday.idProgram_Touch_Definitions_TBL_FK
 	, ResponseByDay.idkpi_types_FK
-	, case when ResponseByDay.idTarget_Rate_Reasons_LU_TBL_FK is null then KPI_Daily*Seasonality_Adj
-		else KPI_Daily*Seasonality_Adj*Rate_Adjustment_Factor end as KPI_Daily
+	, case when ResponseByDay.idTarget_Rate_Reasons_LU_TBL_FK is null then KPI_Daily*isnull(Seasonality_Adj,1)
+		else KPI_Daily*isnull(Seasonality_Adj,1)*Rate_Adjustment_Factor end as KPI_Daily
 	, Forecast_DayDate
 from
 ----Join Weekly Response Curve and Media Calendar
@@ -221,9 +228,8 @@ from
 	, b.idkpi_types_FK
 	
   --Code to account for having a TFN or URL or not in flightplan entry and a manual adjustment or not
-	,case when tfn_ind=1 and b.idkpi_types_FK=1 then KPI_Rate*isnull(adjustment,1)
+	,case 
 		when TFN_ind=0 and b.idkpi_types_FK=1 then 0
-		when URL_ind=1 and b.idkpi_types_FK=2 then KPI_Rate*isnull(adjustment,1)
 		when URL_ind=0 and b.idkpi_types_FK=2 then 0
 		else KPI_Rate*isnull(adjustment,1)
 		end as KPI_Rate
@@ -298,8 +304,8 @@ from
 	, ResponseByDay.idkpi_type_FK
 	, ResponseByDay.idProduct_LU_TBL_FK
 	, Day_of_Week
-	, case when ResponseByDay.idTarget_Rate_Reasons_LU_TBL_FK is null then Sales_rate_Daily*Seasonality_Adj
-		else Sales_rate_Daily*Seasonality_Adj*Rate_Adjustment_Factor end as Sales_rate_Daily
+	, case when ResponseByDay.idTarget_Rate_Reasons_LU_TBL_FK is null then Sales_rate_Daily*isnull(Seasonality_Adj,1)
+		else Sales_rate_Daily*isnull(Seasonality_Adj,1)*Rate_Adjustment_Factor end as Sales_rate_Daily
 	, Forecast_DayDate
 
 from
@@ -345,9 +351,8 @@ from
 	, a.idProgram_Touch_Definitions_TBL_FK
 	, B.idkpi_type_FK
 	, B.idProduct_LU_TBL_FK
-	, case when tfn_ind=1 and b.idkpi_type_FK=1 then Sales_Rate*isnull(adjustment,1)*isnull(Sales_Adjustment,1)
+	, case 
 		when TFN_ind=0 and b.idkpi_type_FK=1 then 0
-		when URL_ind=1 and b.idkpi_type_FK=2 then Sales_Rate*isnull(adjustment,1)*isnull(Sales_Adjustment,1)
 		when URL_ind=0 and b.idkpi_type_FK=2 then 0
 		else Sales_Rate*isnull(adjustment,1)*isnull(Sales_Adjustment,1)
 	end as Sales_Rate
@@ -429,18 +434,12 @@ left join
 -----Bring in touch definition labels 
 #touchdef as touchdef
 		on #flightplan.idProgram_Touch_Definitions_TBL_FK=idProgram_Touch_Definitions_TBL
-left join
-bvt_prod.Strategy_Eligibility_LU_TBL strat
-	on #flightplan.Strategy_Eligibility_LU_TBL_FK = strat.idStrategy_Eligibility_LU_TBL
-left join
-bvt_prod.Lead_Offer_LU_TBL lead
-	on #flightplan.Lead_Offer_LU_TBL_FK = lead.idLead_Offer_LU_TBL
 where Tactic <> 'Cost'	
 ;
 
 create index IDX_NC_FORECASTTEMP
  ON #FORECAST([idFlight_Plan_Records], [Calendar_Year], [Calendar_Month]
-  , [media_year] ,[Media_Week] ,[kpi_type] ,[product_code]);
+  , [media_year] ,[Media_Week] ,[kpi_type] ,[product_code])  ;
 -------------END SECTION SALES-----------------------------------------------------
 -----END SECTION Forecasting-------------------------------------------------------
 
@@ -484,7 +483,7 @@ select IR_Campaign_Data_Weekly_MAIN_2012_Sbset.Parentid, idFlight_Plan_Records_F
 			from bvt_processed.DTV_Now_Sales_by_day a
 			JOIN  bvt_prod.DTV_Now_Sales_App_VW b
 				on a.eCRW_Cell_ID = b.ecrw_Cell_ID
-			UNION
+			UNION ALL
 			Select a.eCRW_Project_Name, b.parentID, a.Date, a.[Online Sales]*b.Cell_Percent as Daily_Sales from 
 				(Select * from bvt_processed.DTV_Now_Sales_by_day
 				where eCRW_Cell_ID is null) a
@@ -494,7 +493,7 @@ select IR_Campaign_Data_Weekly_MAIN_2012_Sbset.Parentid, idFlight_Plan_Records_F
 				where a.eCRW_Cell_ID is null) a
 				JOIN dim.Media_Calendar_Daily b
 				on a.Date = b.Date
-			GROUP BY parentID, ISO_Week, ISO_Week_Year, MONTH(a.Date), YEAR(a.Date)) DTV_Now
+			GROUP BY parentID,  ISO_Week, ISO_Week_Year, MONTH(a.Date), YEAR(a.Date)) DTV_Now
 			ON IR_Campaign_Data_Weekly_MAIN_2012_Sbset.Parentid = DTV_Now.parentID
 				and IR_Campaign_Data_Weekly_MAIN_2012_Sbset.Report_Week = DTV_Now.ISO_Week
 				and IR_Campaign_Data_Weekly_MAIN_2012_Sbset.Calendar_Month = DTV_Now.Calendar_Month
@@ -583,8 +582,8 @@ from
 		when kpiproduct like '%CTECH%' then 'ConnecTech'
 		when kpiproduct like '%DLIFE%' then 'Digital Life'
 		when kpiproduct like '%WHP%' then 'WRLS Home'
+		when kpiproduct like '%DTVNow%' then 'DTV Now'
 		end as Product_Code
-
 , sum(Actuals.[Actual]) as Actual
 
 from #actuals
@@ -599,7 +598,7 @@ UNPIVOT (Actual for kpiproduct in
 			[ITP_Dir_Sales_ON_CING_VOICE_N], [ITP_Dir_Sales_ON_CING_FAMILY_N], [ITP_Dir_Sales_ON_CING_DATA_N], [ITP_Dir_Sales_ON_DISH_N], 
 			[ITP_Dir_Sales_ON_DSL_REG_N], [ITP_Dir_Sales_ON_DSL_DRY_N], [ITP_Dir_Sales_ON_DSL_IP_N], [ITP_Dir_Sales_ON_UVRS_HSIAG_N],
 			[ITP_Dir_Sales_ON_UVRS_HSIA_N], [ITP_Dir_Sales_ON_UVRS_TV_N], [ITP_Dir_Sales_ON_UVRS_BOLT_N], [ITP_Dir_Sales_ON_LOCAL_ACCL_N], 
-			[ITP_Dir_Sales_ON_UVRS_VOIP_N], [ITP_Dir_Sales_ON_DLIFE_N], [ITP_Dir_Sales_ON_CING_WHP_N], [ITP_Dir_Sales_ON_Migrations])) as Actuals
+			[ITP_Dir_Sales_ON_UVRS_VOIP_N], [ITP_Dir_Sales_ON_DLIFE_N], [ITP_Dir_Sales_ON_CING_WHP_N], [ITP_Dir_Sales_ON_Migrations], [ITP_Dir_Sales_ON_DTVNOW_N])) as Actuals
 GROUP BY [idFlight_Plan_Records_FK], [Report_Year], [Report_Week], [Calendar_Year], [Calendar_Month]
 
 , case
@@ -629,6 +628,7 @@ GROUP BY [idFlight_Plan_Records_FK], [Report_Year], [Report_Week], [Calendar_Yea
 	when kpiproduct like '%CTECH%' then 'ConnecTech'
 	when kpiproduct like '%DLIFE%' then 'Digital Life'
 	when kpiproduct like '%WHP%' then 'WRLS Home'
+	when kpiproduct like '%DTVNow%' then 'DTV Now'
 	end 
 	) as actuals 
 	inner join #flightplan on [idFlight_Plan_Records_FK] = [idFlight_Plan_Records]
@@ -675,8 +675,6 @@ select [idFlight_Plan_Records]
   , #touchdef.[Scorecard_Program_Channel]
 into #cv
 from bvt_cv.CV_Combined
---left join [bvt_prod].[Program_Touch_Definitions_TBL]
---	on CV_Combined.[idProgram_Touch_Definitions_TBL_FK]=[Program_Touch_Definitions_TBL].[idProgram_Touch_Definitions_TBL]
 left join [bvt_prod].#touchdef
 	on CV_Combined.[idProgram_Touch_Definitions_TBL_FK]=#touchdef.[idProgram_Touch_Definitions_TBL]
 where CV_Combined.[Program_Name]=(select program_name from bvt_prod.program_LU_TBL where idProgram_LU_TBL=@prog)
@@ -694,6 +692,10 @@ create index IDX_NC_CV
 /*Combine the Forecast, Actuals, and CV into a single Best View of the
 program selected for output*/
 -----------------------------------------------------------------------
+
+
+
+
 select
 coalesce(forecast_cv.[idFlight_Plan_Records_FK], #volumebudget.[idFlight_Plan_Records_FK], #ResponseSales.[idFlight_Plan_Records_FK]) as idFlight_Plan_Records_FK,
 		coalesce(forecast_cv.[Campaign_Name], #volumebudget.[Campaign_Name], #ResponseSales.[Campaign_Name]) as Campaign_Name,
@@ -750,21 +752,21 @@ coalesce(forecast_cv.[idFlight_Plan_Records_FK], #volumebudget.[idFlight_Plan_Re
 FROM	
 
 (SELECT 
-	   Coalesce(forecast.[idFlight_Plan_Records], cv.[idFlight_Plan_Records]) as idFlight_Plan_Records_FK
-      ,Coalesce(forecast.[Campaign_Name], cv.[Campaign_Name]) as Campaign_Name
-      ,coalesce(forecast.[InHome_Date], cv.[InHome_Date]) as InHome_Date
-      ,coalesce(forecast.[Touch_Name], cv.[Touch_Name]) as Touch_Name
-      ,coalesce(forecast.[Program_Name], cv.[Program_Name]) as Program_Name
-      ,coalesce(forecast.[Tactic], cv.[Tactic]) as Tactic
-      ,coalesce(forecast.[Media], cv.[Media]) as Media
-      ,coalesce(forecast.[Campaign_Type], cv.[Campaign_Type]) as Campaign_Type
-      ,coalesce(forecast.[Audience], cv.[Audience]) as Audience
-      ,coalesce(forecast.[Creative_Name], cv.[Creative_Name]) as Creative_Name
-      ,coalesce(forecast.[Goal], cv.[Goal]) as Goal
-      ,coalesce(forecast.[Offer], cv.[Offer]) as Offer
-      ,coalesce(forecast.[Channel], cv.[Channel]) as Channel
-      ,coalesce(forecast.[Scorecard_Group], cv.[Scorecard_Group]) as Scorecard_Group
-      ,coalesce(forecast.[Scorecard_Program_Channel], cv.[Scorecard_Program_Channel]) as Scorecard_Program_Channel
+	   Coalesce(#flightplan.idFlight_Plan_Records, forecast.[idFlight_Plan_Records], cv.[idFlight_Plan_Records]) as idFlight_Plan_Records_FK
+      ,Coalesce(#flightplan.Campaign_Name, forecast.[Campaign_Name], cv.[Campaign_Name]) as Campaign_Name
+      ,coalesce(#flightplan.InHome_Date, forecast.[InHome_Date], cv.[InHome_Date]) as InHome_Date
+      ,coalesce(#touchdef.Touch_Name, forecast.[Touch_Name], cv.[Touch_Name]) as Touch_Name
+      ,coalesce(#touchdef.Program_Name, forecast.[Program_Name], cv.[Program_Name]) as Program_Name
+      ,coalesce(#touchdef.Tactic, forecast.[Tactic], cv.[Tactic]) as Tactic
+      ,coalesce(#touchdef.Media, forecast.[Media], cv.[Media]) as Media
+      ,coalesce(#touchdef.Campaign_Type, forecast.[Campaign_Type], cv.[Campaign_Type]) as Campaign_Type
+      ,coalesce(#touchdef.Audience, forecast.[Audience], cv.[Audience]) as Audience
+      ,coalesce(#touchdef.Creative_Name, forecast.[Creative_Name], cv.[Creative_Name]) as Creative_Name
+      ,coalesce(#touchdef.Goal, forecast.[Goal], cv.[Goal]) as Goal
+      ,coalesce(#touchdef.Offer, forecast.[Offer], cv.[Offer]) as Offer
+      ,coalesce(#touchdef.Channel, forecast.[Channel], cv.[Channel]) as Channel
+      ,coalesce(#touchdef.Scorecard_Group, forecast.[Scorecard_Group], cv.[Scorecard_Group]) as Scorecard_Group
+      ,coalesce(#touchdef.Scorecard_Program_Channel, forecast.[Scorecard_Program_Channel], cv.[Scorecard_Program_Channel]) as Scorecard_Program_Channel
       ,coalesce(forecast.[KPI_Type], cv.[KPI_Type]) as KPI_Type
       ,coalesce(forecast.[Product_Code], cv.[Product_Code]) as Product_Code
 	  ,coalesce(forecast.[media_year], cv.[media_year]) as media_year
@@ -773,10 +775,8 @@ FROM
 	  ,coalesce(forecast.[Media_YYYYWW], cv.[Media_YYYYWW]) as Media_YYYYWW
 	  ,coalesce(forecast.[Calendar_Year], cv.[Calendar_Year]) as Calendar_Year
 	  ,coalesce(forecast.[Calendar_Month], cv.[Calendar_Month]) as Calendar_Month
-	  ,forecast.Strategy_Eligibility
-      ,forecast.Lead_Offer
-      ,sum(forecast.[Forecast]) as Forecast
-	  ,sum(CV.forecast) as Commitment 
+      ,sum(isnull(forecast.[Forecast],0)) as Forecast
+	  ,sum(isnull(CV.forecast,0)) as Commitment 
 FROM #forecast as forecast
 	FULL JOIN
 	#cv as CV
@@ -788,26 +788,28 @@ FROM #forecast as forecast
 			and forecast.[Calendar_Year] = cv.[Calendar_Year]
 			and forecast.[Calendar_Month] = cv.[Calendar_Month]
 			and forecast.[Forecast_DayDate] = cv.Forecast_DayDate
+	LEFT JOIN #flightplan
+	on Coalesce(forecast.idFlight_Plan_Records, cv.idFLight_Plan_Records) = #flightplan.idFlight_Plan_Records
+	LEFT JOIN #touchdef
+	on #flightplan.idProgram_Touch_Definitions_TBL_FK = #touchdef.idProgram_Touch_Definitions_TBL
 
-group by Coalesce(forecast.[idFlight_Plan_Records], cv.[idFlight_Plan_Records]) 
-      ,Coalesce(forecast.[Campaign_Name], cv.[Campaign_Name]) 
-      ,coalesce(forecast.[InHome_Date], cv.[InHome_Date]) 
-      ,coalesce(forecast.[Touch_Name], cv.[Touch_Name]) 
-      ,coalesce(forecast.[Program_Name], cv.[Program_Name])
-      ,coalesce(forecast.[Tactic], cv.[Tactic]) 
-      ,coalesce(forecast.[Media], cv.[Media])
-      ,coalesce(forecast.[Campaign_Type], cv.[Campaign_Type]) 
-      ,coalesce(forecast.[Audience], cv.[Audience]) 
-      ,coalesce(forecast.[Creative_Name], cv.[Creative_Name]) 
-      ,coalesce(forecast.[Goal], cv.[Goal]) 
-      ,coalesce(forecast.[Offer], cv.[Offer])
-      ,coalesce(forecast.[Channel], cv.[Channel])
-      ,coalesce(forecast.[Scorecard_Group], cv.[Scorecard_Group])
-      ,coalesce(forecast.[Scorecard_Program_Channel], cv.[Scorecard_Program_Channel])
+group by 	   Coalesce(#flightplan.idFlight_Plan_Records, forecast.[idFlight_Plan_Records], cv.[idFlight_Plan_Records])
+      ,Coalesce(#flightplan.Campaign_Name, forecast.[Campaign_Name], cv.[Campaign_Name])
+      ,coalesce(#flightplan.InHome_Date, forecast.[InHome_Date], cv.[InHome_Date])
+      ,coalesce(#touchdef.Touch_Name, forecast.[Touch_Name], cv.[Touch_Name])
+      ,coalesce(#touchdef.Program_Name, forecast.[Program_Name], cv.[Program_Name])
+      ,coalesce(#touchdef.Tactic, forecast.[Tactic], cv.[Tactic])
+      ,coalesce(#touchdef.Media, forecast.[Media], cv.[Media])
+      ,coalesce(#touchdef.Campaign_Type, forecast.[Campaign_Type], cv.[Campaign_Type])
+      ,coalesce(#touchdef.Audience, forecast.[Audience], cv.[Audience])
+      ,coalesce(#touchdef.Creative_Name, forecast.[Creative_Name], cv.[Creative_Name])
+      ,coalesce(#touchdef.Goal, forecast.[Goal], cv.[Goal])
+      ,coalesce(#touchdef.Offer, forecast.[Offer], cv.[Offer])
+      ,coalesce(#touchdef.Channel, forecast.[Channel], cv.[Channel])
+      ,coalesce(#touchdef.Scorecard_Group, forecast.[Scorecard_Group], cv.[Scorecard_Group])
+      ,coalesce(#touchdef.Scorecard_Program_Channel, forecast.[Scorecard_Program_Channel], cv.[Scorecard_Program_Channel])
       ,coalesce(forecast.[KPI_Type], cv.[KPI_Type])
       ,coalesce(forecast.[Product_Code], cv.[Product_Code])
-	  ,forecast.Strategy_Eligibility
-      ,forecast.Lead_Offer
 	  ,coalesce(forecast.[media_year], cv.[media_year])
 	  ,coalesce(forecast.[media_month], cv.[media_month])
 	  ,coalesce(forecast.[media_week], cv.[media_week])
@@ -831,9 +833,14 @@ FULL JOIN #ResponseSales
 	 and forecast_cv.[KPI_Type] =#ResponseSales.[KPI_Type]
 	 and forecast_cv.[Product_Code] = #ResponseSales.[product_code]
 	 and forecast_cv.[Calendar_Year] = #ResponseSales.[Calendar_Year]
-	 and forecast_cv.[Calendar_Month] = #ResponseSales.[Calendar_Month];
+	 and forecast_cv.[Calendar_Month] = #ResponseSales.[Calendar_Month]
+	 
+	LEFT JOIN #flightplan
+    ON Coalesce(forecast_cv.[idFlight_Plan_Records_FK],  #volumebudget.[idFlight_plan_records_FK], #ResponseSales.[idFlight_Plan_Records_FK]) = #flightplan.idFlight_Plan_Records
+;
 ------------END OF BLENDING BEST VIEW!-----------------------------------
 
 
 SET NOCOUNT OFF
 END
+
