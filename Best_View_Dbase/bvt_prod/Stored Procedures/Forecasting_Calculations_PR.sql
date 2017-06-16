@@ -3,14 +3,15 @@
 AS
 BEGIN 
 SET NOCOUNT ON
-/*Temporary Declarations for Testing*/
-
+/*Temporary Declarations for Testing
+DECLARE @PROG INT
+set @PROG = 11
+--*/
 ------Section 1 Subselecting Tables - into temps---------
 
 -------Section 1.1 - Flightplan Selection	
 --Select the appropriate Flight Plan
 --Check and delete temp	
-
 IF OBJECT_ID('tempdb.dbo.#flightplan', 'U') IS NOT NULL
   DROP TABLE #flightplan; 
 
@@ -19,7 +20,8 @@ IF OBJECT_ID('tempdb.dbo.#flightplan', 'U') IS NOT NULL
 
 create CLUSTERED index idx_c_flightplan_flightplanid ON #flightplan([idFlight_Plan_Records]);
 ---End Flightplan selection
--------Touch Definition View--------------------------
+
+-------Section 1.2 - Touch Definition View
 IF OBJECT_ID('tempdb.dbo.#touchdef', 'U') IS NOT NULL
   DROP TABLE #touchdef; 
 
@@ -28,9 +30,12 @@ INTO #touchdef
 from[bvt_prod].[Touchdef_FUN](@PROG);
 
 create clustered index IDX_C_touchdef_id ON #touchdef(idProgram_Touch_Definitions_TBL);
-
 ----------End Touch Def-----------------------------
+
+------Section 1.3 - Creating metrics end dates
 --/*Inserting the start/end procs until triggers are fixed
+--leaving CPP as function since it is only called twice. KL 6/16/17
+--Using Target Adjustment from view not function. KL 6/16/17
 --KPI Start End
 delete [bvt_processed].[KPI_Rate_Start_End]
 where [idProgram_Touch_Definitions_TBL_FK] in 
@@ -66,13 +71,16 @@ where [idProgram_Touch_Definitions_TBL_FK] in
 insert into [bvt_processed].[Sales_Rates_Start_End]
 select * from [bvt_prod].[Sales_Rates_Start_End_VW]
 where idProgram_Touch_Definitions_TBL_FK in (select idProgram_Touch_Definitions_TBL from #touchdef);
+--Target Adjustment Start End
+delete [bvt_processed].[Target_Adjustment_Start_End]
+where [idProgram_Touch_Definitions_TBL_FK] in 
+(select idProgram_Touch_Definitions_TBL from #touchdef);
+insert into [bvt_processed].[Target_Adjustment_Start_End]
+select * from [bvt_prod].[Target_Adjustment_Start_End_VW]
+where idProgram_Touch_Definitions_TBL_FK in (select idProgram_Touch_Definitions_TBL from #touchdef);
 --*/
+------- End Metrics End Dates--------------
 
-----Section 1.3 - Target Adjustments
-IF OBJECT_ID('tempdb.dbo.#Trgt_adj', 'U') IS NOT NULL
-  DROP TABLE #Trgt_adj;
-SELECT * into #Trgt_adj FROM [bvt_prod].[Target_adjustment_start_end_FUN](@PROG);
-------------------
 ----Section 1.4 - Volumes
 ---Could likely simplify this given current sett where only volume type 2 is being used?
 IF OBJECT_ID('tempdb.dbo.#volumes', 'U') IS NOT NULL
@@ -95,20 +103,21 @@ into #volumes
 		left join bvt_prod.Lead_Volumes on flighting.idProgram_Touch_Definitions_TBL_FK=Lead_Volumes.idProgram_Touch_Definitions_TBL_FK
 			and ISO_Week_Year=Media_Year and MediaMonth=Media_Month
 		left join bvt_prod.Flight_Plan_Record_Budgets on idFlight_Plan_Records=Flight_Plan_Record_Budgets.idFlight_Plan_Records_FK
-		left join #Trgt_adj as Target_adjustment_start_end
+		left join bvt_processed.Target_Adjustment_Start_End as Target_adjustment_start_end
 			on flighting.idTarget_Rate_Reasons_LU_TBL_FK=Target_adjustment_start_end.idTarget_Rate_Reasons_LU_TBL_FK 
 			and flighting.idProgram_Touch_Definitions_TBL_FK=Target_adjustment_start_end.idProgram_Touch_Definitions_TBL_FK
 			and flighting.inhome_date between Adj_Start_Date and Target_adjustment_start_end.end_date
-		left join (SELECT * FROM [bvt_prod].[CPP_Start_End_FUN](@Prog)) AS CPP_Start_End on flighting.idProgram_Touch_Definitions_TBL_FK=CPP_Start_End.idProgram_Touch_Definitions_TBL_FK
+		left join (SELECT * FROM [bvt_prod].[CPP_Start_End_FUN](@PROG)) AS CPP_Start_End on flighting.idProgram_Touch_Definitions_TBL_FK=CPP_Start_End.idProgram_Touch_Definitions_TBL_FK
 			and InHome_Date between Cpp_start_date and CPP_Start_End.end_date
 Group by idFlight_Plan_Records, idVolume_Type_LU_TBL_FK, Lead_Volumes.Volume, Target_adjustment_start_end.Volume_Adjustment
 	 , Flight_Plan_Records_Volume.Volume, InHome_Date;
 
 CREATE CLUSTERED INDEX IDX_C_volumes_flightplanid ON #volumes(idFlight_Plan_Records);
+------End Volumes----------
 
------------------
 -----Section 1.5 - budgets
 -----Only a few programs use this portion of the tool. Use CPP and Manual entry
+--Added budget to forecast KL 6/15/17. Forced Forecast day to be the 1st of the bill month/year
 
 IF OBJECT_ID('tempdb.dbo.#budgets', 'U') IS NOT NULL
   DROP TABLE #budgets;
@@ -142,8 +151,7 @@ Where case when Budget_Type_LU_TBL_idBudget_Type_LU_TBL=2 then Budget
 		else CPP*Volume end  is not null;
 
 CREATE CLUSTERED INDEX IDX_C_budgets_flightplanid ON #budgets(idFlight_Plan_Records);
-
----------------------------------------------------------------------------------
+--------End Budget------------
 --End Section 1
 
 ---------------------Section 2 FORECAST -----------------------------------
@@ -180,12 +188,12 @@ select #flightplan.idFlight_Plan_Records
 	, Scorecard_Group
 	, Scorecard_Program_Channel
 
-
 ----Metrics
 	, KPI_Type
 	, Product_Code
 	, Forecast_DayDate
 	, [Forecast]
+
 
 from #flightplan 
 left join
@@ -296,7 +304,7 @@ from #flightplan as A
 */
 	left join bvt_prod.Seasonality_Adjustements as E
 		on ResponseByDay.idProgram_Touch_Definitions_TBL_FK=E.idProgram_Touch_Definitions_TBL_FK and iso_week_year=Media_Year and mediamonth=Media_Month AND ISO_Week=Media_Week
-	left join #Trgt_adj as Target_adjustment_start_end
+	left join bvt_processed.Target_Adjustment_Start_End as Target_adjustment_start_end
 		on ResponseByDay.idTarget_Rate_Reasons_LU_TBL_FK=Target_adjustment_start_end.idTarget_Rate_Reasons_LU_TBL_FK 
 		and ResponseByDay.idProgram_Touch_Definitions_TBL_FK=Target_adjustment_start_end.idProgram_Touch_Definitions_TBL_FK
 		and responsebyday.inhome_date between Adj_Start_Date and end_date) as kpi
@@ -417,9 +425,9 @@ from #flightplan as A
 			   else Daily_Join.idProduct_LU_TBL_FK
 			   end = Daily_Join.idProduct_LU_TBL_FK
 		    		 
-	left join (SELECT * FROM [bvt_prod].[Dropdate_Start_End_FUN](@PROG)) as D
-		on Daily_Join.idProgram_Touch_Definitions_TBL_FK=d.idProgram_Touch_Definitions_TBL_FK
-		and inhome_date between drop_start_date and d.end_date
+	--left join (SELECT * FROM [bvt_prod].[Dropdate_Start_End_FUN](@PROG)) as D
+	--	on Daily_Join.idProgram_Touch_Definitions_TBL_FK=d.idProgram_Touch_Definitions_TBL_FK
+	--	and inhome_date between drop_start_date and d.end_date
 	left join  dim.Media_Calendar_Daily 
 		on Daily_Join.InHome_Date=Media_Calendar_Daily.Date
 	left join #touchdef
@@ -436,7 +444,7 @@ from #flightplan as A
 */	
 	left join bvt_prod.Seasonality_Adjustements as E
 		on ResponseByDay.idProgram_Touch_Definitions_TBL_FK=E.idProgram_Touch_Definitions_TBL_FK and iso_week_year=Media_Year and mediamonth=Media_Month and ISO_Week = Media_Week
-	left join #Trgt_adj  as Target_adjustment_start_end
+	left join bvt_processed.Target_Adjustment_Start_End  as Target_adjustment_start_end
 		on ResponseByDay.idTarget_Rate_Reasons_LU_TBL_FK=Target_adjustment_start_end.idTarget_Rate_Reasons_LU_TBL_FK 
 		and ResponseByDay.idProgram_Touch_Definitions_TBL_FK=Target_adjustment_start_end.idProgram_Touch_Definitions_TBL_FK
 		and responsebyday.inhome_date between Adj_Start_Date and end_date) sales
